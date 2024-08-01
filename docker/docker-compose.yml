@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  db:
+    container_name: db
+    image: 'postgres'
+    environment:
+      - POSTGRES_USER=msgconverseuser
+      - POSTGRES_PASSWORD=msgconversepass
+      - POSTGRES_DB=msgconversedb
+    ports:
+      - 5432:5432
+    volumes:
+      - msgconverse-database-data-volume:/var/lib/postgresql/data
+
+volumes:
+  msgconverse-database-data-volume:
