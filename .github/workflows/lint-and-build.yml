@@ -24,4 +24,4 @@ jobs:
       - name: Lint files
         run: npm run lint
       - name: Bundle sources
-        run: npm run ${{ matrix.target }}:build
+        run: npm run build:${{ matrix.target }}
