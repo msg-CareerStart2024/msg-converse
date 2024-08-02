@@ -4,7 +4,7 @@
 
 -   Commit message pattern: `<feat | fix | chore> <short-description>`, [See more here](https://www.conventionalcommits.org/en/v1.0.0/#summary).
 -   Examples: `chore: remove api types`, `feat: implement connection to OpenAI API`
--   Branch name pattern: `Task-XYZ-Short-Task-Description` (where CODINGBCRO-XYZ is the name of the task in Jira)
+-   Branch name pattern: `Task-XYZ-Short-Task-Description`
 -   Merge request name pattern: `Task-XYZ: Short Description`
 -   Remember to have the `Squash commits` checked before merging your MR.
 
