@@ -1,14 +1,26 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import styles from './app.module.scss';
-
 import NxWelcome from './nx-welcome';
-
-import { Route, Routes, Link } from 'react-router-dom';
+import { Link, Route, Routes } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { BASE_URL } from './config/api-config';
 
 export function App() {
+    const [isHealthy, setIsHealthy] = useState(false);
+
+    useEffect(() => {
+        const checkHealth = async () => {
+            const response = await fetch(`${BASE_URL}/healthcheck`);
+            if (response.ok) {
+                setIsHealthy(true);
+            }
+        };
+
+        checkHealth();
+    }, []);
+
     return (
         <div>
-            <NxWelcome title="ui" />
+            <NxWelcome title="Msg Converse" isHealthy={isHealthy} />
 
             {/* START: routes */}
             {/* These routes and navigation have been generated for you */}

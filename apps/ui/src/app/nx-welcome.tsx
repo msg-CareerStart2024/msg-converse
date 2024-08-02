@@ -5,7 +5,7 @@
  Delete this file and get started with your project!
  * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  */
-export function NxWelcome({ title }: { title: string }) {
+export function NxWelcome({ title, isHealthy }: { title: string; isHealthy: boolean }) {
     return (
         <>
             <style
@@ -428,8 +428,9 @@ export function NxWelcome({ title }: { title: string }) {
                     <div id="welcome">
                         <h1>
                             <span> Hello there, </span>
-                            Welcome {title} 👋
+                            Welcome {title} 👋;
                         </h1>
+                        <h3>The application is {isHealthy ? 'healthy' : 'unhealthy'}</h3>
                     </div>
 
                     <div id="hero" className="rounded">
