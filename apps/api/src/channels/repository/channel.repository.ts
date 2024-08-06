@@ -35,4 +35,12 @@ export class ChannelRepository {
             return await this.repository.save(channel);
         }
     }
+
+    async deleteById(id: string, manager?: EntityManager): Promise<void> {
+      if (manager) {
+        await manager.delete(Channel, id);
+      } else {
+        await this.repository.delete(id);
+      }
+    }
 }

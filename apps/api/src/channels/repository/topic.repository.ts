@@ -29,4 +29,12 @@ export class TopicRepository {
             return await this.repository.save(topic);
         }
     }
+
+    async deleteById(id: string, manager?: EntityManager): Promise<void> {
+      if (manager) {
+        await manager.delete(Topic, id);
+      } else {
+        await this.repository.delete(id);
+      }
+    }
 }
