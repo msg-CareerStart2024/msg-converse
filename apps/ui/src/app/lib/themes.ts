@@ -4,6 +4,7 @@ import '@fontsource/montserrat/700.css';
 
 export const lightTheme = createTheme({
     palette: {
+        mode: 'light',
         primary: {
             main: '#A01441'
         },
@@ -24,6 +25,7 @@ export const lightTheme = createTheme({
 
 export const darkTheme = createTheme({
     palette: {
+        mode: 'dark',
         primary: {
             main: '#eb608c'
         },
