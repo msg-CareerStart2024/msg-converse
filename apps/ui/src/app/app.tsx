@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
-import Login from './features/login/pages/Login';
 import { darkTheme, lightTheme } from './lib/themes';
 import { CssBaseline, ThemeProvider, useMediaQuery } from '@mui/material';
+import SignInPage from './features/login/pages/SignInPage';
 import Signup from './features/login/pages/Signup';
 
 export function App() {
@@ -10,7 +10,7 @@ export function App() {
         <ThemeProvider theme={prefersDarkMode ? darkTheme : lightTheme}>
             <CssBaseline />
             <Routes>
-                <Route path="/login" element={<Login />} />
+                <Route path="/login" element={<SignInPage />} />
                 <Route path="/signup" element={<Signup />} />
             </Routes>
         </ThemeProvider>
