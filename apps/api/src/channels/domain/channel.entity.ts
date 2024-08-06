@@ -23,13 +23,13 @@ export class Channel {
     @CreateDateColumn({ name: 'created_at' })
     createdAt: Date;
 
-    @ManyToMany(() => User, user => user.channels)
-    @JoinTable({
-        name: 'enrollments',
-        joinColumn: { name: 'channel_id', referencedColumnName: 'id' },
-        inverseJoinColumn: { name: 'user_id', referencedColumnName: 'id' }
-    })
-    users: User[];
+    // @ManyToMany(() => User, user => user.channels)
+    // @JoinTable({
+    //     name: 'enrollments',
+    //     joinColumn: { name: 'channel_id', referencedColumnName: 'id' },
+    //     inverseJoinColumn: { name: 'user_id', referencedColumnName: 'id' }
+    // })
+    // users: User[];
 
     @ManyToMany(() => Topic, topic => topic.channels)
     @JoinTable({
