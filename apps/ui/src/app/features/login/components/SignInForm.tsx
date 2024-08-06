@@ -1,30 +1,16 @@
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { SubmitHandler, useForm } from 'react-hook-form';
 import { Avatar, Box, Button, Container, TextField, Typography } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
-import { emailSchemaCheck, passwordSchemaCheck } from '../../../types/users/login';
+import { FieldErrors, SubmitHandler, UseFormHandleSubmit, UseFormRegister } from 'react-hook-form';
+import { UserFormValues } from '../../../types/users/login.types';
 
-const userSchema = z.object({
-    email: emailSchemaCheck,
-    password: passwordSchemaCheck
-});
+type SignInFormProps = {
+    handleSubmit: UseFormHandleSubmit<UserFormValues>;
+    onSubmit: SubmitHandler<UserFormValues>;
+    register: UseFormRegister<UserFormValues>;
+    errors: FieldErrors<UserFormValues>;
+};
 
-type UserFormValues = z.infer<typeof userSchema>;
-
-export default function Login() {
-    const {
-        register,
-        handleSubmit,
-        formState: { errors }
-    } = useForm<UserFormValues>({
-        resolver: zodResolver(userSchema)
-    });
-
-    const onSubmit: SubmitHandler<UserFormValues> = data => {
-        alert('Login not yet implemented');
-    };
-
+export default function SignInForm({ handleSubmit, onSubmit, errors, register }: SignInFormProps) {
     return (
         <Container component="main" maxWidth="xs" sx={{ mt: 25 }}>
             <Box
