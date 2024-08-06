@@ -10,7 +10,12 @@ type SignInFormProps = {
     errors: FieldErrors<UserFormValues>;
 };
 
-export default function SignInForm({ handleSubmit, onSubmit, errors, register }: SignInFormProps) {
+export default function SignInFormView({
+    handleSubmit,
+    onSubmit,
+    errors,
+    register
+}: SignInFormProps) {
     return (
         <Container component="main" maxWidth="xs" sx={{ mt: 25 }}>
             <Box

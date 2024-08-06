@@ -2,9 +2,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { UserFormValues, userSchema } from '../../../types/users/login.types';
-import SignInForm from '../components/SignInForm';
+import SignInFormView from '../components/SignInFormView';
 
-export default function SignInContainer() {
+export default function SignInPage() {
     const {
         register,
         handleSubmit,
@@ -18,7 +18,7 @@ export default function SignInContainer() {
     };
 
     return (
-        <SignInForm
+        <SignInFormView
             register={register}
             handleSubmit={handleSubmit}
             onSubmit={onSubmit}
