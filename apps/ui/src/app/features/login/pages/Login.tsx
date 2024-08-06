@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { Avatar, Box, Button, Container, TextField, Typography } from '@mui/material';
+import { Avatar, Box, Button, Container, Grid, Link, TextField, Typography } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
 import { emailSchemaCheck, passwordSchemaCheck } from '../../../types/users/login';
 
@@ -67,6 +67,11 @@ export default function Login() {
                     <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
                         Sign In
                     </Button>
+                    <Grid item xs={12} style={{ textAlign: 'left', width: '100%' }}>
+                        <Typography variant="body2">
+                            <Link href="/signup">Don't have an account? Sign Up</Link>
+                        </Typography>
+                    </Grid>
                 </Box>
             </Box>
         </Container>
