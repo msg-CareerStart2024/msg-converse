@@ -39,8 +39,8 @@ export class CreateUserDTO {
     @ApiProperty({ description: 'The password of the user' })
     @IsNotEmpty()
     @IsString()
-    @MinLength(5)
-    @MaxLength(25)
+    @MinLength(6)
+    @MaxLength(20)
     password: string;
 
     @ApiProperty({ description: 'The role of the user' })
