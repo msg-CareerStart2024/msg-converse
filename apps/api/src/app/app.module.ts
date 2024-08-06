@@ -4,6 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppConfigPaths } from './shared/config/app.config';
 import Joi from 'joi';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserModule } from './users/user.module';
 
 @Module({
     imports: [
@@ -31,7 +32,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
             }),
             inject: [ConfigService]
         }),
-        HealthModule
+        HealthModule,
+        UserModule
     ],
     controllers: [],
     providers: []
