@@ -32,6 +32,11 @@ export const lightTheme = createTheme({
         },
         action: {
             hover: '#F6F6F6'
+        },
+        text: {
+            primary: '#000000',
+            secondary: '#757575',
+            disabled: '#BDBDBD'
         }
     },
     typography: {
@@ -51,13 +56,22 @@ export const darkTheme = createTheme({
             main: '#438fa8'
         },
         background: {
-            default: '#0d0d0d'
+            default: '#0d0d0d',
+            paper: '#363636'
         },
         action: {
             hover: '#0a0a0a'
+        },
+        text: {
+            primary: '#ffffff',
+            secondary: '#B0B0B0',
+            disabled: '#757575'
         }
     },
     typography: {
         fontFamily: 'Montserrat, Arial, sans-serif'
+    },
+    customShadows: {
+        light: '0px 0px 10px #00000029'
     }
 });

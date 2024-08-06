@@ -9,6 +9,10 @@ const topics: Topic[] = [
     {
         id: '2',
         name: 'Topic 2'
+    },
+    {
+        id: '3',
+        name: 'Topic 3'
     }
 ];
 export const CHANNEL: Channel = {

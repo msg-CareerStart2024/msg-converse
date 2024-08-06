@@ -13,14 +13,21 @@ import {
     Typography
 } from '@mui/material';
 import { Channel } from '../../../types/channels/Channel';
-import { shrinkToWords } from '../../../utils/utils';
+import { formatDate, shrinkToWords } from '../../../utils/utils';
 
 interface ChannelCardProps {
     channel: Channel;
 }
 const ChannelCard = ({ channel }: ChannelCardProps) => {
     return (
-        <Card sx={{ boxShadow: theme => theme.customShadows.light, maxWidth: '33%' }}>
+        <Card
+            sx={{
+                boxShadow: theme => theme.customShadows.light,
+                maxWidth: '33%',
+                bgcolor: 'background.paper',
+                color: 'text.primary'
+            }}
+        >
             <CardContent>
                 <Stack
                     direction="row"
@@ -36,12 +43,12 @@ const ChannelCard = ({ channel }: ChannelCardProps) => {
                                 {channel.name}
                             </Typography>
                             <Typography sx={{ fontSize: 14 }} gutterBottom>
-                                {channel.createdAt.toDateString()}
+                                {formatDate(channel.createdAt)}
                             </Typography>
                         </Box>
                     </Stack>
                     <IconButton aria-label="edit">
-                        <EditIcon />
+                        <EditIcon sx={{ color: 'text.secondary' }} />
                     </IconButton>
                 </Stack>
                 <Stack direction="row" spacing={1} mb={2}>
@@ -65,7 +72,7 @@ const ChannelCard = ({ channel }: ChannelCardProps) => {
                     variant="contained"
                     endIcon={<SendIcon />}
                     sx={{
-                        fontWeight: '600',  
+                        fontWeight: '600',
                         bgcolor: 'secondary.main',
                         '&:hover': {
                             bgcolor: 'secondary.dark'
