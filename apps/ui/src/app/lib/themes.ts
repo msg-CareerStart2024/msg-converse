@@ -4,16 +4,17 @@ import '@fontsource/montserrat/700.css';
 
 export const lightTheme = createTheme({
     palette: {
-        mode: 'light',
         primary: {
-            main: '#1976d2'
+            main: '#A01441'
         },
         secondary: {
-            main: '#1B1B1B'
+            main: '#56A3BC'
         },
         background: {
-            default: '#ffffff',
-            paper: '#f5f5f5'
+            default: '#F2F2F2'
+        },
+        action: {
+            hover: '#F6F6F6'
         }
     },
     typography: {
@@ -23,16 +24,17 @@ export const lightTheme = createTheme({
 
 export const darkTheme = createTheme({
     palette: {
-        mode: 'dark',
         primary: {
-            main: '#2081E2'
+            main: '#eb608c'
         },
         secondary: {
-            main: '#1B1B1B'
+            main: '#438fa8'
         },
         background: {
-            default: '#121212',
-            paper: '#202020'
+            default: '#0d0d0d'
+        },
+        action: {
+            hover: '#0a0a0a'
         }
     },
     typography: {
