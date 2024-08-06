@@ -9,7 +9,8 @@
         "build:api": "nx build api --configuration=production",
         "lint": "nx run-many --target=lint --verbose",
         "dep-graph": "nx dep-graph",
-        "prepare": "husky"
+        "prepare": "husky",
+        "pretty-quick": "pretty-quick --staged"
     },
     "private": true,
     "devDependencies": {
