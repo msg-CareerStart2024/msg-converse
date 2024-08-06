@@ -12,14 +12,6 @@
         "prepare": "husky",
         "pretty-quick": "pretty-quick --staged"
     },
-    "cpu": [
-      "arm64",
-      "x64"
-    ],
-    "os": [
-      "linux",
-      "win32"
-    ],
     "private": true,
     "devDependencies": {
         "@nestjs/schematics": "^10.0.1",
@@ -100,5 +92,8 @@
         "tslib": "^2.3.0",
         "typeorm": "^0.3.20",
         "zod": "^3.23.8"
+    },
+    "optionalDependencies": {
+      "@rollup/rollup-linux-x64-gnu": "4.9.5"
     }
 }
