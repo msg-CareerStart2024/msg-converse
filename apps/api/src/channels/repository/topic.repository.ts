@@ -11,7 +11,7 @@ export class TopicRepository {
     ) {}
 
     async findOneById(id: string): Promise<Topic> {
-        return await this.repository.findOneBy({ id });
+        return this.repository.findOneBy({ id });
     }
 
     async findAll(): Promise<Topic[]> {
@@ -19,14 +19,14 @@ export class TopicRepository {
     }
 
     async findByName(name: string): Promise<Topic> {
-        return await this.repository.findOneBy({ name });
+        return this.repository.findOneBy({ name });
     }
 
     async save(topic: Topic, manager?: EntityManager): Promise<Topic> {
         if (manager) {
-            return await manager.save(topic);
+            return  manager.save(topic);
         } else {
-            return await this.repository.save(topic);
+            return this.repository.save(topic);
         }
     }
 

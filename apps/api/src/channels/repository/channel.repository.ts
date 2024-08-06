@@ -11,7 +11,7 @@ export class ChannelRepository {
     ) {}
 
     async findOneById(id: string): Promise<Channel> {
-        return await this.repository.findOne({
+        return this.repository.findOne({
             where: { id },
             relations: ['topics', 'users']
         });
@@ -22,7 +22,7 @@ export class ChannelRepository {
     }
 
     async findByName(name: string): Promise<Channel> {
-        return await this.repository.findOne({
+        return this.repository.findOne({
             where: { name },
             relations: ['topics', 'users']
         });
@@ -30,15 +30,15 @@ export class ChannelRepository {
 
     async save(channel: Channel, manager?: EntityManager): Promise<Channel> {
         if (manager) {
-            return await manager.save(channel);
+            return manager.save(channel);
         } else {
-            return await this.repository.save(channel);
+            return this.repository.save(channel);
         }
     }
 
     async deleteById(id: string, manager?: EntityManager): Promise<void> {
       if (manager) {
-        await manager.delete(Channel, id);
+        await  manager.delete(Channel, id);
       } else {
         await this.repository.delete(id);
       }
