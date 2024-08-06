@@ -44,20 +44,4 @@ export class UpdateUserDTO {
     @IsNotEmpty()
     @IsEnum(Role)
     role: Role;
-
-    constructor(
-        username: string,
-        email: string,
-        firstName: string,
-        lastName: string,
-        password: string,
-        role: Role
-    ) {
-        this.username = username;
-        this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.password = password;
-        this.role = role;
-    }
 }

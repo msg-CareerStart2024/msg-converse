@@ -6,22 +6,22 @@ export class User {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column()
+    @Column({ unique: true, nullable: false })
     username: string;
 
-    @Column()
+    @Column({ unique: true, nullable: false })
     email: string;
 
-    @Column({ name: 'first_name' })
+    @Column({ name: 'first_name', nullable: false })
     firstName: string;
 
-    @Column({ name: 'last_name' })
+    @Column({ name: 'last_name', nullable: false })
     lastName: string;
 
-    @Column()
+    @Column({ nullable: false })
     password: string;
 
-    @Column()
+    @Column({ default: Role.USER })
     role: Role;
 
     constructor(
