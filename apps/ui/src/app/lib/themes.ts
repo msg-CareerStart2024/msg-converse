@@ -72,6 +72,6 @@ export const darkTheme = createTheme({
         fontFamily: 'Montserrat, Arial, sans-serif'
     },
     customShadows: {
-        light: '0px 0px 10px #00000029'
+        light: '0px 0px 10px #FFFFFF29'
     }
 });
