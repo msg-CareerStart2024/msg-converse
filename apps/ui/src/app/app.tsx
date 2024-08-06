@@ -1,12 +1,14 @@
+import { CssBaseline, ThemeProvider } from '@mui/material';
 import { Link, Route, Routes } from 'react-router-dom';
-import { CssBaseline, ThemeProvider, useMediaQuery } from '@mui/material';
-import { darkTheme, lightTheme } from './lib/themes';
+import ChannelCard from './features/channels/components/ChannelCard';
+import { CHANNEL } from './features/channels/static';
+import { lightTheme } from './lib/themes';
 
 export function App() {
-    const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-
+    // const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+//prefersDarkMode ? darkTheme : lightTheme
     return (
-        <ThemeProvider theme={prefersDarkMode ? darkTheme : lightTheme}>
+        <ThemeProvider theme={lightTheme}>
             <CssBaseline />
             <div>
                 {/* START: routes */}
@@ -31,6 +33,7 @@ export function App() {
                         element={
                             <div>
                                 This is the generated root route.{' '}
+                                <ChannelCard channel={CHANNEL}/>
                                 <Link to="/page-2">Click here for page 2.</Link>
                             </div>
                         }

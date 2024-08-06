@@ -1,6 +1,23 @@
-import { createTheme } from '@mui/material';
 import '@fontsource/montserrat';
 import '@fontsource/montserrat/700.css';
+import { createTheme } from '@mui/material';
+
+declare module '@mui/material/styles' {
+    interface Theme {
+        customShadows: {
+            light: string;
+            medium: string;
+            heavy: string;
+        };
+    }
+    interface ThemeOptions {
+        customShadows?: {
+            light?: string;
+            medium?: string;
+            heavy?: string;
+        };
+    }
+}
 
 export const lightTheme = createTheme({
     palette: {
@@ -19,6 +36,9 @@ export const lightTheme = createTheme({
     },
     typography: {
         fontFamily: 'Montserrat, Arial, sans-serif'
+    },
+    customShadows: {
+        light: '0px 0px 10px #00000029'
     }
 });
 
