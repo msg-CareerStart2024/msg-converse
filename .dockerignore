@@ -1,0 +1,11 @@
+node_modules
+docker
+.vscode
+dist
+coverage
+reports
+*.Dockerfile
+.nx
+
+npm-debug.log
+yarn-error.log

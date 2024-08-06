@@ -11,6 +11,14 @@
         "dep-graph": "nx dep-graph",
         "prepare": "husky"
     },
+    "cpu": [
+      "arm64",
+      "x64"
+    ],
+    "os": [
+      "linux",
+      "win32"
+    ],
     "private": true,
     "devDependencies": {
         "@nestjs/schematics": "^10.0.1",
