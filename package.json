@@ -69,6 +69,7 @@
         "@hookform/resolvers": "^3.9.0",
         "@mui/material": "^5.16.6",
         "@nestjs/axios": "^3.0.2",
+        "@nestjs/class-validator": "^0.13.4",
         "@nestjs/common": "^10.0.2",
         "@nestjs/config": "^3.2.3",
         "@nestjs/core": "^10.0.2",
