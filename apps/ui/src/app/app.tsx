@@ -1,32 +1,14 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import NxWelcome from './nx-welcome';
 import { Link, Route, Routes } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { BASE_URL } from './config/api-config';
 import { CssBaseline, ThemeProvider, useMediaQuery } from '@mui/material';
 import { darkTheme, lightTheme } from './lib/themes';
 
 export function App() {
-    const [isHealthy, setIsHealthy] = useState(false);
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-
-    useEffect(() => {
-        const checkHealth = async () => {
-            const response = await fetch(`${BASE_URL}/healthcheck`);
-            if (response.ok) {
-                setIsHealthy(true);
-            }
-        };
-
-        checkHealth();
-    }, []);
 
     return (
         <ThemeProvider theme={prefersDarkMode ? darkTheme : lightTheme}>
             <CssBaseline />
             <div>
-                <NxWelcome title="Msg Converse" isHealthy={isHealthy} />
-
                 {/* START: routes */}
                 {/* These routes and navigation have been generated for you */}
                 {/* Feel free to move and update them to fit your needs */}
