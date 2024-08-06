@@ -14,7 +14,6 @@ export class CreateUserDTO {
     @IsNotEmpty()
     @IsString()
     @MinLength(2)
-    @MaxLength(25)
     username: string;
 
     @ApiProperty({ description: 'The email of the user' })
@@ -26,14 +25,12 @@ export class CreateUserDTO {
     @IsNotEmpty()
     @IsString()
     @MinLength(2)
-    @MaxLength(50)
     firstName: string;
 
     @ApiProperty({ description: 'The last name of the user' })
     @IsNotEmpty()
     @IsString()
     @MinLength(2)
-    @MaxLength(50)
     lastName: string;
 
     @ApiProperty({ description: 'The password of the user' })
