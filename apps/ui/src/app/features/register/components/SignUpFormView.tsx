@@ -1,22 +1,21 @@
-import { SignupFormValues, signUpSchema } from '../../../types/users/signup.types';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { SignupFormValues } from '../../../types/users/signup.types';
+import { FieldErrors, SubmitHandler, UseFormHandleSubmit, UseFormRegister } from 'react-hook-form';
 import { Avatar, Box, Button, Container, Grid, Link, TextField, Typography } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
 
-export default function Signup() {
-    const {
-        register,
-        handleSubmit,
-        formState: { errors }
-    } = useForm<SignupFormValues>({
-        resolver: zodResolver(signUpSchema)
-    });
+type SignUpFormProps = {
+    handleSubmit: UseFormHandleSubmit<SignupFormValues>;
+    onSubmit: SubmitHandler<SignupFormValues>;
+    register: UseFormRegister<SignupFormValues>;
+    errors: FieldErrors<SignupFormValues>;
+};
 
-    const onSubmit: SubmitHandler<SignupFormValues> = data => {
-        alert('Sign up not yet implemented');
-    };
-
+export default function SignUpFormView({
+    handleSubmit,
+    onSubmit,
+    errors,
+    register
+}: SignUpFormProps) {
     return (
         <Container component="main" maxWidth="xs" sx={{ mt: 25 }}>
             <Box
