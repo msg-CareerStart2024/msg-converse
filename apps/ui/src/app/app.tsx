@@ -5,6 +5,7 @@ import { CHANNEL } from './features/channels/static';
 import { darkTheme, lightTheme } from './lib/themes';
 import SignInPage from './features/login/pages/SignInPage';
 import SiderbarLayout from './layouts/SidebarLayout';
+import SignUpPage from './features/register/pages/SignUpPage';
 
 export function App() {
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
@@ -21,6 +22,7 @@ export function App() {
                     />
                 </Route>
                 <Route path="/login" element={<SignInPage />} />
+                <Route path="/signup" element={<SignUpPage />} />
             </Routes>
         </ThemeProvider>
     );
