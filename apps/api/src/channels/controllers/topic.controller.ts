@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Delete, UseGuards, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Param, Delete, HttpStatus } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
 import { TopicService } from '../services/topic.service';
 import { TopicDto } from '../dto/topics/topic.dto';

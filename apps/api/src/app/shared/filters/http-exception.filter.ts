@@ -150,7 +150,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     private getExceptionDetails(exceptionResponse: string | object): ErrorDetails | undefined {
         if (typeof exceptionResponse === 'object' && 'message' in exceptionResponse) {
-            const { message, ...details } = exceptionResponse;
+            const details = Object.fromEntries(
+                Object.entries(exceptionResponse).filter(([key]) => key !== 'message')
+            );
             return Object.keys(details).length > 0 ? (details as ErrorDetails) : undefined;
         }
         return undefined;
