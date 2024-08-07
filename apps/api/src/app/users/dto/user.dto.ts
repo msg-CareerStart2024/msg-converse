@@ -16,12 +16,4 @@ export class UserDTO {
 
     @ApiProperty({ description: 'The role of the user' })
     role: Role;
-
-    constructor(id: string, email: string, firstName: string, lastName: string, role: Role) {
-        this.id = id;
-        this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.role = role;
-    }
 }

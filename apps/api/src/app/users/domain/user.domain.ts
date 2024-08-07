@@ -20,12 +20,4 @@ export class User {
 
     @Column({ default: Role.USER })
     role: Role;
-
-    constructor(email: string, firstName: string, lastName: string, password: string, role: Role) {
-        this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.password = password;
-        this.role = role;
-    }
 }
