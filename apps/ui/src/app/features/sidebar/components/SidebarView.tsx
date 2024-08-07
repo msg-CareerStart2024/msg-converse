@@ -2,6 +2,7 @@ import {
     Avatar,
     Divider,
     Drawer,
+    IconButton,
     List,
     ListItem,
     ListItemButton,
@@ -14,7 +15,7 @@ import {
 import MsgLogo from '../../../../assets/msg_logo.png';
 import styles from '../styles/SidebarView.module.css';
 import SidebarItem from './SidebarItem';
-import { Logout } from '@mui/icons-material';
+import { ChevronLeft, Logout } from '@mui/icons-material';
 import { USER } from '../../channels/static';
 import { Channel } from '../../../types/channels/Channel';
 
@@ -24,6 +25,8 @@ type SidebarViewProps = {
     handleClick: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
     handleClose: () => void;
     channels: Channel[];
+    toggleSidebar: () => void;
+    sidebarOpen: boolean;
 };
 
 export default function SidebarView({
@@ -31,30 +34,23 @@ export default function SidebarView({
     anchorEl,
     handleClick,
     handleClose,
-    channels
+    channels,
+    toggleSidebar,
+    sidebarOpen
 }: SidebarViewProps) {
     return (
         <Drawer
-            variant="permanent"
+            variant="persistent"
             anchor="left"
+            open={true}
             className={styles.drawer}
-            sx={{
-                width: '16.666667%',
-                '& .MuiDrawer-paper': {
-                    width: '16.666667%',
-                    boxSizing: 'border-box',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between'
-                },
-                textAlign: 'center'
-            }}
+            classes={{ paper: styles.drawerPaper }}
         >
-            <div style={{ flex: 1, overflowY: 'auto' }}>
+            <div className={styles.scrollableUpperPart}>
                 <div className={styles.sidebarImageContainer}>
                     <img className={styles.sidebarImage} src={MsgLogo} alt={'msg logo'} />
                 </div>
-                <Typography variant="h6" sx={{ p: 2 }}>
+                <Typography variant="h6" className={styles.sidebarTitle}>
                     My Channels
                 </Typography>
                 <List>
@@ -65,7 +61,7 @@ export default function SidebarView({
             </div>
             <div>
                 <Divider />
-                <ListItem disablePadding sx={{ marginY: '3px' }}>
+                <ListItem disablePadding className={styles.userListItem}>
                     <ListItemButton
                         aria-controls={open ? 'basic-menu' : undefined}
                         aria-haspopup="true"
@@ -103,6 +99,14 @@ export default function SidebarView({
                     </MenuItem>
                 </Menu>
             </div>
+            <IconButton
+                color="inherit"
+                aria-label="close drawer"
+                onClick={toggleSidebar}
+                className={styles.closeButton}
+            >
+                <ChevronLeft />
+            </IconButton>
         </Drawer>
     );
 }

@@ -11,3 +11,43 @@
     display: flex;
     justify-content: center;
 }
+
+.scrollableUpperPart {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.openButton {
+    position: absolute !important;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 12px;
+}
+
+.closeButton {
+    position: absolute !important;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+}
+
+.userListItem {
+    margin: 3px 0px 3px 0px;
+}
+
+.sidebarTitle {
+    padding: 16px;
+}
+
+.drawer {
+    width: 16.666667%;
+    text-align: center;
+}
+
+.drawerPaper {
+    width: 16.666667%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
