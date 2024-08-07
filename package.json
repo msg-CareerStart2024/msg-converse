@@ -12,6 +12,14 @@
         "prepare": "husky",
         "pretty-quick": "pretty-quick --staged"
     },
+    "cpu": [
+        "arm64",
+        "x64"
+    ],
+    "os": [
+        "linux",
+        "win32"
+    ],
     "private": true,
     "devDependencies": {
         "@nestjs/schematics": "^10.0.1",
@@ -66,7 +74,6 @@
     "dependencies": {
         "@emotion/react": "^11.13.0",
         "@emotion/styled": "^11.13.0",
-        "@mui/icons-material": "^5.16.6",
         "@fontsource/montserrat": "^5.0.18",
         "@hookform/resolvers": "^3.9.0",
         "@mui/icons-material": "^5.16.6",

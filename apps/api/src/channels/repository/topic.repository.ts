@@ -24,17 +24,17 @@ export class TopicRepository {
 
     async save(topic: Topic, manager?: EntityManager): Promise<Topic> {
         if (manager) {
-            return  manager.save(topic);
+            return manager.save(topic);
         } else {
             return this.repository.save(topic);
         }
     }
 
     async deleteById(id: string, manager?: EntityManager): Promise<void> {
-      if (manager) {
-        await manager.delete(Topic, id);
-      } else {
-        await this.repository.delete(id);
-      }
+        if (manager) {
+            await manager.delete(Topic, id);
+        } else {
+            await this.repository.delete(id);
+        }
     }
 }
