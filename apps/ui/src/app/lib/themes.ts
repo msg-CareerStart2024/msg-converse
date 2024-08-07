@@ -20,6 +20,15 @@ export const lightTheme = createTheme({
     },
     typography: {
         fontFamily: 'Montserrat, Arial, sans-serif'
+    },
+    components: {
+        MuiTypography: {
+            styleOverrides: {
+                root: {
+                    padding: '0px'
+                }
+            }
+        }
     }
 });
 
@@ -41,5 +50,14 @@ export const darkTheme = createTheme({
     },
     typography: {
         fontFamily: 'Montserrat, Arial, sans-serif'
+    },
+    components: {
+        MuiTypography: {
+            styleOverrides: {
+                root: {
+                    padding: '0px'
+                }
+            }
+        }
     }
 });
