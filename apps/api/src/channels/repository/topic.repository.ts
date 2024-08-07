@@ -10,11 +10,11 @@ export class TopicRepository {
         private readonly repository: Repository<Topic>
     ) {}
 
-    async findOneById(id: string): Promise<Topic> {
+    async getById(id: string): Promise<Topic> {
         return this.repository.findOneBy({ id });
     }
 
-    async findAll(): Promise<Topic[]> {
+    async getAll(): Promise<Topic[]> {
         return this.repository.find();
     }
 
@@ -24,7 +24,7 @@ export class TopicRepository {
 
     async save(topic: Topic, manager?: EntityManager): Promise<Topic> {
         if (manager) {
-            return  manager.save(topic);
+            return await manager.save(topic);
         } else {
             return this.repository.save(topic);
         }

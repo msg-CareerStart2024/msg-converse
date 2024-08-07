@@ -1,8 +1,12 @@
-import { Module } from '@nestjs/common';
-import { HealthModule } from './health/health.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+
+import { APP_FILTER } from '@nestjs/core';
 import { AppConfigPaths } from './shared/config/app.config';
+import { ChannelsModule } from '../channels/channels.module';
+import { HealthModule } from './health/health.module';
+import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
 import Joi from 'joi';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
@@ -31,9 +35,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
             }),
             inject: [ConfigService]
         }),
+        ChannelsModule,
         HealthModule
     ],
     controllers: [],
-    providers: []
+    providers: [
+        {
+            provide: APP_FILTER,
+            useClass: HttpExceptionFilter
+        }
+    ]
 })
 export class AppModule {}
