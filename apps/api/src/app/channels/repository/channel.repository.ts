@@ -37,9 +37,9 @@ export class ChannelRepository {
     }
 
     async deleteById(id: string, manager?: EntityManager): Promise<void> {
-      if (manager) {
-        await  manager.delete(Channel, id);
-      } 
-      await this.repository.delete(id);
+        if (manager) {
+            await manager.delete(Channel, id);
+        }
+        await this.repository.delete(id);
     }
 }

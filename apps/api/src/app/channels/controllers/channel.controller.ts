@@ -85,7 +85,6 @@ export class ChannelController {
         return ChannelMapper.toDto(updatedChannel);
     }
 
-
     @Delete(':channelId')
     @ApiOperation({
         summary: 'Delete a channel'
