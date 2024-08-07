@@ -2,7 +2,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { APP_FILTER } from '@nestjs/core';
 import { AppConfigPaths } from './shared/config/app.config';
-import { ChannelsModule } from '../channels/channels.module';
+import { ChannelsModule } from './channels/channels.module';
 import { HealthModule } from './health/health.module';
 import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
 import Joi from 'joi';
@@ -37,7 +37,7 @@ import { UserModule } from './users/user.module';
             inject: [ConfigService]
         }),
         ChannelsModule,
-        HealthModule
+        HealthModule,
         UserModule
     ],
     controllers: [],
