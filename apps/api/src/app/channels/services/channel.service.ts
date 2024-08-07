@@ -13,8 +13,8 @@ export class ChannelService {
         @InjectEntityManager() private readonly entityManager: EntityManager
     ) {}
 
-    async getAll(): Promise<Channel[]> {
-        return await this.channelRepository.findAll();
+    async searchChannels(searchTerm: string): Promise<Channel[]> {
+        return this.channelRepository.searchChannels(searchTerm);
     }
 
     async getById(channelId: string): Promise<Channel> {
