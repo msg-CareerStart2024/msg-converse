@@ -4,6 +4,7 @@ import ChannelCard from './features/channels/components/ChannelCard';
 import { CHANNEL } from './features/channels/static';
 import { darkTheme, lightTheme } from './lib/themes';
 import SignInPage from './features/login/pages/SignInPage';
+import SiderbarLayout from './layouts/SidebarLayout';
 import SignUpPage from './features/register/pages/SignUpPage';
 
 export function App() {
@@ -13,11 +14,13 @@ export function App() {
             <CssBaseline />
 
             <Routes>
-                <Route path="/" element={<ChannelCard channel={CHANNEL} />} />
-                <Route
-                    path="/page-2"
-                    element={<Link to="/">Click here to go back to root page.</Link>}
-                />
+                <Route element={<SiderbarLayout />}>
+                    <Route path="/" element={<ChannelCard channel={CHANNEL} />} />
+                    <Route
+                        path="/page-2"
+                        element={<Link to="/">Click here to go back to root page.</Link>}
+                    />
+                </Route>
                 <Route path="/login" element={<SignInPage />} />
                 <Route path="/signup" element={<SignUpPage />} />
             </Routes>

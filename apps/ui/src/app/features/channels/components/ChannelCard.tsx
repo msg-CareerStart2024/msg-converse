@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import { Channel } from '../../../types/channels/Channel';
 import { formatDate, shrinkToWords } from '../../../utils/utils';
+import { getColor } from '../../../lib/avatar-colors';
 
 interface ChannelCardProps {
     channel: Channel;
@@ -37,7 +38,9 @@ const ChannelCard = ({ channel }: ChannelCardProps) => {
                     gap={1.5}
                 >
                     <Stack direction="row" gap={1.5}>
-                        <Avatar sx={{ bgcolor: 'primary.main' }}>{channel.name[0]}</Avatar>
+                        <Avatar sx={{ bgcolor: getColor(channel.name.charAt(0).toUpperCase()) }}>
+                            {channel.name[0]}
+                        </Avatar>
                         <Box>
                             <Typography variant="h5" component="div">
                                 {channel.name}
@@ -54,6 +57,7 @@ const ChannelCard = ({ channel }: ChannelCardProps) => {
                 <Stack direction="row" spacing={1} mb={2}>
                     {channel.topics.map(topic => (
                         <Chip
+                            key={topic.id}
                             label={topic.name}
                             sx={{ bgcolor: 'secondary.main', color: 'white' }}
                             size="small"
