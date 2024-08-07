@@ -9,8 +9,17 @@
         "build:api": "nx build api --configuration=production",
         "lint": "nx run-many --target=lint --verbose",
         "dep-graph": "nx dep-graph",
-        "prepare": "husky"
+        "prepare": "husky",
+        "pretty-quick": "pretty-quick --staged"
     },
+    "cpu": [
+        "arm64",
+        "x64"
+    ],
+    "os": [
+        "linux",
+        "win32"
+    ],
     "private": true,
     "devDependencies": {
         "@nestjs/schematics": "^10.0.1",
@@ -33,6 +42,8 @@
         "@testing-library/react": "15.0.6",
         "@types/jest": "^29.4.0",
         "@types/node": "18.16.9",
+        "@types/passport-jwt": "^4.0.1",
+        "@types/passport-local": "^1.0.38",
         "@types/react": "18.3.1",
         "@types/react-dom": "18.3.0",
         "@typescript-eslint/eslint-plugin": "^7.16.0",
@@ -67,11 +78,14 @@
         "@emotion/styled": "^11.13.0",
         "@fontsource/montserrat": "^5.0.18",
         "@hookform/resolvers": "^3.9.0",
+        "@mui/icons-material": "^5.16.6",
         "@mui/material": "^5.16.6",
         "@nestjs/axios": "^3.0.2",
+        "@nestjs/class-validator": "^0.13.4",
         "@nestjs/common": "^10.0.2",
         "@nestjs/config": "^3.2.3",
         "@nestjs/core": "^10.0.2",
+        "@nestjs/passport": "^10.0.3",
         "@nestjs/platform-express": "^10.0.2",
         "@nestjs/swagger": "^7.4.0",
         "@nestjs/terminus": "^10.2.3",
@@ -80,6 +94,8 @@
         "class-transformer": "^0.5.1",
         "class-validator": "^0.14.1",
         "joi": "^17.13.3",
+        "passport-jwt": "^4.0.1",
+        "passport-local": "^1.0.0",
         "pg": "^8.12.0",
         "react": "18.3.1",
         "react-dom": "18.3.1",

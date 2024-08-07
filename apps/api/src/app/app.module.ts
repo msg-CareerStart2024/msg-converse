@@ -8,6 +8,7 @@ import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
 import Joi from 'joi';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserModule } from './users/user.module';
 
 @Module({
     imports: [
@@ -37,6 +38,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         }),
         ChannelsModule,
         HealthModule
+        UserModule
     ],
     controllers: [],
     providers: [

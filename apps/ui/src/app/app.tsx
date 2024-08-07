@@ -1,51 +1,26 @@
-import { Link, Route, Routes } from 'react-router-dom';
 import { CssBaseline, ThemeProvider, useMediaQuery } from '@mui/material';
+import { Link, Route, Routes } from 'react-router-dom';
+import ChannelCard from './features/channels/components/ChannelCard';
+import { CHANNEL } from './features/channels/static';
 import { darkTheme, lightTheme } from './lib/themes';
+import SignInPage from './features/login/pages/SignInPage';
+import SignUpPage from './features/register/pages/SignUpPage';
 
 export function App() {
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-
     return (
         <ThemeProvider theme={prefersDarkMode ? darkTheme : lightTheme}>
             <CssBaseline />
-            <div>
-                {/* START: routes */}
-                {/* These routes and navigation have been generated for you */}
-                {/* Feel free to move and update them to fit your needs */}
-                <br />
-                <hr />
-                <br />
-                <div role="navigation">
-                    <ul>
-                        <li>
-                            <Link to="/">Home</Link>
-                        </li>
-                        <li>
-                            <Link to="/page-2">Page 2</Link>
-                        </li>
-                    </ul>
-                </div>
-                <Routes>
-                    <Route
-                        path="/"
-                        element={
-                            <div>
-                                This is the generated root route.{' '}
-                                <Link to="/page-2">Click here for page 2.</Link>
-                            </div>
-                        }
-                    />
-                    <Route
-                        path="/page-2"
-                        element={
-                            <div>
-                                <Link to="/">Click here to go back to root page.</Link>
-                            </div>
-                        }
-                    />
-                </Routes>
-                {/* END: routes */}
-            </div>
+
+            <Routes>
+                <Route path="/" element={<ChannelCard channel={CHANNEL} />} />
+                <Route
+                    path="/page-2"
+                    element={<Link to="/">Click here to go back to root page.</Link>}
+                />
+                <Route path="/login" element={<SignInPage />} />
+                <Route path="/signup" element={<SignUpPage />} />
+            </Routes>
         </ThemeProvider>
     );
 }
