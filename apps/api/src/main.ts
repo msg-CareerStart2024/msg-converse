@@ -6,8 +6,8 @@
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
-import { AppModule } from './app/app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { AppModule } from './app/app.module';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
@@ -22,6 +22,7 @@ async function bootstrap() {
         .setTitle('Msg Converse API')
         .setDescription('The API of a Msg Converse')
         .setVersion(version)
+        .addBearerAuth()
         .build();
 
     const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);

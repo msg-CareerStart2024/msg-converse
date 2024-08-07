@@ -20,7 +20,7 @@ export class AuthController {
     @Post('login')
     @ApiOkResponse({ description: 'Login user' })
     @ApiUnauthorizedResponse({ description: 'Incorrect email address or password.' })
-    async login(@Request() req) {
+    async login(@Request() req): Promise<{ user: UserDTO; accessToken: string }> {
         return await this.authService.login(req.user);
     }
 

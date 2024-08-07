@@ -12,7 +12,7 @@ export class AuthService {
         private readonly jwtService: JwtService
     ) {}
 
-    async validateUser(email: string, password: string) {
+    async validateUser(email: string, password: string): Promise<User | null> {
         const user = await this.userService.getByEmail(email);
 
         if (user && (await bcrypt.compare(password, user.password))) {
@@ -23,7 +23,7 @@ export class AuthService {
         return null;
     }
 
-    async login(user: User) {
+    async login(user: User): Promise<{ user: User; accessToken: string }> {
         const payload: JWTPayload = {
             email: user.email,
             sub: user.id,
