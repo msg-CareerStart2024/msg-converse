@@ -1,11 +1,10 @@
 import { CssBaseline, ThemeProvider, useMediaQuery } from '@mui/material';
 import { Link, Route, Routes } from 'react-router-dom';
-import ChannelCard from './features/channels/components/ChannelCard';
-import { CHANNEL } from './features/channels/static';
 import { darkTheme, lightTheme } from './lib/themes';
 import SignInPage from './features/login/pages/SignInPage';
 import SiderbarLayout from './layouts/SidebarLayout';
 import SignUpPage from './features/register/pages/SignUpPage';
+import HomePage from './features/home/pages/HomePage';
 
 export function App() {
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
@@ -15,7 +14,7 @@ export function App() {
 
             <Routes>
                 <Route element={<SiderbarLayout />}>
-                    <Route path="/" element={<ChannelCard channel={CHANNEL} />} />
+                    <Route path="/" element={<HomePage />} />
                     <Route
                         path="/page-2"
                         element={<Link to="/">Click here to go back to root page.</Link>}
