@@ -7,12 +7,12 @@ import { Repository } from 'typeorm';
 export class UserRepository {
     constructor(@InjectRepository(User) private readonly userRepository: Repository<User>) {}
 
-    async getAll(): Promise<User[]> {
-        return this.userRepository.find();
-    }
-
     async getById(id: string): Promise<User | null> {
         return this.userRepository.findOneBy({ id });
+    }
+
+    async getByEmail(email: string): Promise<User | null> {
+        return this.userRepository.findOneBy({ email });
     }
 
     async create(userData: User): Promise<User> {
@@ -22,9 +22,5 @@ export class UserRepository {
     async update(id: string, userData: User): Promise<User> {
         userData.id = id;
         return this.userRepository.save(userData);
-    }
-
-    async remove(id: string): Promise<void> {
-        this.userRepository.delete(id);
     }
 }

@@ -10,12 +10,6 @@ import {
 } from '@nestjs/class-validator';
 
 export class CreateUserDTO {
-    @ApiProperty({ description: 'The username of the user' })
-    @IsNotEmpty()
-    @IsString()
-    @MinLength(2)
-    username: string;
-
     @ApiProperty({ description: 'The email of the user' })
     @IsNotEmpty()
     @IsEmail()
