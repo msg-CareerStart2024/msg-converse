@@ -5,9 +5,6 @@ export class UserDTO {
     @ApiProperty({ description: 'The id of the user' })
     id: string;
 
-    @ApiProperty({ description: 'The username of the user' })
-    username: string;
-
     @ApiProperty({ description: 'The email of the user' })
     email: string;
 
@@ -20,16 +17,8 @@ export class UserDTO {
     @ApiProperty({ description: 'The role of the user' })
     role: Role;
 
-    constructor(
-        id: string,
-        username: string,
-        email: string,
-        firstName: string,
-        lastName: string,
-        role: Role
-    ) {
+    constructor(id: string, email: string, firstName: string, lastName: string, role: Role) {
         this.id = id;
-        this.username = username;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;

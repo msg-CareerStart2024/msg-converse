@@ -7,9 +7,6 @@ export class User {
     id: string;
 
     @Column({ unique: true, nullable: false })
-    username: string;
-
-    @Column({ unique: true, nullable: false })
     email: string;
 
     @Column({ name: 'first_name', nullable: false })
@@ -24,15 +21,7 @@ export class User {
     @Column({ default: Role.USER })
     role: Role;
 
-    constructor(
-        username: string,
-        email: string,
-        firstName: string,
-        lastName: string,
-        password: string,
-        role: Role
-    ) {
-        this.username = username;
+    constructor(email: string, firstName: string, lastName: string, password: string, role: Role) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;

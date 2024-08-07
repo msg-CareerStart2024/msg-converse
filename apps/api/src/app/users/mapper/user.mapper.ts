@@ -5,19 +5,11 @@ import { UpdateUserDTO } from '../dto/update-user.dto';
 
 export class UserMapper {
     static toDTO(user: User): UserDTO {
-        return new UserDTO(
-            user.id,
-            user.username,
-            user.email,
-            user.firstName,
-            user.lastName,
-            user.role
-        );
+        return new UserDTO(user.id, user.email, user.firstName, user.lastName, user.role);
     }
 
     static createDTOToEntity(creteUserDTO: CreateUserDTO): User {
         return new User(
-            creteUserDTO.username,
             creteUserDTO.email,
             creteUserDTO.firstName,
             creteUserDTO.lastName,
@@ -28,7 +20,6 @@ export class UserMapper {
 
     static updateDTOToEntity(updateUserDTO: UpdateUserDTO): User {
         return new User(
-            updateUserDTO.username,
             updateUserDTO.email,
             updateUserDTO.firstName,
             updateUserDTO.lastName,
