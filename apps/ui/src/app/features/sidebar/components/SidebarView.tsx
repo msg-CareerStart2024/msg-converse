@@ -13,7 +13,7 @@ import {
     Typography
 } from '@mui/material';
 import MsgLogo from '../../../../assets/msg_logo.png';
-import styles from '../styles/SidebarView.module.css';
+import styles from '../styles/Sidebar.module.scss';
 import SidebarItem from './SidebarItem';
 import { ChevronLeft, Logout } from '@mui/icons-material';
 import { USER } from '../../channels/static';
@@ -21,7 +21,7 @@ import { Channel } from '../../../types/channels/Channel';
 
 type SidebarViewProps = {
     open: boolean;
-    anchorEl: HTMLElement | null;
+    anchorElelement: HTMLElement | null;
     handleClick: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
     handleClose: () => void;
     channels: Channel[];
@@ -31,7 +31,7 @@ type SidebarViewProps = {
 
 export default function SidebarView({
     open,
-    anchorEl,
+    anchorElelement,
     handleClick,
     handleClose,
     channels,
@@ -76,7 +76,7 @@ export default function SidebarView({
                 </ListItem>
                 <Menu
                     id="basic-menu"
-                    anchorEl={anchorEl}
+                    anchorEl={anchorElelement}
                     open={open}
                     onClose={handleClose}
                     MenuListProps={{

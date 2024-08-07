@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom';
 import SidebarContainer from '../features/sidebar/containers/SidebarContainer';
 import { useState } from 'react';
 import { ChevronRight } from '@mui/icons-material';
-import styles from '../features/sidebar/styles/SidebarView.module.css';
+import styles from '../features/sidebar/styles/Sidebar.module.scss';
 
 export default function ProtectedLayout() {
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);

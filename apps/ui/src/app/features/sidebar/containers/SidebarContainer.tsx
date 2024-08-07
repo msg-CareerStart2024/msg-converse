@@ -9,20 +9,20 @@ type SidebarContainerProps = {
 };
 
 export default function SidebarContainer({ toggleSidebar, sidebarOpen }: SidebarContainerProps) {
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const open = Boolean(anchorEl);
+    const [anchorElelement, setAnchorElelement] = useState<null | HTMLElement>(null);
+    const open = Boolean(anchorElelement);
     const handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        setAnchorEl(event.currentTarget);
+        setAnchorElelement(event.currentTarget);
     };
     const handleClose = () => {
-        setAnchorEl(null);
+        setAnchorElelement(null);
     };
     const channels = useSelector((state: RootState) => state.channels);
 
     return (
         <SidebarView
             open={open}
-            anchorEl={anchorEl}
+            anchorElelement={anchorElelement}
             handleClick={handleClick}
             handleClose={handleClose}
             channels={channels}
