@@ -1,5 +1,6 @@
 import {
     Avatar,
+    Box,
     Divider,
     Drawer,
     IconButton,
@@ -10,10 +11,10 @@ import {
     ListItemText,
     Menu,
     MenuItem,
+    Stack,
     Typography
 } from '@mui/material';
 import MsgLogo from '../../../../assets/msg_logo.png';
-import styles from '../styles/Sidebar.module.scss';
 import SidebarItem from './SidebarItem';
 import { ChevronLeft, Logout } from '@mui/icons-material';
 import { USER } from '../../channels/static';
@@ -43,14 +44,31 @@ export default function SidebarView({
             variant="persistent"
             anchor="left"
             open={true}
-            className={styles.drawer}
-            classes={{ paper: styles.drawerPaper }}
+            sx={{
+                width: '16.666667%',
+                textAlign: 'center',
+                '& .MuiDrawer-paper': {
+                    width: '16.666667%',
+                    boxSizing: 'border-box',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between'
+                }
+            }}
         >
-            <div className={styles.scrollableUpperPart}>
-                <div className={styles.sidebarImageContainer}>
-                    <img className={styles.sidebarImage} src={MsgLogo} alt={'msg logo'} />
-                </div>
-                <Typography variant="h6" className={styles.sidebarTitle}>
+            <Box sx={{ flex: 1, overflowY: 'auto' }}>
+                <Stack alignItems="center" sx={{ my: 3 }}>
+                    <Box
+                        component="img"
+                        sx={{
+                            maxWidth: '50%',
+                            marginBottom: 1
+                        }}
+                        src={MsgLogo}
+                        alt="msg logo"
+                    />
+                </Stack>
+                <Typography variant="h6" sx={{ marginBottom: 2 }}>
                     My Channels
                 </Typography>
                 <List>
@@ -58,10 +76,10 @@ export default function SidebarView({
                         <SidebarItem key={channel.id} name={channel.name} />
                     ))}
                 </List>
-            </div>
+            </Box>
             <div>
                 <Divider />
-                <ListItem disablePadding className={styles.userListItem}>
+                <ListItem disablePadding sx={{ marginY: 1 }}>
                     <ListItemButton
                         aria-controls={open ? 'basic-menu' : undefined}
                         aria-haspopup="true"
@@ -103,7 +121,12 @@ export default function SidebarView({
                 color="inherit"
                 aria-label="close drawer"
                 onClick={toggleSidebar}
-                className={styles.closeButton}
+                sx={{
+                    position: 'absolute !important',
+                    top: '50%',
+                    right: '0px',
+                    transform: 'translateY(-50%)'
+                }}
             >
                 <ChevronLeft />
             </IconButton>

@@ -3,7 +3,6 @@ import { Outlet } from 'react-router-dom';
 import SidebarContainer from '../features/sidebar/containers/SidebarContainer';
 import { useState } from 'react';
 import { ChevronRight } from '@mui/icons-material';
-import styles from '../features/sidebar/styles/Sidebar.module.scss';
 
 export default function ProtectedLayout() {
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
@@ -30,7 +29,12 @@ export default function ProtectedLayout() {
                         aria-label="open drawer"
                         onClick={toggleSidebar}
                         edge="start"
-                        className={styles.openButton}
+                        sx={{
+                            position: 'absolute !important',
+                            top: '50%',
+                            left: '12px',
+                            transform: 'translateY(-50%)'
+                        }}
                     >
                         <ChevronRight />
                     </IconButton>
