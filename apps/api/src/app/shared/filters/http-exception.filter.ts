@@ -2,10 +2,12 @@ import {
     ArgumentsHost,
     Catch,
     ExceptionFilter,
+    ForbiddenException,
     HttpException,
     HttpStatus,
     Injectable,
-    Logger
+    Logger,
+    UnauthorizedException
 } from '@nestjs/common';
 import { EntityNotFoundError, QueryFailedError } from 'typeorm';
 import { Request, Response } from 'express';
@@ -56,6 +58,21 @@ export class HttpExceptionFilter implements ExceptionFilter {
                 errorResponse: this.handleEntityNotFoundError(exception, request)
             };
         }
+
+        if (exception instanceof ForbiddenException) {
+            return {
+                status: HttpStatus.FORBIDDEN,
+                errorResponse: this.handleForbiddenException(exception, request)
+            };
+        }
+
+        if (exception instanceof UnauthorizedException) {
+            return {
+                status: HttpStatus.UNAUTHORIZED,
+                errorResponse: this.handleUnauthorizedException(exception, request)
+            };
+        }
+
         return {
             status: HttpStatus.INTERNAL_SERVER_ERROR,
             errorResponse: this.handleUnknownError(exception, request)
@@ -119,6 +136,28 @@ export class HttpExceptionFilter implements ExceptionFilter {
             path: request.url,
             message: ErrorMessage.ENTITY_NOT_FOUND,
             errorType: ErrorType.ENTITY_NOT_FOUND,
+            details: { errorMessage: exception.message }
+        };
+    }
+
+    private handleForbiddenException(exception: ForbiddenException, request: Request): ErrorResponse {
+        return {
+            statusCode: HttpStatus.FORBIDDEN,
+            timestamp: new Date().toISOString(),
+            path: request.url,
+            message: ErrorMessage.FORBIDDEN,
+            errorType: ErrorType.FORBIDDEN,
+            details: { errorMessage: exception.message }
+        };
+    }
+
+    private handleUnauthorizedException(exception: UnauthorizedException, request: Request): ErrorResponse {
+        return {
+            statusCode: HttpStatus.UNAUTHORIZED,
+            timestamp: new Date().toISOString(),
+            path: request.url,
+            message: ErrorMessage.UNAUTHORIZED,
+            errorType: ErrorType.UNAUTHORIZED,
             details: { errorMessage: exception.message }
         };
     }
