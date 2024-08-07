@@ -14,21 +14,24 @@ import {
 import MsgLogo from '../../../../assets/msg_logo.png';
 import styles from '../styles/SidebarView.module.css';
 import SidebarItem from './SidebarItem';
-import { MY_CHANNELS, USER } from '../TEMPORARY';
 import { Logout } from '@mui/icons-material';
+import { USER } from '../../channels/static';
+import { Channel } from '../../../types/channels/Channel';
 
 type SidebarViewProps = {
     open: boolean;
     anchorEl: HTMLElement | null;
     handleClick: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
     handleClose: () => void;
+    channels: Channel[];
 };
 
 export default function SidebarView({
     open,
     anchorEl,
     handleClick,
-    handleClose
+    handleClose,
+    channels
 }: SidebarViewProps) {
     return (
         <Drawer
@@ -55,8 +58,8 @@ export default function SidebarView({
                     My Channels
                 </Typography>
                 <List>
-                    {MY_CHANNELS.map(channel => (
-                        <SidebarItem key={channel} name={channel} />
+                    {channels.map(channel => (
+                        <SidebarItem key={channel.id} name={channel.name} />
                     ))}
                 </List>
             </div>

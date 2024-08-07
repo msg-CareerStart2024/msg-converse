@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import SidebarView from '../components/SidebarView';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../store/store';
 
 export default function SidebarContainer() {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -10,6 +12,7 @@ export default function SidebarContainer() {
     const handleClose = () => {
         setAnchorEl(null);
     };
+    const channels = useSelector((state: RootState) => state.channels);
 
     return (
         <SidebarView
@@ -17,6 +20,7 @@ export default function SidebarContainer() {
             anchorEl={anchorEl}
             handleClick={handleClick}
             handleClose={handleClose}
+            channels={channels}
         />
     );
 }
