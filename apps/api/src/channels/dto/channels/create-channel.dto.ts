@@ -1,6 +1,7 @@
 import { ArrayMaxSize, ArrayMinSize, IsArray, IsOptional, IsString } from 'class-validator';
 
 import { ApiProperty } from '@nestjs/swagger';
+import { CreateTopicDto } from '../topics/create-topic.dto';
 
 export class CreateChannelDto {
     @ApiProperty({ example: 'general', description: 'The name of the channel' })
@@ -22,5 +23,5 @@ export class CreateChannelDto {
     @IsArray()
     @ArrayMinSize(1, { message: 'At least one topic must be provided' })
     @ArrayMaxSize(5, { message: 'No more than 5 topics can be associated with a channel' })
-    topicNames?: string[];
+    topics?: CreateTopicDto[];
 }
