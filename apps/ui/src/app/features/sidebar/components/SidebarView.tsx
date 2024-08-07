@@ -68,7 +68,7 @@ export default function SidebarView({
                         alt="msg logo"
                     />
                 </Stack>
-                <Typography variant="h6" sx={{ marginBottom: 2 }}>
+                <Typography variant="h5" sx={{ marginBottom: 2 }}>
                     My Channels
                 </Typography>
                 <List>
@@ -76,6 +76,9 @@ export default function SidebarView({
                         <SidebarItem key={channel.id} name={channel.name} />
                     ))}
                 </List>
+                {channels.length === 0 && (
+                    <Typography variant="h6">You haven't joined any channels yet!</Typography>
+                )}
             </Box>
             <div>
                 <Divider />

@@ -20,18 +20,19 @@ export default function HomeView({ channels }: HomeViewProps) {
                 </Button>
             </Box>
 
-            {/* <Box display="flex" justifyContent="space-evenly" flexWrap="wrap">
-                {channels.map(channel => (
-                    <ChannelCard key={channel.id} channel={channel} />
-                ))}
-            </Box> */}
-            <Grid container spacing={2}>
+            <Grid container spacing={3} alignItems="stretch">
                 {channels.map(channel => (
                     <Grid item key={channel.id} xs={4}>
                         <ChannelCard channel={channel} />
                     </Grid>
                 ))}
             </Grid>
+
+            {channels.length === 0 && (
+                <Typography variant="h5" sx={{ marginY: 5 }}>
+                    There are no channels!
+                </Typography>
+            )}
         </Container>
     );
 }
