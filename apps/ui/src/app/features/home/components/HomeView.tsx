@@ -1,4 +1,4 @@
-import { Box, Button, Container, TextField, Typography } from '@mui/material';
+import { Box, Button, Container, Grid, TextField, Typography } from '@mui/material';
 import ChannelCard from '../../channels/components/ChannelCard';
 import { Channel } from '../../../types/channels/Channel';
 
@@ -20,11 +20,18 @@ export default function HomeView({ channels }: HomeViewProps) {
                 </Button>
             </Box>
 
-            <Box display="flex" justifyContent="space-evenly" flexWrap="wrap">
+            {/* <Box display="flex" justifyContent="space-evenly" flexWrap="wrap">
                 {channels.map(channel => (
                     <ChannelCard key={channel.id} channel={channel} />
                 ))}
-            </Box>
+            </Box> */}
+            <Grid container spacing={2}>
+                {channels.map(channel => (
+                    <Grid item key={channel.id} xs={4}>
+                        <ChannelCard channel={channel} />
+                    </Grid>
+                ))}
+            </Grid>
         </Container>
     );
 }

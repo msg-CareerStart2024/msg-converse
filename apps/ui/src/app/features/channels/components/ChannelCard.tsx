@@ -25,10 +25,9 @@ const ChannelCard = ({ channel }: ChannelCardProps) => {
             sx={{
                 boxShadow: theme =>
                     theme.palette.mode === 'light' ? theme.customShadows.light : 'none',
-                width: '30%',
+                width: '100%',
                 bgcolor: 'background.paper',
-                color: 'text.primary',
-                marginBottom: 3
+                color: 'text.primary'
             }}
         >
             <CardContent>
