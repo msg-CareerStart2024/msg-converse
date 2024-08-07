@@ -10,9 +10,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     }
 
     async validate(username: string, password: string) {
-        console.log('EMAIL AND PASSWORD', username, password);
         const user = await this.authService.validateUser(username, password);
-        console.log('USER FROM LOCAL STRATEGY', user);
         if (!user) throw new UnauthorizedException('Invalid user credentials');
 
         return user;

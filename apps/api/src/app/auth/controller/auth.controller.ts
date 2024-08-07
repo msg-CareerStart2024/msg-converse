@@ -1,4 +1,5 @@
 import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
+import { ApiNotFoundResponse, ApiOkResponse, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { CreateUserDTO } from '../../users/dto/create-user.dto';
 import { UserDTO } from '../../users/dto/user.dto';
 import { UserMapper } from '../../users/mapper/user.mapper';
@@ -17,16 +18,17 @@ export class AuthController {
     @Public()
     @UseGuards(LocalAuthGuard)
     @Post('login')
-    // @ApiOkResponse({
-    //     description: 'New user successfully created'
-    // })
-    // @ApiNotFoundResponse({ description: 'User not found' })
+    @ApiOkResponse({ description: 'Login user' })
+    @ApiUnauthorizedResponse({ description: 'Incorrect email address or password.' })
     async login(@Request() req) {
-        console.log(req.user);
         return await this.authService.login(req.user);
     }
 
     @Public()
+    @ApiOkResponse({
+        description: 'New user successfully created'
+    })
+    @ApiNotFoundResponse({ description: 'User not found' })
     @Post('register')
     async register(@Body() createUserDto: CreateUserDTO): Promise<UserDTO> {
         const user = UserMapper.createDtoToEntity(createUserDto);
