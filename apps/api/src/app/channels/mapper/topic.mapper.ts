@@ -4,12 +4,10 @@ import { TopicDto } from '../dto/topics/topic.dto';
 
 export class TopicMapper {
     static toDto(entity: Topic): TopicDto {
-        const { id, name } = entity;
-        return { id, name };
+        return { id: entity.id, name: entity.name };
     }
 
-    static fromCreateDto(createTopicDto: CreateTopicDto): Omit<Topic, 'id' | 'channels'> {
-        const { name } = createTopicDto;
-        return { name };
+    static fromCreateDto(dto: CreateTopicDto): Topic {
+        return { name: dto.name, id: undefined, channels: undefined };
     }
 }

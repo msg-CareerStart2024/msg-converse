@@ -17,8 +17,8 @@ export class ChannelService {
         return await this.channelRepository.findAll();
     }
 
-    async getById(id: string): Promise<Channel> {
-        return await this.channelRepository.findOneById(id);
+    async getById(channelId: string): Promise<Channel> {
+        return await this.channelRepository.findOneById(channelId);
     }
 
     async create(newChannelData: Omit<Channel, 'id' | 'createdAt'>): Promise<Channel> {
@@ -35,22 +35,15 @@ export class ChannelService {
         });
     }
 
-    private createChannelEntity(createChannelDto: Omit<Channel, 'id' | 'createdAt'>): Channel {
-        const newChannel = new Channel();
-        newChannel.name = createChannelDto.name;
-        newChannel.description = createChannelDto.description;
-        return newChannel;
-    }
-
-    async update(id: string, updateChannelData: Partial<Channel>): Promise<Channel> {
+    async update(channelId: string, updateChannelData: Partial<Channel>): Promise<Channel> {
         return this.entityManager.transaction(async transactionalEntityManager => {
-            const existingChannel = await this.channelRepository.findOneById(id);
+            const existingChannel = await this.channelRepository.findOneById(channelId);
 
             if (updateChannelData.name) {
                 existingChannel.name = updateChannelData.name;
             }
 
-            if (updateChannelData.description !== undefined) {
+            if (updateChannelData.description) {
                 existingChannel.description = updateChannelData.description;
             }
 
@@ -67,7 +60,14 @@ export class ChannelService {
         });
     }
 
-    async delete(id: string, manager?: EntityManager): Promise<void> {
-        await this.channelRepository.deleteById(id, manager);
+    async delete(channelId: string, manager?: EntityManager): Promise<void> {
+        await this.channelRepository.deleteById(channelId, manager);
+    }
+
+    private createChannelEntity(newChannelData: Omit<Channel, 'id' | 'createdAt'>): Channel {
+        const newChannel = new Channel();
+        newChannel.name = newChannelData.name;
+        newChannel.description = newChannelData.description;
+        return newChannel;
     }
 }

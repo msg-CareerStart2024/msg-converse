@@ -140,7 +140,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
         };
     }
 
-    private handleForbiddenException(exception: ForbiddenException, request: Request): ErrorResponse {
+    private handleForbiddenException(
+        exception: ForbiddenException,
+        request: Request
+    ): ErrorResponse {
         return {
             statusCode: HttpStatus.FORBIDDEN,
             timestamp: new Date().toISOString(),
@@ -151,7 +154,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
         };
     }
 
-    private handleUnauthorizedException(exception: UnauthorizedException, request: Request): ErrorResponse {
+    private handleUnauthorizedException(
+        exception: UnauthorizedException,
+        request: Request
+    ): ErrorResponse {
         return {
             statusCode: HttpStatus.UNAUTHORIZED,
             timestamp: new Date().toISOString(),

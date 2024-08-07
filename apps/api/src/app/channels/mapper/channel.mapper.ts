@@ -1,7 +1,6 @@
 import { Channel } from '../domain/channel.entity';
 import { ChannelDto } from '../dto/channels/channel.dto';
 import { CreateChannelDto } from '../dto/channels/create-channel.dto';
-import { Topic } from '../domain/topic.entity';
 import { TopicMapper } from './topic.mapper';
 import { UpdateChannelDto } from '../dto/channels/update-channel.dto';
 
@@ -18,31 +17,20 @@ export class ChannelMapper {
     }
 
     static fromCreateDto(dto: CreateChannelDto): Omit<Channel, 'id' | 'createdAt'> {
-        const { name, description, topics } = dto;
         return {
-            name,
-            description,
-            topics: topics.map(topicDto => {
-                const topic = new Topic();
-                Object.assign(topic, TopicMapper.fromCreateDto(topicDto));
-                return topic;
-            })
+            name: dto.name,
+            description: dto.description,
+            topics: dto.topics.map(topicDto => TopicMapper.fromCreateDto(topicDto))
         };
     }
 
-    static fromUpdateDto(dto: UpdateChannelDto): Partial<Omit<Channel, 'id' | 'createdAt'>> {
-        const { name, description, topics } = dto;
-
+    static fromUpdateDto(dto: UpdateChannelDto): Partial<Channel> {
         return {
-            ...(name !== undefined && { name }),
-            ...(description !== undefined && { description }),
-            ...(topics && {
-                topics: topics.map(topicDto => {
-                    const topic = new Topic();
-                    Object.assign(topic, TopicMapper.fromCreateDto(topicDto));
-                    return topic;
-                })
-            })
+            name: dto.name,
+            description: dto.description,
+            topics: dto.topics
+                ? dto.topics.map(topicDto => TopicMapper.fromCreateDto(topicDto))
+                : undefined
         };
     }
 }
