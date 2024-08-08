@@ -21,7 +21,7 @@ export const authApi = createApi({
                 method: 'POST',
                 body: credentials
             }),
-            invalidatesTags: ['Auth'],
+            invalidatesTags: [API_CACHE_TAGS.AUTH],
             async onQueryStarted(arg, { dispatch, queryFulfilled }) {
                 try {
                     const { data } = await queryFulfilled;
