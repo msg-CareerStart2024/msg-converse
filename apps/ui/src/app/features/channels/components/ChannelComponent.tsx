@@ -10,41 +10,21 @@ import {
     ListItemText,
     Paper,
     TextField,
-    Typography
+    Typography,
+    useTheme
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
-import { ChangeEvent, useState } from 'react';
-import { Fragment } from 'react/jsx-runtime';
-
-const messages = [
-    {
-        id: 1,
-        text: 'Hello there',
-        avatar: 'M',
-        userColor: 'orange',
-        userId: 1
-    },
-    {
-        id: 2,
-        text: 'The fallen leaves tell a story. Of how a Tarnished became Elden Lord',
-        avatar: 'K',
-        userColor: 'green',
-        userId: 2
-    },
-    {
-        id: 3,
-        text: 'One unbreakable shield against the coming darkness, One last blade, forged in defiance of fate. Let them be my legacy to the galaxy I conquered, And my final gift to a species I failed',
-        avatar: 'M',
-        userColor: 'orange',
-        userId: 1
-    }
-];
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { getColor } from '../../../lib/avatar-colors';
+import { Message } from '../../../types/messages/Message';
 
 const currentUserId = 1;
 
 export default function ChannelComponent() {
-    const [chatMessages, setChatMessages] = useState(messages);
-    const [message, setMessage] = useState('');
+    const [chatMessages, setChatMessages] = useState<Message[]>([]);
+    const [message, setMessage] = useState<string>('');
+    const messagesEndRef = useRef<HTMLDivElement>(null);
+    const theme = useTheme();
 
     const handleMessageChange = (event: ChangeEvent<HTMLInputElement>) => {
         setMessage(event.target.value);
@@ -56,7 +36,6 @@ export default function ChannelComponent() {
                 id: chatMessages.length + 1,
                 text: message,
                 avatar: 'M',
-                userColor: 'orange',
                 userId: currentUserId
             };
             setChatMessages([...chatMessages, newMessage]);
@@ -64,98 +43,120 @@ export default function ChannelComponent() {
         }
     };
 
+    const scrollToBottom = () => {
+        if (messagesEndRef.current) {
+            messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [chatMessages]);
+
     return (
-        <Fragment>
+        <Container>
             <Typography variant="h3" marginBottom={3}>
                 Msg Converse
             </Typography>
-            <Typography variant="h6">Msg Romania Channel</Typography>
-            <Container>
-                <Paper elevation={5}>
-                    <Box padding={3}>
-                        <Grid container spacing={4} alignItems="center">
-                            <Grid item xs={12}>
-                                <List sx={{ maxHeight: '500px', overflow: 'auto' }}>
-                                    {chatMessages.map(chatMessage => (
-                                        <ListItem
-                                            key={chatMessage.id}
-                                            sx={{
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                padding: 2,
-                                                justifyContent:
-                                                    chatMessage.userId === currentUserId
-                                                        ? 'flex-end'
-                                                        : 'flex-start'
-                                            }}
-                                        >
-                                            {chatMessage.userId !== currentUserId ? (
-                                                <>
-                                                    <Avatar
-                                                        variant="circular"
-                                                        sx={{
-                                                            marginInline: 2,
-                                                            backgroundColor: chatMessage.userColor
-                                                        }}
-                                                    >
-                                                        {chatMessage.avatar}
-                                                    </Avatar>
+            <Typography variant="h6" marginBottom={5}>
+                Msg Romania Channel
+            </Typography>
+            <Paper>
+                <Box padding={3}>
+                    <Grid container spacing={4} alignItems="center">
+                        <Grid item xs={12}>
+                            <List sx={{ height: '65dvh', overflow: 'auto' }}>
+                                {chatMessages.map(chatMessage => (
+                                    <ListItem
+                                        key={chatMessage.id}
+                                        sx={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            padding: 1,
+                                            justifyContent:
+                                                chatMessage.userId === currentUserId
+                                                    ? 'flex-end'
+                                                    : 'flex-start'
+                                        }}
+                                    >
+                                        {chatMessage.userId !== currentUserId ? (
+                                            <>
+                                                <Avatar
+                                                    variant="circular"
+                                                    sx={{
+                                                        marginInline: 2,
+                                                        backgroundColor: getColor(
+                                                            chatMessage.avatar
+                                                        )
+                                                    }}
+                                                >
+                                                    {chatMessage.avatar}
+                                                </Avatar>
+                                                <Box sx={{ width: 'fit-content', maxWidth: '75%' }}>
                                                     <ListItemText
                                                         primary={chatMessage.text}
                                                         sx={{
-                                                            textAlign:
-                                                                chatMessage.userId === currentUserId
-                                                                    ? 'right'
-                                                                    : 'left',
-                                                            maxWidth: '75%'
+                                                            backgroundColor:
+                                                                theme.palette.primary.main,
+                                                            borderRadius: '20px',
+                                                            padding: 1,
+                                                            paddingX: 2
                                                         }}
                                                     />
-                                                </>
-                                            ) : (
-                                                <>
+                                                </Box>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Box sx={{ width: 'fit-content', maxWidth: '75%' }}>
                                                     <ListItemText
                                                         primary={chatMessage.text}
                                                         sx={{
-                                                            textAlign:
-                                                                chatMessage.userId === currentUserId
-                                                                    ? 'right'
-                                                                    : 'left',
-                                                            maxWidth: '75%'
+                                                            textAlign: 'left',
+                                                            backgroundColor:
+                                                                theme.palette.secondary.main,
+                                                            borderRadius: '20px',
+                                                            padding: 1,
+                                                            paddingX: 2
                                                         }}
+                                                        color="primary"
                                                     />
-                                                    <Avatar
-                                                        variant="circular"
-                                                        sx={{
-                                                            marginInline: 2,
-                                                            backgroundColor: chatMessage.userColor
-                                                        }}
-                                                    >
-                                                        {chatMessage.avatar}
-                                                    </Avatar>
-                                                </>
-                                            )}
-                                        </ListItem>
-                                    ))}
-                                </List>
-                            </Grid>
-                            <Grid item xs={11}>
-                                <FormControl fullWidth>
-                                    <TextField
-                                        label="Type your message"
-                                        variant="outlined"
-                                        onChange={handleMessageChange}
-                                    />
-                                </FormControl>
-                            </Grid>
-                            <Grid item xs={1}>
-                                <IconButton aria-label="send" color="primary" onClick={sendMessage}>
-                                    <SendIcon />
-                                </IconButton>
-                            </Grid>
+                                                </Box>
+                                                <Avatar
+                                                    variant="circular"
+                                                    sx={{
+                                                        marginInline: 2,
+                                                        backgroundColor: getColor(
+                                                            chatMessage.avatar
+                                                        )
+                                                    }}
+                                                >
+                                                    {chatMessage.avatar}
+                                                </Avatar>
+                                            </>
+                                        )}
+                                    </ListItem>
+                                ))}
+                                <div ref={messagesEndRef} />
+                            </List>
                         </Grid>
-                    </Box>
-                </Paper>
-            </Container>
-        </Fragment>
+                        <Grid item xs={11}>
+                            <FormControl fullWidth>
+                                <TextField
+                                    label="Type your message"
+                                    variant="outlined"
+                                    value={message}
+                                    onChange={handleMessageChange}
+                                />
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={1}>
+                            <IconButton aria-label="send" color="primary" onClick={sendMessage}>
+                                <SendIcon />
+                            </IconButton>
+                        </Grid>
+                    </Grid>
+                </Box>
+            </Paper>
+        </Container>
     );
 }
