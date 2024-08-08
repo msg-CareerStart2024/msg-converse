@@ -10,11 +10,11 @@ export class TopicRepository {
         private readonly repository: Repository<Topic>
     ) {}
 
-    async findOneById(id: string): Promise<Topic> {
+    async getById(id: string): Promise<Topic> {
         return this.repository.findOneBy({ id });
     }
 
-    async findAll(): Promise<Topic[]> {
+    async getAll(): Promise<Topic[]> {
         return this.repository.find();
     }
 
@@ -24,17 +24,15 @@ export class TopicRepository {
 
     async save(topic: Topic, manager?: EntityManager): Promise<Topic> {
         if (manager) {
-            return manager.save(topic);
-        } else {
-            return this.repository.save(topic);
+            return manager.save(Topic, topic);
         }
+        return this.repository.save(topic);
     }
 
     async deleteById(id: string, manager?: EntityManager): Promise<void> {
         if (manager) {
             await manager.delete(Topic, id);
-        } else {
-            await this.repository.delete(id);
         }
+        await this.repository.delete(id);
     }
 }

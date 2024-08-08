@@ -1,8 +1,13 @@
-import { Module } from '@nestjs/common';
-import { HealthModule } from './health/health.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+
+import { APP_FILTER } from '@nestjs/core';
 import { AppConfigPaths } from './shared/config/app.config';
+import { AuthModule } from './auth/auth.module';
+import { ChannelsModule } from './channels/channels.module';
+import { HealthModule } from './health/health.module';
+import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
 import Joi from 'joi';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './users/user.module';
 
@@ -10,6 +15,7 @@ import { UserModule } from './users/user.module';
     imports: [
         ConfigModule.forRoot({
             isGlobal: true,
+            envFilePath: `.env`,
             validationSchema: Joi.object({
                 [AppConfigPaths.database.host]: Joi.string().required(),
                 [AppConfigPaths.database.port]: Joi.string().required(),
@@ -27,15 +33,22 @@ import { UserModule } from './users/user.module';
                 username: configService.get(AppConfigPaths.database.username),
                 password: configService.get(AppConfigPaths.database.password),
                 database: configService.get(AppConfigPaths.database.database),
-                entities: [],
+                autoLoadEntities: true,
                 synchronize: true
             }),
             inject: [ConfigService]
         }),
+        ChannelsModule,
         HealthModule,
-        UserModule
+        UserModule,
+        AuthModule
     ],
     controllers: [],
-    providers: []
+    providers: [
+        {
+            provide: APP_FILTER,
+            useClass: HttpExceptionFilter
+        }
+    ]
 })
 export class AppModule {}
