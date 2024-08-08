@@ -1,4 +1,4 @@
-import { ErrorDetails } from "./error-details.interface";
+import { ErrorDetails } from './error-details.interface';
 
 export interface ErrorResponse {
     statusCode: number;
@@ -8,5 +8,3 @@ export interface ErrorResponse {
     errorType: string;
     details?: ErrorDetails;
 }
-
-
