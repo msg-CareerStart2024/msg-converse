@@ -13,7 +13,7 @@ export const channelsApi = createApi({
             providesTags: ['Channels']
         }),
         searchChannels: builder.query<void, string>({
-            query: keyword => `${API_URLS.CHANNELS}/?s=${encodeURIComponent(keyword)}`,
+            query: keyword => `${API_URLS.CHANNELS}/?searchKey=${encodeURIComponent(keyword)}`,
             providesTags: ['Channels']
         })
     })
