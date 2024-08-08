@@ -19,6 +19,7 @@ import SidebarItem from './SidebarItem';
 import { ChevronLeft, Logout } from '@mui/icons-material';
 import { USER } from '../../channels/static';
 import { Channel } from '../../../types/channels/Channel';
+import { Link } from 'react-router-dom';
 
 type SidebarViewProps = {
     menuOpen: boolean;
@@ -58,22 +59,24 @@ export default function SidebarView({
         >
             <Box sx={{ flex: 1, overflowY: 'auto' }}>
                 <Stack alignItems="center" sx={{ my: 3 }}>
-                    <Box
-                        component="img"
-                        sx={{
-                            maxWidth: '50%',
-                            marginBottom: 1
-                        }}
-                        src={MsgLogo}
-                        alt="msg logo"
-                    />
+                    <Link to={'/'}>
+                        <Box
+                            component="img"
+                            sx={{
+                                maxWidth: '50%',
+                                marginBottom: 1
+                            }}
+                            src={MsgLogo}
+                            alt="msg logo"
+                        />
+                    </Link>
                 </Stack>
                 <Typography variant="h5" sx={{ marginBottom: 2 }}>
                     My Channels
                 </Typography>
                 <List>
                     {channels.map(channel => (
-                        <SidebarItem key={channel.id} name={channel.name} />
+                        <SidebarItem key={channel.id} channel={channel} />
                     ))}
                 </List>
                 {channels.length === 0 && (
