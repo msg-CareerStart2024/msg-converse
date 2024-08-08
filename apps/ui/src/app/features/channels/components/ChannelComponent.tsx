@@ -55,9 +55,6 @@ export default function ChannelComponent() {
 
     return (
         <Container>
-            <Typography variant="h3" marginBottom={3}>
-                Msg Converse
-            </Typography>
             <Typography variant="h6" marginBottom={5}>
                 Msg Romania Channel
             </Typography>
