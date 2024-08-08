@@ -4,7 +4,7 @@ import HomeView from '../components/HomeView';
 import { useGetChannelsQuery } from '../../../api/channelsApi';
 
 export default function HomePage() {
-    useGetChannelsQuery();
+    useGetChannelsQuery('');
     const channels = useSelector((state: RootState) => state.channels);
 
     return <HomeView channels={channels} />;

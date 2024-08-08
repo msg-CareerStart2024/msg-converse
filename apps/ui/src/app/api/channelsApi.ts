@@ -11,19 +11,7 @@ export const channelsApi = createApi({
         baseUrl: BASE_URL
     }),
     endpoints: builder => ({
-        getChannels: builder.query<Channel[], void>({
-            query: () => API_URLS.CHANNELS,
-            providesTags: [API_CACHE_TAGS.CHANNELS],
-            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
-                try {
-                    const { data } = await queryFulfilled;
-                    dispatch(setChannels(data));
-                } catch (error) {
-                    alert('Getting channels failed');
-                }
-            }
-        }),
-        searchChannels: builder.query<Channel[], string>({
+        getChannels: builder.query<Channel[], string>({
             query: keyword => `${API_URLS.CHANNELS}/?searchKey=${encodeURIComponent(keyword)}`,
             providesTags: [API_CACHE_TAGS.CHANNELS],
             async onQueryStarted(arg, { dispatch, queryFulfilled }) {
@@ -38,5 +26,4 @@ export const channelsApi = createApi({
     })
 });
 
-export const { useLazyGetChannelsQuery, useLazySearchChannelsQuery, useGetChannelsQuery } =
-    channelsApi;
+export const { useLazyGetChannelsQuery, useGetChannelsQuery } = channelsApi;
