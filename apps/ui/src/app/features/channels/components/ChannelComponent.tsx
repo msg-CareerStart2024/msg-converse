@@ -1,5 +1,4 @@
 import {
-    Avatar,
     Box,
     Container,
     FormControl,
@@ -7,18 +6,17 @@ import {
     IconButton,
     List,
     ListItem,
-    ListItemText,
     Paper,
     TextField,
-    Typography,
-    useTheme
+    Typography
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
-import { getColor } from '../../../lib/avatar-colors';
 import { Message } from '../../../types/messages/Message';
+import ReceivedMessageComponent from './ReceivedMesageComponent';
+import SentMessageComponent from './SentMessageComponent';
 
-const currentUserId = '1'; // Assuming '1' is the ID for the current user
+const currentUserId = '1';
 
 export default function ChannelComponent() {
     const [chatMessages, setChatMessages] = useState<Message[]>([
@@ -26,9 +24,8 @@ export default function ChannelComponent() {
             id: '0',
             text: 'Hello! How are you doing today?',
             avatar: 'K',
-            userId: '2' // Different user ID
+            userId: '2'
         },
-        // A mock message from the current user
         {
             id: '1',
             text: "I'm good, thanks for asking! What about you?",
@@ -38,7 +35,6 @@ export default function ChannelComponent() {
     ]);
     const [message, setMessage] = useState<string>('');
     const messagesEndRef = useRef<HTMLDivElement>(null);
-    const theme = useTheme();
 
     const handleMessageChange = (event: ChangeEvent<HTMLInputElement>) => {
         setMessage(event.target.value);
@@ -77,7 +73,7 @@ export default function ChannelComponent() {
                     <Grid container spacing={4} alignItems="center">
                         <Grid item xs={12}>
                             <List sx={{ height: '65vh', overflow: 'auto' }}>
-                                {chatMessages.map(chatMessage => (
+                                {chatMessages.map((chatMessage: Message) => (
                                     <ListItem
                                         key={chatMessage.id}
                                         sx={{
@@ -90,59 +86,16 @@ export default function ChannelComponent() {
                                                     : 'flex-start'
                                         }}
                                     >
-                                        {chatMessage.userId !== currentUserId && (
-                                            <>
-                                                <Avatar
-                                                    variant="circular"
-                                                    sx={{
-                                                        marginInline: 2,
-                                                        backgroundColor: getColor(
-                                                            chatMessage.avatar
-                                                        )
-                                                    }}
-                                                >
-                                                    {chatMessage.avatar}
-                                                </Avatar>
-                                                <Box sx={{ width: 'fit-content', maxWidth: '75%' }}>
-                                                    <ListItemText
-                                                        primary={chatMessage.text}
-                                                        sx={{
-                                                            backgroundColor:
-                                                                theme.palette.primary.main,
-                                                            borderRadius: '20px',
-                                                            padding: 1,
-                                                            paddingX: 2
-                                                        }}
-                                                    />
-                                                </Box>
-                                            </>
-                                        )}
-                                        {chatMessage.userId === currentUserId && (
-                                            <>
-                                                <Box sx={{ width: 'fit-content', maxWidth: '75%' }}>
-                                                    <ListItemText
-                                                        primary={chatMessage.text}
-                                                        sx={{
-                                                            backgroundColor:
-                                                                theme.palette.secondary.main,
-                                                            borderRadius: '20px',
-                                                            padding: 1,
-                                                            paddingX: 2
-                                                        }}
-                                                    />
-                                                </Box>
-                                                <Avatar
-                                                    variant="circular"
-                                                    sx={{
-                                                        marginInline: 2,
-                                                        backgroundColor: getColor(
-                                                            chatMessage.avatar
-                                                        )
-                                                    }}
-                                                >
-                                                    {chatMessage.avatar}
-                                                </Avatar>
-                                            </>
+                                        {chatMessage.userId === currentUserId ? (
+                                            <SentMessageComponent
+                                                message={chatMessage.text}
+                                                avatar={chatMessage.avatar}
+                                            />
+                                        ) : (
+                                            <ReceivedMessageComponent
+                                                message={chatMessage.text}
+                                                avatar={chatMessage.avatar}
+                                            />
                                         )}
                                     </ListItem>
                                 ))}

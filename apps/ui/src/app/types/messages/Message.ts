@@ -4,3 +4,8 @@ export interface Message {
     avatar: string;
     userId: string;
 }
+
+export interface MessageComponentProps {
+    message: string;
+    avatar: string;
+}
