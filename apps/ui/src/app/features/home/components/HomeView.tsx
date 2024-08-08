@@ -10,10 +10,6 @@ type HomeViewProps = {
 export default function HomeView({ channels }: HomeViewProps) {
     return (
         <Container>
-            <Typography variant="h4" component="h1" gutterBottom sx={{ my: 5 }}>
-                Msg. Converse
-            </Typography>
-
             <Box display="flex" justifyContent="space-between" mb={4}>
                 <Box
                     sx={{
