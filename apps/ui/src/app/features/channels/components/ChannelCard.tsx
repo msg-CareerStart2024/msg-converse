@@ -12,9 +12,9 @@ import {
     Stack,
     Typography
 } from '@mui/material';
-import { Channel } from '../../../types/channels/Channel';
 import { formatDate, shrinkToWords } from '../../../utils/utils';
 import { getColor } from '../../../lib/avatar-colors';
+import { Channel } from '../../../types/channel/Channel';
 
 interface ChannelCardProps {
     channel: Channel;
