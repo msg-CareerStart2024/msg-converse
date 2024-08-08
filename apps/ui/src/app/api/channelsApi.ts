@@ -11,8 +11,12 @@ export const channelsApi = createApi({
         getChannels: builder.query<void, void>({
             query: () => API_URLS.CHANNELS,
             providesTags: ['Channels']
+        }),
+        searchChannels: builder.query<void, string>({
+            query: keyword => `${API_URLS.CHANNELS}/?s=${encodeURIComponent(keyword)}`,
+            providesTags: ['Channels']
         })
     })
 });
 
-export const { useGetChannelsQuery } = channelsApi;
+export const { useGetChannelsQuery, useLazySearchChannelsQuery } = channelsApi;
