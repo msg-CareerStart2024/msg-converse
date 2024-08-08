@@ -21,7 +21,7 @@ import { USER } from '../../channels/static';
 import { Channel } from '../../../types/channels/Channel';
 
 type SidebarViewProps = {
-    open: boolean;
+    menuOpen: boolean;
     anchorElelement: HTMLElement | null;
     handleClick: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
     handleClose: () => void;
@@ -31,7 +31,7 @@ type SidebarViewProps = {
 };
 
 export default function SidebarView({
-    open,
+    menuOpen,
     anchorElelement,
     handleClick,
     handleClose,
@@ -43,7 +43,7 @@ export default function SidebarView({
         <Drawer
             variant="persistent"
             anchor="left"
-            open={true}
+            open={sidebarOpen}
             sx={{
                 width: '16.666667%',
                 textAlign: 'center',
@@ -84,9 +84,9 @@ export default function SidebarView({
                 <Divider />
                 <ListItem disablePadding sx={{ marginY: 1 }}>
                     <ListItemButton
-                        aria-controls={open ? 'basic-menu' : undefined}
+                        aria-controls={menuOpen ? 'basic-menu' : undefined}
                         aria-haspopup="true"
-                        aria-expanded={open ? 'true' : undefined}
+                        aria-expanded={menuOpen ? 'true' : undefined}
                         onClick={handleClick}
                     >
                         <ListItemIcon>
@@ -98,7 +98,7 @@ export default function SidebarView({
                 <Menu
                     id="basic-menu"
                     anchorEl={anchorElelement}
-                    open={open}
+                    open={menuOpen}
                     onClose={handleClose}
                     MenuListProps={{
                         'aria-labelledby': 'basic-button'
