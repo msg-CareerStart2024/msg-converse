@@ -2,7 +2,7 @@ import { Avatar, Box, ListItemText, useTheme } from '@mui/material';
 import { MessageComponentProps } from '../../../types/messages/Message';
 import { getColor } from '../../../lib/avatar-colors';
 
-const SentMessageComponent: React.FC<MessageComponentProps> = ({ message, avatar }) => {
+const SentMessageComponent: React.FC<MessageComponentProps> = ({ message, firstNameInitial }) => {
     const theme = useTheme();
     return (
         <>
@@ -22,10 +22,10 @@ const SentMessageComponent: React.FC<MessageComponentProps> = ({ message, avatar
                 variant="circular"
                 sx={{
                     marginInline: 2,
-                    backgroundColor: getColor(avatar)
+                    backgroundColor: getColor(firstNameInitial)
                 }}
             >
-                {avatar}
+                {firstNameInitial}
             </Avatar>
         </>
     );

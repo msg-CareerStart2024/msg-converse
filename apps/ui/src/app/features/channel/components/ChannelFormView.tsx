@@ -8,7 +8,7 @@ function onSubmit() {
 }
 
 const topics = ['Topic 1', 'Topic 2', 'Topic 3'];
-const userInitial = 'M';
+const userInitial = 'L';
 
 export default function ChannelFormView({
     handleSubmit,

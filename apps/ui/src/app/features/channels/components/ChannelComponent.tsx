@@ -23,13 +23,13 @@ export default function ChannelComponent() {
         {
             id: '0',
             text: 'Hello! How are you doing today?',
-            avatar: 'K',
+            firstNameInitial: 'K',
             userId: '2'
         },
         {
             id: '1',
             text: "I'm good, thanks for asking! What about you?",
-            avatar: 'M',
+            firstNameInitial: 'M',
             userId: currentUserId
         }
     ]);
@@ -45,7 +45,7 @@ export default function ChannelComponent() {
             const newMessage = {
                 id: (chatMessages.length + 1).toString(),
                 text: message,
-                avatar: 'M',
+                firstNameInitial: 'M',
                 userId: currentUserId
             };
             setChatMessages([...chatMessages, newMessage]);
@@ -89,12 +89,12 @@ export default function ChannelComponent() {
                                         {chatMessage.userId === currentUserId ? (
                                             <SentMessageComponent
                                                 message={chatMessage.text}
-                                                avatar={chatMessage.avatar}
+                                                firstNameInitial={chatMessage.firstNameInitial}
                                             />
                                         ) : (
                                             <ReceivedMessageComponent
                                                 message={chatMessage.text}
-                                                avatar={chatMessage.avatar}
+                                                firstNameInitial={chatMessage.firstNameInitial}
                                             />
                                         )}
                                     </ListItem>

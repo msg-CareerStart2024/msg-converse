@@ -1,11 +1,11 @@
 export interface Message {
     id: string;
     text: string;
-    avatar: string;
+    firstNameInitial: string;
     userId: string;
 }
 
 export interface MessageComponentProps {
     message: string;
-    avatar: string;
+    firstNameInitial: string;
 }
