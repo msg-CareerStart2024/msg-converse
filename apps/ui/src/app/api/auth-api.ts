@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { API_URLS, BASE_URL } from '../config/api-config';
+import { API_CACHE_TAGS } from '../config/api-tags';
 import { setCredentials } from '../features/login/slices/auth-slice';
 import { AuthState } from '../types/login/AuthState';
 import { User } from '../types/login/User';
@@ -9,7 +10,7 @@ import { SignupFormValues } from '../types/users/signup.types';
 
 export const authApi = createApi({
     reducerPath: 'authApi',
-    tagTypes: ['Auth', 'Users'],
+    tagTypes: [API_CACHE_TAGS.AUTH, API_CACHE_TAGS.USERS],
     baseQuery: fetchBaseQuery({
         baseUrl: BASE_URL + API_URLS.AUTH
     }),
@@ -36,7 +37,7 @@ export const authApi = createApi({
                 method: 'POST',
                 body: { ...data, role: UserRole.USER }
             }),
-            invalidatesTags: ['Users']
+            invalidatesTags: [API_CACHE_TAGS.USERS]
         })
     })
 });

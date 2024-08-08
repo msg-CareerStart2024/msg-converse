@@ -1,5 +1,6 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { ApiNotFoundResponse, ApiOkResponse, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { UserDTO } from '../dto/user.dto';
 import { UserMapper } from '../mapper/user.mapper';
 import { UserService } from '../service/user.service';
 
@@ -11,7 +12,7 @@ export class UsersController {
     @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
     @ApiNotFoundResponse({ description: 'User not found' })
     @Get(':id')
-    async getUser(@Param('id') id: string) {
+    async get(@Param('id') id: string): Promise<UserDTO> {
         const user = await this.userService.getById(id);
         return UserMapper.toDTO(user);
     }

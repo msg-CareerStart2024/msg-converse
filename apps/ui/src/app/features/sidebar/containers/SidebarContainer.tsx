@@ -11,13 +11,17 @@ type SidebarContainerProps = {
 };
 
 export default function SidebarContainer({ toggleSidebar, sidebarOpen }: SidebarContainerProps) {
-    const [anchorElelement, setAnchorElelement] = useState<null | HTMLElement>(null);
+    const [anchorElelement, setAnchorElement] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorElelement);
     const handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        setAnchorElelement(event.currentTarget);
+        setAnchorElement(event.currentTarget);
     };
     const navigate = useNavigate();
     const handleClose = () => {
+        setAnchorElement(null);
+    };
+    const handleLogout = () => {
+        handleClose();
         store.dispatch(clearCredentials());
         navigate('/login');
     };
@@ -29,6 +33,7 @@ export default function SidebarContainer({ toggleSidebar, sidebarOpen }: Sidebar
             anchorElelement={anchorElelement}
             handleClick={handleClick}
             handleClose={handleClose}
+            handleLogout={handleLogout}
             channels={channels}
             toggleSidebar={toggleSidebar}
             sidebarOpen={sidebarOpen}

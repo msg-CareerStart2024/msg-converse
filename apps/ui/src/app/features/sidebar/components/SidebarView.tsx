@@ -26,6 +26,7 @@ type SidebarViewProps = {
     open: boolean;
     anchorElelement: HTMLElement | null;
     handleClick: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+    handleLogout: () => void;
     handleClose: () => void;
     channels: Channel[];
     toggleSidebar: () => void;
@@ -39,7 +40,8 @@ export default function SidebarView({
     handleClose,
     channels,
     toggleSidebar,
-    sidebarOpen
+    sidebarOpen,
+    handleLogout
 }: SidebarViewProps) {
     const user = useSelector((state: RootState) => state.auth.user);
     if (!user) return null;
@@ -116,7 +118,7 @@ export default function SidebarView({
                         horizontal: 'right'
                     }}
                 >
-                    <MenuItem onClick={handleClose}>
+                    <MenuItem onClick={handleLogout}>
                         <ListItemIcon>
                             <Logout />
                         </ListItemIcon>
