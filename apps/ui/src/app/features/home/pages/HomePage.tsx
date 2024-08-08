@@ -4,5 +4,6 @@ import HomeView from '../components/HomeView';
 
 export default function HomePage() {
     const channels = useSelector((state: RootState) => state.channels);
+
     return <HomeView channels={channels} />;
 }

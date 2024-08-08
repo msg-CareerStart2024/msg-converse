@@ -19,4 +19,4 @@ export const channelsApi = createApi({
     })
 });
 
-export const { useGetChannelsQuery, useLazySearchChannelsQuery } = channelsApi;
+export const { useLazyGetChannelsQuery, useLazySearchChannelsQuery } = channelsApi;
