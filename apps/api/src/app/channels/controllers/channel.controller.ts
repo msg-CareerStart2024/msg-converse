@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Delete, Post, Body, Put } from '@nestjs/common';
+import { Controller, Get, Param, Delete, Post, Body, Put, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
 import { ChannelService } from '../services/channel.service';
 import { ChannelDto } from '../dto/channels/channel.dto';
@@ -12,18 +12,10 @@ export class ChannelController {
     constructor(private readonly channelService: ChannelService) {}
 
     @Get()
-    @ApiOperation({
-        summary: 'Get all channels'
-    })
-    @ApiResponse({
-        status: 200,
-        description: 'List of channels retrieved successfully',
-        type: [ChannelDto]
-    })
-    @ApiResponse({ status: 401, description: 'Unauthorized - User not authenticated' })
-    async getAllChannels(): Promise<ChannelDto[]> {
-        const channels = await this.channelService.getAll();
-        return channels.map(channel => ChannelMapper.toDto(channel));
+    @ApiOperation({ summary: 'Search channels by a key' })
+    @ApiResponse({ status: 200, description: 'Successful operation', type: [ChannelDto] })
+    async searchChannels(@Query('searchKey') searchKey: string): Promise<ChannelDto[]> {
+        return await this.channelService.searchChannels(searchKey);
     }
 
     @Get(':channelId')
@@ -32,8 +24,7 @@ export class ChannelController {
     })
     @ApiParam({
         name: 'channelId',
-        description: 'ID of the channel',
-        example: '123e4567-e89b-12d3-a456-426614174000'
+        description: 'ID of the channel'
     })
     @ApiResponse({
         status: 200,
