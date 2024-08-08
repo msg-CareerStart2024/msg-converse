@@ -14,7 +14,7 @@ export class ChannelController {
     @Get()
     @ApiOperation({ summary: 'Search channels by a key' })
     @ApiResponse({ status: 200, description: 'Successful operation', type: [ChannelDto] })
-    async searchChannels(@Query('s') searchKey: string): Promise<ChannelDto[]> {
+    async searchChannels(@Query('searchKey') searchKey: string): Promise<ChannelDto[]> {
         return await this.channelService.searchChannels(searchKey);
     }
 
@@ -24,8 +24,7 @@ export class ChannelController {
     })
     @ApiParam({
         name: 'channelId',
-        description: 'ID of the channel',
-        example: '123e4567-e89b-12d3-a456-426614174000'
+        description: 'ID of the channel'
     })
     @ApiResponse({
         status: 200,

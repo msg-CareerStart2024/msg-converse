@@ -13,7 +13,7 @@ export class ChannelRepository {
     async findOneById(id: string): Promise<Channel> {
         return this.repository.findOne({
             where: { id },
-            relations: ['topics', 'users']
+            relations: ['topics']
         });
     }
 
@@ -37,7 +37,7 @@ export class ChannelRepository {
     }
 
     async findAll(): Promise<Channel[]> {
-        return this.repository.find({ relations: ['topics', 'users'] });
+        return this.repository.find({ relations: ['topics'] });
     }
 
     async findByName(name: string): Promise<Channel> {
