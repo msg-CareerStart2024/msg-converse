@@ -21,7 +21,7 @@ import { USER } from '../../channels/static';
 import { Channel } from '../../../types/channels/Channel';
 
 type SidebarViewProps = {
-    menuOpen: boolean;
+    open: boolean;
     anchorElelement: HTMLElement | null;
     handleClick: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
     handleClose: () => void;
@@ -31,7 +31,7 @@ type SidebarViewProps = {
 };
 
 export default function SidebarView({
-    menuOpen,
+    open,
     anchorElelement,
     handleClick,
     handleClose,
@@ -43,7 +43,7 @@ export default function SidebarView({
         <Drawer
             variant="persistent"
             anchor="left"
-            open={sidebarOpen}
+            open={true}
             sx={{
                 width: '16.666667%',
                 textAlign: 'center',
@@ -68,7 +68,7 @@ export default function SidebarView({
                         alt="msg logo"
                     />
                 </Stack>
-                <Typography variant="h6" sx={{ marginBottom: 2 }}>
+                <Typography variant="h5" sx={{ marginBottom: 2 }}>
                     My Channels
                 </Typography>
                 <List>
@@ -76,14 +76,17 @@ export default function SidebarView({
                         <SidebarItem key={channel.id} name={channel.name} />
                     ))}
                 </List>
+                {channels.length === 0 && (
+                    <Typography variant="h6">You haven't joined any channels yet!</Typography>
+                )}
             </Box>
             <div>
                 <Divider />
                 <ListItem disablePadding sx={{ marginY: 1 }}>
                     <ListItemButton
-                        aria-controls={menuOpen ? 'basic-menu' : undefined}
+                        aria-controls={open ? 'basic-menu' : undefined}
                         aria-haspopup="true"
-                        aria-expanded={menuOpen ? 'true' : undefined}
+                        aria-expanded={open ? 'true' : undefined}
                         onClick={handleClick}
                     >
                         <ListItemIcon>
@@ -95,7 +98,7 @@ export default function SidebarView({
                 <Menu
                     id="basic-menu"
                     anchorEl={anchorElelement}
-                    open={menuOpen}
+                    open={open}
                     onClose={handleClose}
                     MenuListProps={{
                         'aria-labelledby': 'basic-button'

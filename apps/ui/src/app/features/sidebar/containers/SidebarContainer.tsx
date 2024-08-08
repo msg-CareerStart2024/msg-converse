@@ -10,7 +10,7 @@ type SidebarContainerProps = {
 
 export default function SidebarContainer({ toggleSidebar, sidebarOpen }: SidebarContainerProps) {
     const [anchorElelement, setAnchorElelement] = useState<null | HTMLElement>(null);
-    const menuOpen = Boolean(anchorElelement);
+    const open = Boolean(anchorElelement);
     const handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         setAnchorElelement(event.currentTarget);
     };
@@ -21,7 +21,7 @@ export default function SidebarContainer({ toggleSidebar, sidebarOpen }: Sidebar
 
     return (
         <SidebarView
-            menuOpen={menuOpen}
+            open={open}
             anchorElelement={anchorElelement}
             handleClick={handleClick}
             handleClose={handleClose}

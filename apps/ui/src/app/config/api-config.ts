@@ -19,3 +19,7 @@ const getBaseUrl = () => {
 };
 
 export const BASE_URL = getBaseUrl();
+
+export const API_URLS = {
+    CHANNELS: '/channels'
+};

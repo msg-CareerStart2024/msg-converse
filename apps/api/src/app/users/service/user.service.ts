@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { UserRepository } from '../repository/user.repository';
+import * as bcrypt from 'bcryptjs';
 import { User } from '../domain/user.domain';
+import { UserRepository } from '../repository/user.repository';
 
 @Injectable()
 export class UserService {
@@ -14,7 +15,9 @@ export class UserService {
         return this.userRepository.getByEmail(email);
     }
 
-    async create(userData: User): Promise<User> {
+    async create(userData: Omit<User, 'id'>): Promise<User> {
+        const hashedPassword = await bcrypt.hash(userData.password, 10);
+        userData.password = hashedPassword;
         return this.userRepository.create(userData);
     }
 

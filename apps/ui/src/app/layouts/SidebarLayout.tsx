@@ -1,4 +1,4 @@
-import { Grid, IconButton } from '@mui/material';
+import { Container, Grid, IconButton, Typography } from '@mui/material';
 import { Outlet } from 'react-router-dom';
 import SidebarContainer from '../features/sidebar/containers/SidebarContainer';
 import { useState } from 'react';
@@ -19,6 +19,11 @@ export default function ProtectedLayout() {
                         <SidebarContainer toggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
                     </Grid>
                     <Grid item xs={10}>
+                        <Container>
+                            <Typography variant="h4" component="h1" gutterBottom sx={{ my: 5 }}>
+                                Msg. Converse
+                            </Typography>
+                        </Container>
                         <Outlet />
                     </Grid>
                 </Grid>
@@ -38,6 +43,11 @@ export default function ProtectedLayout() {
                     >
                         <ChevronRight />
                     </IconButton>
+                    <Container>
+                        <Typography variant="h4" component="h1" gutterBottom sx={{ my: 5 }}>
+                            Msg. Converse
+                        </Typography>
+                    </Container>
                     <Outlet />
                 </>
             )}

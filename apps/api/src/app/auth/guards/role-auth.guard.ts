@@ -1,5 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import { Role } from '../../users/enums/role.enum';
 import { Roles } from '../decorators/roles.decorator';
 
 @Injectable()
@@ -20,7 +21,7 @@ export class RolesGuard implements CanActivate {
         return true;
     }
 
-    private matchRoles(roles: string[], role: string) {
+    private matchRoles(roles: Role[], role: Role) {
         if (roles.includes(role)) {
             return true;
         }
