@@ -14,11 +14,12 @@ export function shrinkToWords(text: string, wordsNumber: number): string {
 
 /**
  * Formats the date like: August 19, 2021.
- * @param {Date} date - The input string.
+ * @param {Date | string} date - The input string.
  * @returns {string} - The formatted date as a string.
  */
-export function formatDate(date: Date): string {
-    return date.toLocaleDateString('en-US', {
+export function formatDate(date: Date | string): string {
+    const formattedDate = typeof date === 'string' ? new Date(date) : date;
+    return formattedDate.toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
