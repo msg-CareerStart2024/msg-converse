@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Box } from '@mui/material';
 
 type ActionButtonProps = {
-    action: 'create' | 'edit' | 'delete';
+    action: 'create' | 'update' | 'delete';
     handleAction: () => void;
     isSubmitting: boolean;
 };
@@ -23,7 +23,6 @@ const ActionButton: React.FC<ActionButtonProps> = ({ action, handleAction, isSub
                 disabled={isSubmitting}
             >
                 {action.charAt(0).toUpperCase() + action.slice(1)}{' '}
-                {/* Capitalize the first letter */}
             </Button>
         </Box>
     );

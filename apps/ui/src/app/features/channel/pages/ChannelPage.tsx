@@ -1,20 +1,35 @@
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import ChannelFormView from '../components/ChannelFormView';
-import { ChannelFormValues, channelSchema } from '../../../types/channels/channel.types';
+import { ChannelFormValues, channelSchema } from '../../../types/channel/channel.types';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
 
 export default function ChannelPage() {
+    const [channelData, setChannelData] = useState<ChannelFormValues | null>(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            await new Promise(resolve => setTimeout(resolve, 100));
+            setChannelData({
+                channelName: 'Example Channel',
+                topics: []
+            });
+        };
+        fetchData();
+    }, []);
+
     const {
         handleSubmit,
         register,
         formState: { errors }
     } = useForm<ChannelFormValues>({
-        resolver: zodResolver(channelSchema)
+        resolver: zodResolver(channelSchema),
+        defaultValues: channelData || {}
     });
 
-    // const onSubmit: SubmitHandler<ChannelFormValues> = data => {
-    //     alert(`Create not yet implemented, ${data.channelName}, ${data.description}`);
-    // };
+    if (!channelData) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <ChannelFormView
@@ -22,6 +37,8 @@ export default function ChannelPage() {
             handleSubmit={handleSubmit}
             errors={errors}
             isSubmitting={false}
+            isEditForm={false}
+            initialValues={channelData}
         />
     );
 }

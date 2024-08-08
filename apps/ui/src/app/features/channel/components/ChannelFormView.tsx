@@ -1,27 +1,7 @@
-import { AddCircle, Cancel } from '@mui/icons-material';
-import { Avatar, Box, Button, Chip, Container, Grid, IconButton, TextField } from '@mui/material';
-import { FieldErrors, UseFormHandleSubmit, UseFormRegister } from 'react-hook-form';
-
-type FormValues = {
-    channelName: string;
-    description: string;
-    topics: string[];
-};
-
-type ChannelFormProps = {
-    handleSubmit: UseFormHandleSubmit<FormValues>;
-    register: UseFormRegister<FormValues>;
-    errors: FieldErrors<FormValues>;
-    isSubmitting: boolean;
-};
-
-function handleAddTopic() {
-    return;
-}
-
-function handleDelete() {
-    return;
-}
+import { Avatar, Box, Container, Grid, TextField } from '@mui/material';
+import ActionButton from './ActionButtonView';
+import { ChannelFormProps } from '../../../types/channel/channel.types';
+import TopicsView from './TopicsView';
 
 function onSubmit() {
     return;
@@ -34,26 +14,42 @@ export default function ChannelFormView({
     handleSubmit,
     register,
     errors,
-    isSubmitting
+    isSubmitting,
+    isEditForm,
+    initialValues
 }: ChannelFormProps) {
     return (
         <Container component="main" maxWidth="lg" sx={{ mt: 16, bgcolor: 'background.paper' }}>
             <Box sx={{ marginTop: 4, display: 'flex', flexDirection: 'column' }}>
                 <form>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 8 }}>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={handleSubmit(onSubmit)}
-                            sx={{
-                                width: 'fit-content',
-                                alignSelf: 'flex-end',
-                                bgcolor: 'primary.main',
-                                '&:hover': { bgcolor: 'primary.dark' }
-                            }}
-                        >
-                            Create
-                        </Button>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            justifyContent: 'end',
+                            gap: 2
+                        }}
+                    >
+                        {isEditForm ? (
+                            <>
+                                <ActionButton
+                                    action="delete"
+                                    handleAction={handleSubmit(onSubmit)}
+                                    isSubmitting={isSubmitting}
+                                />
+                                <ActionButton
+                                    action="update"
+                                    handleAction={handleSubmit(onSubmit)}
+                                    isSubmitting={isSubmitting}
+                                />
+                            </>
+                        ) : (
+                            <ActionButton
+                                action="create"
+                                handleAction={handleSubmit(onSubmit)}
+                                isSubmitting={isSubmitting}
+                            />
+                        )}
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 4, mb: 4 }}>
                         <Avatar sx={{ bgcolor: 'gray', width: 64, height: 64 }}>
@@ -64,6 +60,7 @@ export default function ChannelFormView({
                         <Grid item xs={12} sm={6}>
                             <TextField
                                 fullWidth
+                                defaultValue={isEditForm ? initialValues?.channelName : ''}
                                 focused
                                 label="Channel Name"
                                 variant="outlined"
@@ -77,6 +74,7 @@ export default function ChannelFormView({
                         <Grid item xs={12} sm={6}>
                             <TextField
                                 fullWidth
+                                defaultValue={isEditForm ? initialValues?.description : ''}
                                 focused
                                 label="Description"
                                 variant="outlined"
@@ -85,32 +83,8 @@ export default function ChannelFormView({
                                 helperText={errors.description?.message}
                             />
                         </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <TextField
-                                fullWidth
-                                focused
-                                variant="outlined"
-                                label="Topics"
-                                {...register('topics')}
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <IconButton color="primary" onClick={handleAddTopic}>
-                                <AddCircle sx={{ fontSize: 60, marginLeft: -6, marginTop: -1 }} />
-                            </IconButton>
-                        </Grid>
+                        <TopicsView register={register} topics={topics} />
                     </Grid>
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3, marginBottom: 4 }}>
-                        {topics.map((topic, index) => (
-                            <Chip
-                                key={index}
-                                label={topic}
-                                color="primary"
-                                onDelete={handleDelete}
-                                deleteIcon={<Cancel />}
-                            />
-                        ))}
-                    </Box>
                 </form>
             </Box>
         </Container>
