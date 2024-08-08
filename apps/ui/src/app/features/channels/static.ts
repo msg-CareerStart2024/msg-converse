@@ -15,6 +15,7 @@ const topics: Topic[] = [
         name: 'Topic 3'
     }
 ];
+
 export const CHANNEL: Channel = {
     id: '1',
     name: 'First channel',
@@ -22,3 +23,5 @@ export const CHANNEL: Channel = {
     description: 'This is the first channel',
     createdAt: new Date()
 };
+
+export const USER = 'John';
