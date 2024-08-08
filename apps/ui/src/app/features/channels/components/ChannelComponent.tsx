@@ -18,10 +18,24 @@ import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { getColor } from '../../../lib/avatar-colors';
 import { Message } from '../../../types/messages/Message';
 
-const currentUserId = '1';
+const currentUserId = '1'; // Assuming '1' is the ID for the current user
 
 export default function ChannelComponent() {
-    const [chatMessages, setChatMessages] = useState<Message[]>([]);
+    const [chatMessages, setChatMessages] = useState<Message[]>([
+        {
+            id: '0',
+            text: 'Hello! How are you doing today?',
+            avatar: 'K',
+            userId: '2' // Different user ID
+        },
+        // A mock message from the current user
+        {
+            id: '1',
+            text: "I'm good, thanks for asking! What about you?",
+            avatar: 'M',
+            userId: currentUserId
+        }
+    ]);
     const [message, setMessage] = useState<string>('');
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const theme = useTheme();
@@ -62,7 +76,7 @@ export default function ChannelComponent() {
                 <Box padding={3}>
                     <Grid container spacing={4} alignItems="center">
                         <Grid item xs={12}>
-                            <List sx={{ height: '65dvh', overflow: 'auto' }}>
+                            <List sx={{ height: '65vh', overflow: 'auto' }}>
                                 {chatMessages.map(chatMessage => (
                                     <ListItem
                                         key={chatMessage.id}
@@ -76,7 +90,7 @@ export default function ChannelComponent() {
                                                     : 'flex-start'
                                         }}
                                     >
-                                        {chatMessage.userId !== currentUserId ? (
+                                        {chatMessage.userId !== currentUserId && (
                                             <>
                                                 <Avatar
                                                     variant="circular"
@@ -102,20 +116,19 @@ export default function ChannelComponent() {
                                                     />
                                                 </Box>
                                             </>
-                                        ) : (
+                                        )}
+                                        {chatMessage.userId === currentUserId && (
                                             <>
                                                 <Box sx={{ width: 'fit-content', maxWidth: '75%' }}>
                                                     <ListItemText
                                                         primary={chatMessage.text}
                                                         sx={{
-                                                            textAlign: 'left',
                                                             backgroundColor:
                                                                 theme.palette.secondary.main,
                                                             borderRadius: '20px',
                                                             padding: 1,
                                                             paddingX: 2
                                                         }}
-                                                        color="primary"
                                                     />
                                                 </Box>
                                                 <Avatar
