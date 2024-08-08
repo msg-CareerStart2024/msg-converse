@@ -1,19 +1,14 @@
 import { Snackbar, TextField } from '@mui/material';
 import { useRef, useState } from 'react';
-import { useLazyGetChannelsQuery, useLazySearchChannelsQuery } from '../api/channelsApi';
+import { useLazyGetChannelsQuery } from '../api/channelsApi';
 
 export default function SearchBar() {
     const [inputValue, setInputValue] = useState('');
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-    const [searchChannels, { isFetching }] = useLazySearchChannelsQuery();
-    const [searchAllChannels, { isFetching: isAllChannelsFetching }] = useLazyGetChannelsQuery();
+    const [getChannels, { isFetching }] = useLazyGetChannelsQuery();
 
     const search = (query: string) => {
-        if (query.length > 0) {
-            searchChannels(query);
-        } else {
-            searchAllChannels();
-        }
+        getChannels(query);
     };
 
     const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,7 +28,7 @@ export default function SearchBar() {
                 sx={{ width: '100%' }}
                 value={inputValue}
                 onChange={handleInput}
-                disabled={isFetching || isAllChannelsFetching}
+                disabled={isFetching}
             />
             <Snackbar />
         </>

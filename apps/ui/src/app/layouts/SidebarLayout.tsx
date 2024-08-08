@@ -20,7 +20,7 @@ export default function ProtectedLayout() {
                     </Grid>
                     <Grid item xs={10}>
                         <Container>
-                            <Typography variant="h4" component="h1" gutterBottom sx={{ my: 5 }}>
+                            <Typography variant="h4" component="h1" gutterBottom sx={{ my: 3 }}>
                                 Msg. Converse
                             </Typography>
                         </Container>
@@ -44,7 +44,7 @@ export default function ProtectedLayout() {
                         <ChevronRight />
                     </IconButton>
                     <Container>
-                        <Typography variant="h4" component="h1" gutterBottom sx={{ my: 5 }}>
+                        <Typography variant="h4" component="h1" gutterBottom sx={{ my: 3 }}>
                             Msg. Converse
                         </Typography>
                     </Container>
