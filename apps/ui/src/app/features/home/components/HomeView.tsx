@@ -1,6 +1,7 @@
-import { Box, Button, Container, Grid, TextField, Typography } from '@mui/material';
+import { Box, Button, Container, Grid, Typography } from '@mui/material';
 import ChannelCard from '../../channels/components/ChannelCard';
 import { Channel } from '../../../types/channels/Channel';
+import SearchBar from '../../../components/SearchBar';
 
 type HomeViewProps = {
     channels: Channel[];
@@ -10,7 +11,16 @@ export default function HomeView({ channels }: HomeViewProps) {
     return (
         <Container>
             <Box display="flex" justifyContent="space-between" mb={4}>
-                <TextField label="Filter..." variant="outlined" sx={{ width: '40%' }} />
+                <Box
+                    sx={{
+                        width: {
+                            xs: '70%',
+                            md: '40%'
+                        }
+                    }}
+                >
+                    <SearchBar />
+                </Box>
                 <Button variant="contained" color="primary">
                     CREATE CHANNEL
                 </Button>
