@@ -1,6 +1,7 @@
 import { Box, Button, Container, Grid, TextField, Typography } from '@mui/material';
 import ChannelCard from '../../channels/components/ChannelCard';
-import { Channel } from '../../../types/channels/Channel';
+import { Channel } from '../../../types/channel/Channel';
+import { Link } from 'react-router-dom';
 
 type HomeViewProps = {
     channels: Channel[];
@@ -15,9 +16,11 @@ export default function HomeView({ channels }: HomeViewProps) {
 
             <Box display="flex" justifyContent="space-between" mb={4}>
                 <TextField label="Filter..." variant="outlined" sx={{ width: '40%' }} />
-                <Button variant="contained" color="primary">
-                    CREATE CHANNEL
-                </Button>
+                <Link to="/create-channel">
+                    <Button variant="contained" color="primary">
+                        CREATE CHANNEL
+                    </Button>
+                </Link>
             </Box>
 
             <Grid container spacing={3} alignItems="stretch">
