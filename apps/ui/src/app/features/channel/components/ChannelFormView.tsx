@@ -1,11 +1,21 @@
 import { Avatar, Box, Container, Grid, TextField } from '@mui/material';
 import ActionButton from './ActionButtonView';
-import { ChannelFormProps } from '../../../types/channel/channel.types';
 import TopicsView from './TopicsView';
+import { FieldErrors, UseFormHandleSubmit, UseFormRegister } from 'react-hook-form';
+import { FormValues } from '../../../types/channel/FormValues';
 
 function onSubmit() {
     return;
 }
+
+export type ChannelFormProps = {
+    handleSubmit: UseFormHandleSubmit<FormValues>;
+    register: UseFormRegister<FormValues>;
+    errors: FieldErrors<FormValues>;
+    isSubmitting: boolean;
+    isEditForm: boolean;
+    initialValues?: FormValues;
+};
 
 const topics = ['Topic 1', 'Topic 2', 'Topic 3'];
 const userInitial = 'L';
