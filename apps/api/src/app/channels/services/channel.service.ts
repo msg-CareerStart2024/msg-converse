@@ -14,7 +14,10 @@ export class ChannelService {
     ) {}
 
     async searchChannels(searchTerm: string): Promise<Channel[]> {
-        return this.channelRepository.searchChannels(searchTerm);
+        if (!searchTerm || searchTerm.trim() === '') {
+            return this.channelRepository.findAll();
+        }
+        return this.channelRepository.searchChannels(searchTerm.trim());
     }
 
     async getById(channelId: string): Promise<Channel> {
