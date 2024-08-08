@@ -18,7 +18,7 @@ import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { getColor } from '../../../lib/avatar-colors';
 import { Message } from '../../../types/messages/Message';
 
-const currentUserId = 1;
+const currentUserId = '1';
 
 export default function ChannelComponent() {
     const [chatMessages, setChatMessages] = useState<Message[]>([]);
@@ -33,7 +33,7 @@ export default function ChannelComponent() {
     const sendMessage = () => {
         if (message) {
             const newMessage = {
-                id: chatMessages.length + 1,
+                id: (chatMessages.length + 1).toString(),
                 text: message,
                 avatar: 'M',
                 userId: currentUserId
