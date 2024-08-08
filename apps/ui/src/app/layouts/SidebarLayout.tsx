@@ -1,8 +1,8 @@
+import { ChevronRight } from '@mui/icons-material';
 import { Grid, IconButton } from '@mui/material';
+import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import SidebarContainer from '../features/sidebar/containers/SidebarContainer';
-import { useState } from 'react';
-import { ChevronRight } from '@mui/icons-material';
 
 export default function ProtectedLayout() {
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);

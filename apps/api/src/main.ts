@@ -29,7 +29,12 @@ async function bootstrap() {
     SwaggerModule.setup('api', app, swaggerDocument);
 
     app.useGlobalPipes(new ValidationPipe());
-    app.enableCors({ origin: '*' });
+    app.enableCors({
+        origin: '*',
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+        allowedHeaders: 'Content-Type, Accept, Authorization',
+        credentials: true
+    });
     await app.listen(port);
     Logger.log(`🚀 Application is running on: http://localhost:${port}/${globalPrefix}`);
 }

@@ -1,3 +1,4 @@
+import { ChevronLeft, Logout } from '@mui/icons-material';
 import {
     Avatar,
     Box,
@@ -14,11 +15,12 @@ import {
     Stack,
     Typography
 } from '@mui/material';
+import { useSelector } from 'react-redux';
 import MsgLogo from '../../../../assets/msg_logo.png';
-import SidebarItem from './SidebarItem';
-import { ChevronLeft, Logout } from '@mui/icons-material';
-import { USER } from '../../channels/static';
+import { RootState } from '../../../store/store';
 import { Channel } from '../../../types/channels/Channel';
+import { generateUserName } from '../../../utils/utils';
+import SidebarItem from './SidebarItem';
 
 type SidebarViewProps = {
     open: boolean;
@@ -39,6 +41,8 @@ export default function SidebarView({
     toggleSidebar,
     sidebarOpen
 }: SidebarViewProps) {
+    const user = useSelector((state: RootState) => state.auth.user);
+    if (!user) return null;
     return (
         <Drawer
             variant="persistent"
@@ -90,9 +94,9 @@ export default function SidebarView({
                         onClick={handleClick}
                     >
                         <ListItemIcon>
-                            <Avatar>{USER.charAt(0)}</Avatar>
+                            <Avatar>{user.firstName.charAt(0)}</Avatar>
                         </ListItemIcon>
-                        <ListItemText primary={USER} />
+                        <ListItemText primary={generateUserName(user.firstName, user.lastName)} />
                     </ListItemButton>
                 </ListItem>
                 <Menu

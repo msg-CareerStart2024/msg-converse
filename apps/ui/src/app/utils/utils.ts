@@ -1,3 +1,5 @@
+import { jwtDecode } from 'jwt-decode';
+
 /**
  * Shrinks a string to a specified number of words.
  * @param {string} text - The input string.
@@ -24,3 +26,34 @@ export function formatDate(date: Date): string {
         day: 'numeric'
     });
 }
+
+/**
+ * Generates a username from the first and last name.
+ * @param {string} firstName - The first name.
+ * @param {string} lastName - The last name.
+ * @returns {string} - The generated username.
+ */
+export function generateUserName(firstName: string, lastName: string): string {
+    return `${firstName} ${lastName}`;
+}
+
+/**
+ * Decodes a JWT token and checks if it is expired.
+ * @param {string} token - The JWT token.
+ * @returns {any} - The decoded token.
+ */
+export const decodeToken = (token: string) => {
+    try {
+        const decodedToken = jwtDecode(token);
+
+        if (decodedToken.exp) {
+            const currentTime = Date.now() / 1000;
+            return !(decodedToken.exp < currentTime) && decodedToken;
+        }
+
+        return decodeToken;
+    } catch (error) {
+        console.error('Failed to decode token:', error);
+        return null;
+    }
+};

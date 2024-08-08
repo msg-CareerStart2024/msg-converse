@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import SidebarView from '../components/SidebarView';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../../store/store';
+import { useNavigate } from 'react-router-dom';
+import { RootState, store } from '../../../store/store';
+import { clearCredentials } from '../../login/slices/auth-slice';
+import SidebarView from '../components/SidebarView';
 
 type SidebarContainerProps = {
     toggleSidebar: () => void;
@@ -14,8 +16,10 @@ export default function SidebarContainer({ toggleSidebar, sidebarOpen }: Sidebar
     const handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         setAnchorElelement(event.currentTarget);
     };
+    const navigate = useNavigate();
     const handleClose = () => {
-        setAnchorElelement(null);
+        store.dispatch(clearCredentials());
+        navigate('/login');
     };
     const channels = useSelector((state: RootState) => state.channels);
 
