@@ -1,13 +1,16 @@
 import React from 'react';
 import { Button, Box } from '@mui/material';
+import { ACTION_TYPE } from '../../../types/channel/channel.types';
 
 type ActionButtonProps = {
-    action: 'create' | 'update' | 'delete';
+    action: ACTION_TYPE;
     handleAction: () => void;
     isSubmitting: boolean;
 };
 
-const ActionButton: React.FC<ActionButtonProps> = ({ action, handleAction, isSubmitting }) => {
+const ActionButtonView: React.FC<ActionButtonProps> = ({ action, handleAction, isSubmitting }) => {
+    const actionType = ACTION_TYPE[action];
+
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 8 }}>
             <Button
@@ -22,10 +25,10 @@ const ActionButton: React.FC<ActionButtonProps> = ({ action, handleAction, isSub
                 }}
                 disabled={isSubmitting}
             >
-                {action.charAt(0).toUpperCase() + action.slice(1)}{' '}
+                {actionType.charAt(0).toUpperCase() + actionType.slice(1)}{' '}
             </Button>
         </Box>
     );
 };
 
-export default ActionButton;
+export default ActionButtonView;

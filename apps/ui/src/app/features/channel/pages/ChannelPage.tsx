@@ -1,8 +1,9 @@
 import { useForm } from 'react-hook-form';
 import ChannelFormView from '../components/ChannelFormView';
-import { ChannelFormValues, channelSchema } from '../../../types/channel/channel.types';
+
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
+import { ChannelFormValues, channelSchema } from '../../../types/channel/schemas/channel.schema';
 
 export default function ChannelPage() {
     const [channelData, setChannelData] = useState<ChannelFormValues | null>(null);

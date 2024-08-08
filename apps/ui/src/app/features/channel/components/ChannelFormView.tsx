@@ -1,6 +1,6 @@
 import { Avatar, Box, Container, Grid, TextField } from '@mui/material';
-import ActionButton from './ActionButtonView';
-import { ChannelFormProps } from '../../../types/channel/channel.types';
+import ActionButtonView from './ActionButtonView';
+import { ACTION_TYPE, ChannelFormProps } from '../../../types/channel/channel.types';
 import TopicsView from './TopicsView';
 
 function onSubmit() {
@@ -32,20 +32,20 @@ export default function ChannelFormView({
                     >
                         {isEditForm ? (
                             <>
-                                <ActionButton
-                                    action="delete"
+                                <ActionButtonView
+                                    action={ACTION_TYPE.delete}
                                     handleAction={handleSubmit(onSubmit)}
                                     isSubmitting={isSubmitting}
                                 />
-                                <ActionButton
-                                    action="update"
+                                <ActionButtonView
+                                    action={ACTION_TYPE.update}
                                     handleAction={handleSubmit(onSubmit)}
                                     isSubmitting={isSubmitting}
                                 />
                             </>
                         ) : (
-                            <ActionButton
-                                action="create"
+                            <ActionButtonView
+                                action={ACTION_TYPE.create}
                                 handleAction={handleSubmit(onSubmit)}
                                 isSubmitting={isSubmitting}
                             />
