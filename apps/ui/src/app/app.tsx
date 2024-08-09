@@ -7,8 +7,10 @@ import HomePage from './features/home/pages/HomePage';
 import SignInPage from './features/login/pages/SignInPage';
 import { setCredentials } from './features/login/slices/auth-slice';
 import SignUpPage from './features/register/pages/SignUpPage';
+import { ProtectedRoute } from './layouts/ProtectedRoute';
 import SiderbarLayout from './layouts/SidebarLayout';
 import { darkTheme, lightTheme } from './lib/themes';
+import NotFoundPage from './pages/NotFoundPage';
 import { RootState, store } from './store/store';
 import { DecodedPayload } from './types/login/DecodedPayload';
 import { decodeToken } from './utils/utils';
@@ -44,15 +46,36 @@ export function App() {
             <CssBaseline />
 
             <Routes>
-                <Route element={<SiderbarLayout />}>
+                <Route
+                    element={
+                        <ProtectedRoute>
+                            <SiderbarLayout />
+                        </ProtectedRoute>
+                    }
+                >
                     <Route path="/" element={<HomePage />} />
                     <Route
                         path="/page-2"
                         element={<Link to="/">Click here to go back to root page.</Link>}
                     />
                 </Route>
-                <Route path="/login" element={<SignInPage />} />
-                <Route path="/signup" element={<SignUpPage />} />
+                <Route
+                    path="/login"
+                    element={
+                        <ProtectedRoute>
+                            <SignInPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/signup"
+                    element={
+                        <ProtectedRoute>
+                            <SignUpPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route path="*" element={<NotFoundPage />} />
             </Routes>
         </ThemeProvider>
     );
