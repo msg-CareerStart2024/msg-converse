@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Box } from '@mui/material';
-import { ACTION_TYPE } from '../../../types/channel/channel.types';
+import { ACTION_TYPE } from '../../../types/channels/channel.types';
 
 type ActionButtonProps = {
     action: ACTION_TYPE;

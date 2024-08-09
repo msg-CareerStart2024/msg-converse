@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import { formatDate, shrinkToWords } from '../../../utils/utils';
 import { getColor } from '../../../lib/avatar-colors';
-import { Channel } from '../../../types/channel/Channel';
+import { Channel } from '../../../types/channels/Channel';
 
 interface ChannelCardProps {
     channel: Channel;

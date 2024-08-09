@@ -1,6 +1,6 @@
 import { Avatar, Box, Container, Grid, TextField } from '@mui/material';
 import ActionButtonView from './ActionButtonView';
-import { ACTION_TYPE, ChannelFormProps } from '../../../types/channel/channel.types';
+import { ACTION_TYPE, ChannelFormProps } from '../../../types/channels/channel.types';
 import TopicsView from './TopicsView';
 
 function onSubmit() {
