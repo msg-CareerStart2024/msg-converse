@@ -2,21 +2,12 @@ import { useForm } from 'react-hook-form';
 import ChannelFormView from '../components/ChannelFormView';
 import { ChannelFormValues, channelSchema } from '../../../types/channel/channel.types';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect, useState } from 'react';
 
 export default function ChannelPage() {
-    const [channelData, setChannelData] = useState<ChannelFormValues | null>(null);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            await new Promise(resolve => setTimeout(resolve, 100));
-            setChannelData({
-                channelName: 'Example Channel',
-                topics: []
-            });
-        };
-        fetchData();
-    }, []);
+    const channelData = {
+        channelName: 'Example Channel',
+        topics: []
+    };
 
     const {
         handleSubmit,
