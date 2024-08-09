@@ -1,6 +1,5 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { Role } from '../enums/role.enum';
-import { Message } from '../../messages/domain/message.domain';
 
 @Entity()
 export class User {
@@ -21,7 +20,4 @@ export class User {
 
     @Column({ type: 'enum', enum: Role, default: Role.USER })
     role: Role;
-
-    @OneToMany(() => Message, message => message.userId)
-    messages: Message[];
 }

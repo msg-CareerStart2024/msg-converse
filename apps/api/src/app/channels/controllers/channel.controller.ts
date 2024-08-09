@@ -5,6 +5,7 @@ import { ChannelDto } from '../dto/channels/channel.dto';
 import { ChannelMapper } from '../mapper/channel.mapper';
 import { CreateChannelDto } from '../dto/channels/create-channel.dto';
 import { UpdateChannelDto } from '../dto/channels/update-channel.dto';
+import { CurrentUserId } from '../../auth/decorators/current-user-id.decorator';
 @ApiTags('channels')
 @ApiBearerAuth()
 @Controller('channels')
@@ -55,9 +56,12 @@ export class ChannelController {
     })
     @ApiResponse({ status: 400, description: 'Bad Request' })
     @ApiResponse({ status: 401, description: 'Unauthorized' })
-    async createChannel(@Body() createChannelDto: CreateChannelDto): Promise<ChannelDto> {
+    async createChannel(
+        @CurrentUserId() userId: string,
+        @Body() createChannelDto: CreateChannelDto
+    ): Promise<ChannelDto> {
         const newChannel = ChannelMapper.fromCreateDto(createChannelDto);
-        const createdChannel = await this.channelService.create(newChannel);
+        const createdChannel = await this.channelService.create(userId, newChannel);
         return ChannelMapper.toDto(createdChannel);
     }
 
@@ -95,6 +99,6 @@ export class ChannelController {
         example: '123e4567-e89b-12d3-a456-426614174000'
     })
     async deleteChannel(@Param('channelId') channelId: string): Promise<void> {
-        return await this.channelService.delete(channelId);
+        return await this.channelService.remove(channelId);
     }
 }

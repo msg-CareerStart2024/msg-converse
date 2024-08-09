@@ -31,7 +31,7 @@ export class AuthController {
     @ApiBadRequestResponse({ description: 'Incorrect user body' })
     @Post('register')
     async register(@Body() createUserDto: CreateUserDTO): Promise<UserDTO> {
-        const user = UserMapper.createDtoToEntity(createUserDto);
+        const user = UserMapper.fromCreateDto(createUserDto);
         const newUser = await this.userService.create(user);
         return UserMapper.toDTO(newUser);
     }
