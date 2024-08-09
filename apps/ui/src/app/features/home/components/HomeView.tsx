@@ -2,6 +2,7 @@ import { Box, Button, Container, Grid, TextField, Typography } from '@mui/materi
 import ChannelCard from '../../channels/components/ChannelCard';
 import { Channel } from '../../../types/channels/Channel';
 import { Link } from 'react-router-dom';
+import React from 'react';
 
 type HomeViewProps = {
     channels: Channel[];

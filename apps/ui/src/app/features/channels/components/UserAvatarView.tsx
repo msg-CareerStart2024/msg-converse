@@ -1,4 +1,5 @@
 import { Avatar, Box } from '@mui/material';
+import React from 'react';
 
 interface UserAvatarProps {
     userInitial: string;

@@ -7,6 +7,7 @@ import SiderbarLayout from './layouts/SidebarLayout';
 import ChannelComponent from './features/channels/components/ChannelComponent';
 import HomePage from './features/home/pages/HomePage';
 import ChannelPage from './features/channels/pages/ChannelPage';
+import React from 'react';
 
 export function App() {
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');

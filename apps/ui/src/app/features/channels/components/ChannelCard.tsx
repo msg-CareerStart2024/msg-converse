@@ -15,6 +15,7 @@ import {
 import { formatDate, shrinkToWords } from '../../../utils/utils';
 import { getColor } from '../../../lib/avatar-colors';
 import { Channel } from '../../../types/channels/Channel';
+import React from 'react';
 
 interface ChannelCardProps {
     channel: Channel;

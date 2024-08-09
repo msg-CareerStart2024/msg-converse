@@ -18,12 +18,5 @@
         "src/**/*.test.js",
         "src/**/*.spec.jsx",
         "src/**/*.test.jsx"
-    ],
-    "include": [
-        "src/**/*.js",
-        "src/**/*.jsx",
-        "src/**/*.ts",
-        "src/**/*.tsx",
-        "src/app/features/channel/components/CreateChannelForm"
     ]
 }
