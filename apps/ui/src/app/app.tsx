@@ -6,7 +6,7 @@ import { darkTheme, lightTheme } from './lib/themes';
 import SiderbarLayout from './layouts/SidebarLayout';
 import ChannelComponent from './features/channels/components/ChannelComponent';
 import HomePage from './features/home/pages/HomePage';
-import ChannelPage from './features/channel/pages/ChannelPage';
+import ChannelPage from './features/channels/pages/ChannelPage';
 
 export function App() {
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
