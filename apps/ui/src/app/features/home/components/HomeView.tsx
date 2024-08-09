@@ -1,5 +1,6 @@
 import { Box, Button, Container, Grid, Typography } from '@mui/material';
 import ChannelCard from '../../channels/components/ChannelCard';
+import React from 'react';
 import { Channel } from '../../../types/channels/Channel';
 import SearchBar from '../../../components/SearchBar';
 
