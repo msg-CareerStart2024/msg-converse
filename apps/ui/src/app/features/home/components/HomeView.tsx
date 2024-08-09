@@ -1,8 +1,8 @@
 import { Box, Button, Container, Grid, TextField, Typography } from '@mui/material';
 import ChannelCard from '../../channels/components/ChannelCard';
-import { Channel } from '../../../types/channels/Channel';
 import { Link } from 'react-router-dom';
 import React from 'react';
+import { Channel } from '../../../types/channels/Channel';
 
 type HomeViewProps = {
     channels: Channel[];
