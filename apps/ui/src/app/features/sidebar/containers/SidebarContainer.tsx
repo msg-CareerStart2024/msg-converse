@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { RootState, store } from '../../../store/store';
@@ -12,7 +12,7 @@ type SidebarContainerProps = {
 
 export default function SidebarContainer({ toggleSidebar, sidebarOpen }: SidebarContainerProps) {
     const [anchorElement, setAnchorElement] = useState<null | HTMLElement>(null);
-    const menuOpen = Boolean(anchorElelement);
+    const menuOpen = Boolean(anchorElement);
     const handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         setAnchorElement(event.currentTarget);
     };

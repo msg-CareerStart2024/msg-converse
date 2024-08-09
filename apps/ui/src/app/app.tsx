@@ -1,8 +1,10 @@
 import { CssBaseline, ThemeProvider, useMediaQuery } from '@mui/material';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, Route, Routes, useNavigate } from 'react-router-dom';
 import { useLazyGetUserByIdQuery } from './api/users-api';
+import ChannelComponent from './features/channels/components/ChannelComponent';
+import ChannelPage from './features/channels/pages/ChannelPage';
 import HomePage from './features/home/pages/HomePage';
 import SignInPage from './features/login/pages/SignInPage';
 import { setCredentials } from './features/login/slices/auth-slice';
@@ -12,11 +14,6 @@ import { darkTheme, lightTheme } from './lib/themes';
 import { RootState, store } from './store/store';
 import { DecodedPayload } from './types/login/DecodedPayload';
 import { decodeToken } from './utils/utils';
-import ChannelComponent from './features/channels/components/ChannelComponent';
-import HomePage from './features/home/pages/HomePage';
-import ChannelPage from './features/channels/pages/ChannelPage';
-
-
 
 export function App() {
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');

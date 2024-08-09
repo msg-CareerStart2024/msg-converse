@@ -15,16 +15,18 @@ import {
     Stack,
     Typography
 } from '@mui/material';
+import React from 'react';
 import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import MsgLogo from '../../../../assets/msg_logo.png';
 import { RootState } from '../../../store/store';
 import { Channel } from '../../../types/channels/Channel';
 import { generateUserName } from '../../../utils/utils';
-import { Link } from 'react-router-dom';
+import SidebarItem from './SidebarItem';
 
 type SidebarViewProps = {
     menuOpen: boolean;
-    anchorElelement: HTMLElement | null;
+    anchorElement: HTMLElement | null;
     handleClick: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
     handleLogout: () => void;
     handleClose: () => void;
@@ -35,7 +37,7 @@ type SidebarViewProps = {
 
 export default function SidebarView({
     menuOpen,
-    anchorElelement,
+    anchorElement,
     handleClick,
     handleClose,
     channels,
@@ -105,7 +107,7 @@ export default function SidebarView({
                 </ListItem>
                 <Menu
                     id="basic-menu"
-                    anchorEl={anchorElelement}
+                    anchorEl={anchorElement}
                     open={menuOpen}
                     onClose={handleClose}
                     MenuListProps={{
