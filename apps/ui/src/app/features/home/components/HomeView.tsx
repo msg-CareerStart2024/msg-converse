@@ -16,7 +16,7 @@ export default function HomeView({ channels }: HomeViewProps) {
 
             <Box display="flex" justifyContent="space-between" mb={4}>
                 <TextField label="Filter..." variant="outlined" sx={{ width: '40%' }} />
-                <Link to="/create-channel">
+                <Link to="/channels/new">
                     <Button variant="contained" color="primary">
                         CREATE CHANNEL
                     </Button>

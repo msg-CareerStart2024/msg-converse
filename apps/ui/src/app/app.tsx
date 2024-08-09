@@ -20,8 +20,10 @@ export function App() {
                         path="/page-2"
                         element={<Link to="/">Click here to go back to root page.</Link>}
                     />
-                    <Route path="/create-channel" element={<ChannelPage />} />
-                    <Route path="/channels/:id" element={<ChannelComponent />} />
+                    <Route path="/channels">
+                        <Route path="new" element={<ChannelPage />} />
+                        <Route path=":id" element={<ChannelComponent />} />
+                    </Route>
                 </Route>
                 <Route path="/login" element={<SignInPage />} />
                 <Route path="/signup" element={<SignUpPage />} />
