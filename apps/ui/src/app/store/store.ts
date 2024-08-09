@@ -4,6 +4,7 @@ import { authApi } from '../api/auth-api';
 import { usersApi } from '../api/users-api';
 import channelsReducer from '../features/channels/slices/channels-slice';
 import authReducer from '../features/login/slices/auth-slice';
+
 export const store = configureStore({
     reducer: {
         channels: channelsReducer,

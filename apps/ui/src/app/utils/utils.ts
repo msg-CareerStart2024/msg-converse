@@ -1,4 +1,4 @@
-import { jwtDecode } from 'jwt-decode';
+import { jwtDecode, JwtPayload } from 'jwt-decode';
 
 /**
  * Shrinks a string to a specified number of words.
@@ -40,20 +40,30 @@ export function generateUserName(firstName: string, lastName: string): string {
 /**
  * Decodes a JWT token and checks if it is expired.
  * @param {string} token - The JWT token.
- * @returns {any} - The decoded token.
+ * @returns {JwtPayload | null} - The decoded token.
  */
-export const decodeToken = (token: string) => {
+export const decodeToken = (token: string): JwtPayload | null => {
     try {
         const decodedToken = jwtDecode(token);
 
         if (decodedToken.exp) {
-            const currentTime = Date.now() / 1000;
-            return !(decodedToken.exp < currentTime) && decodedToken;
+            const isTokenValid = decodedToken.exp > Date.now() / 1000;
+            return isTokenValid ? decodedToken : null;
         }
-
-        return decodeToken;
+        return decodedToken;
     } catch (error) {
         console.error('Failed to decode token:', error);
         return null;
     }
+};
+
+/**
+ * Adds a Bearer token from localStorage to the headers.
+ */
+export const addBearerAuthHeader = (headers: Headers) => {
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+        headers.set('Authorization', `Bearer ${token}`);
+    }
+    return headers;
 };
