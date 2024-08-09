@@ -6,11 +6,18 @@ import { Module } from '@nestjs/common';
 import { Topic } from './domain/topic.entity';
 import { TopicRepository } from './repository/topic.repository';
 import { TopicService } from './services/topic.service';
+import { TransactionManager } from '../shared/services/transaction.manager';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
     imports: [TypeOrmModule.forFeature([Channel, Topic])],
-    providers: [ChannelService, TopicService, ChannelRepository, TopicRepository],
+    providers: [
+        ChannelService,
+        TopicService,
+        ChannelRepository,
+        TopicRepository,
+        TransactionManager
+    ],
     exports: [ChannelService, TopicService, ChannelRepository, TopicRepository],
     controllers: [ChannelController]
 })

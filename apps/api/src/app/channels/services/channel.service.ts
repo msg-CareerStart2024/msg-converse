@@ -1,16 +1,16 @@
-import { Injectable } from '@nestjs/common';
-import { InjectEntityManager } from '@nestjs/typeorm';
-import { EntityManager } from 'typeorm';
 import { Channel } from '../domain/channel.entity';
 import { ChannelRepository } from '../repository/channel.repository';
+import { EntityManager } from 'typeorm';
+import { Injectable } from '@nestjs/common';
 import { TopicService } from './topic.service';
+import { TransactionManager } from '../../shared/services/transaction.manager';
 
 @Injectable()
 export class ChannelService {
     constructor(
         private readonly channelRepository: ChannelRepository,
         private readonly topicService: TopicService,
-        @InjectEntityManager() private readonly entityManager: EntityManager
+        private readonly transactionManager: TransactionManager
     ) {}
 
     async searchChannels(searchTerm: string): Promise<Channel[]> {
@@ -25,21 +25,18 @@ export class ChannelService {
     }
 
     async create(newChannelData: Omit<Channel, 'id' | 'createdAt'>): Promise<Channel> {
-        return this.entityManager.transaction(async transactionalEntityManager => {
+        return this.transactionManager.runInTransaction(async manager => {
             const topicNames = newChannelData.topics.map(topic => topic.name);
-            const topics = await this.topicService.getOrCreateTopics(
-                topicNames,
-                transactionalEntityManager
-            );
+            const topics = await this.topicService.getOrCreateTopics(topicNames, manager);
             const newChannel = this.createChannelEntity(newChannelData);
             newChannel.topics = topics;
 
-            return await this.channelRepository.save(newChannel, transactionalEntityManager);
+            return await this.channelRepository.save(newChannel, manager);
         });
     }
 
     async update(channelId: string, updateChannelData: Partial<Channel>): Promise<Channel> {
-        return this.entityManager.transaction(async transactionalEntityManager => {
+        return await this.transactionManager.runInTransaction(async manager => {
             const existingChannel = await this.channelRepository.findOneById(channelId);
 
             if (updateChannelData.name) {
@@ -52,14 +49,11 @@ export class ChannelService {
 
             if (updateChannelData.topics) {
                 const topicNames = updateChannelData.topics.map(topic => topic.name);
-                const topics = await this.topicService.getOrCreateTopics(
-                    topicNames,
-                    transactionalEntityManager
-                );
+                const topics = await this.topicService.getOrCreateTopics(topicNames, manager);
                 existingChannel.topics = topics;
             }
 
-            return await this.channelRepository.save(existingChannel, transactionalEntityManager);
+            return await this.channelRepository.save(existingChannel, manager);
         });
     }
 

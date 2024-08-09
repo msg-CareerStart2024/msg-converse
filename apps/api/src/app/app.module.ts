@@ -8,6 +8,7 @@ import { HealthModule } from './health/health.module';
 import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
 import Joi from 'joi';
 import { Module } from '@nestjs/common';
+import { TransactionManager } from './shared/services/transaction.manager';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './users/user.module';
 
@@ -45,6 +46,7 @@ import { UserModule } from './users/user.module';
     ],
     controllers: [],
     providers: [
+        TransactionManager,
         {
             provide: APP_FILTER,
             useClass: HttpExceptionFilter
