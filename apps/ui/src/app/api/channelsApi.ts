@@ -22,8 +22,17 @@ export const channelsApi = createApi({
                     alert('Searching channels failed');
                 }
             }
+        }),
+
+        joinChannel: builder.mutation<void, { user: string; channel: string }>({
+            query: data => ({
+                url: `${API_URLS.CHANNELS}/join`,
+                method: 'POST',
+                body: { user: data.user, channel: data.channel }
+            }),
+            invalidatesTags: [API_CACHE_TAGS.CHANNELS]
         })
     })
 });
 
-export const { useLazyGetChannelsQuery, useGetChannelsQuery } = channelsApi;
+export const { useLazyGetChannelsQuery, useGetChannelsQuery, useJoinChannelMutation } = channelsApi;
