@@ -31,7 +31,7 @@ export default function ChannelFormView({
     return (
         <Container component="main" maxWidth="lg" sx={{ mt: 16, bgcolor: 'background.paper' }}>
             <Box sx={{ marginTop: 4, display: 'flex', flexDirection: 'column' }}>
-                <form>
+                <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ width: '100%' }}>
                     <Box
                         sx={{
                             display: 'flex',
@@ -71,7 +71,6 @@ export default function ChannelFormView({
                             <TextField
                                 fullWidth
                                 defaultValue={isEditForm ? initialValues?.channelName : ''}
-                                focused
                                 label="Channel Name"
                                 variant="outlined"
                                 {...register('channelName', {
@@ -85,7 +84,6 @@ export default function ChannelFormView({
                             <TextField
                                 fullWidth
                                 defaultValue={isEditForm ? initialValues?.description : ''}
-                                focused
                                 label="Description"
                                 variant="outlined"
                                 {...register('description')}
@@ -95,7 +93,7 @@ export default function ChannelFormView({
                         </Grid>
                         <TopicsView register={register} topics={topics} />
                     </Grid>
-                </form>
+                </Box>
             </Box>
         </Container>
     );
