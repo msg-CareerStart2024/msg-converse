@@ -2,7 +2,6 @@ import { Avatar, Box, Button, Container, Grid, Link, TextField, Typography } fro
 import { LockOutlined } from '@mui/icons-material';
 import { FieldErrors, SubmitHandler, UseFormHandleSubmit, UseFormRegister } from 'react-hook-form';
 import { UserFormValues } from '../../../types/users/login.types';
-import React from 'react';
 
 type SignInFormProps = {
     handleSubmit: UseFormHandleSubmit<UserFormValues>;

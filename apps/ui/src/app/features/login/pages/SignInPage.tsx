@@ -3,7 +3,6 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { UserFormValues, userSchema } from '../../../types/users/login.types';
 import SignInFormView from '../components/SignInFormView';
-import React from 'react';
 
 export default function SignInPage() {
     const {
