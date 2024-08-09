@@ -42,6 +42,6 @@ export class Channel {
     })
     topics: Topic[];
 
-    @OneToMany(() => Message, message => message.channel)
+    @OneToMany(() => Message, message => message.channel, { onDelete: 'CASCADE' })
     messages: Message[];
 }

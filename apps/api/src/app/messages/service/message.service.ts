@@ -33,7 +33,6 @@ export class MessageService {
         const newMessage: Message = new Message();
         newMessage.content = messageData.content;
         newMessage.isPinned = false;
-        newMessage.createdAt = new Date();
         newMessage.user = user;
         newMessage.channel = channel;
 
