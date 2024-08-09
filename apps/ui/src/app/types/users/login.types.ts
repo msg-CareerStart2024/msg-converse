@@ -15,4 +15,4 @@ export const userSchema = z.object({
     password: passwordSchemaCheck
 });
 
-export type UserFormValues = z.infer<typeof userSchema>;
+export type LoginFormValues = z.infer<typeof userSchema>;
