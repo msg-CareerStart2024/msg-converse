@@ -12,6 +12,11 @@ import { darkTheme, lightTheme } from './lib/themes';
 import { RootState, store } from './store/store';
 import { DecodedPayload } from './types/login/DecodedPayload';
 import { decodeToken } from './utils/utils';
+import ChannelComponent from './features/channels/components/ChannelComponent';
+import HomePage from './features/home/pages/HomePage';
+import ChannelPage from './features/channels/pages/ChannelPage';
+
+
 
 export function App() {
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
@@ -42,7 +47,6 @@ export function App() {
     return (
         <ThemeProvider theme={prefersDarkMode ? darkTheme : lightTheme}>
             <CssBaseline />
-
             <Routes>
                 <Route element={<SiderbarLayout />}>
                     <Route path="/" element={<HomePage />} />
@@ -50,6 +54,8 @@ export function App() {
                         path="/page-2"
                         element={<Link to="/">Click here to go back to root page.</Link>}
                     />
+                    <Route path="/create-channel" element={<ChannelPage />} />
+                    <Route path="/channels/:id" element={<ChannelComponent />} />
                 </Route>
                 <Route path="/login" element={<SignInPage />} />
                 <Route path="/signup" element={<SignUpPage />} />

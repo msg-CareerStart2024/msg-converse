@@ -20,10 +20,10 @@ import MsgLogo from '../../../../assets/msg_logo.png';
 import { RootState } from '../../../store/store';
 import { Channel } from '../../../types/channels/Channel';
 import { generateUserName } from '../../../utils/utils';
-import SidebarItem from './SidebarItem';
+import { Link } from 'react-router-dom';
 
 type SidebarViewProps = {
-    open: boolean;
+    menuOpen: boolean;
     anchorElelement: HTMLElement | null;
     handleClick: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
     handleLogout: () => void;
@@ -34,7 +34,7 @@ type SidebarViewProps = {
 };
 
 export default function SidebarView({
-    open,
+    menuOpen,
     anchorElelement,
     handleClick,
     handleClose,
@@ -49,7 +49,7 @@ export default function SidebarView({
         <Drawer
             variant="persistent"
             anchor="left"
-            open={true}
+            open={sidebarOpen}
             sx={{
                 width: '16.666667%',
                 textAlign: 'center',
@@ -64,22 +64,24 @@ export default function SidebarView({
         >
             <Box sx={{ flex: 1, overflowY: 'auto' }}>
                 <Stack alignItems="center" sx={{ my: 3 }}>
-                    <Box
-                        component="img"
-                        sx={{
-                            maxWidth: '50%',
-                            marginBottom: 1
-                        }}
-                        src={MsgLogo}
-                        alt="msg logo"
-                    />
+                    <Link to={'/'}>
+                        <Box
+                            component="img"
+                            sx={{
+                                maxWidth: '50%',
+                                marginBottom: 1
+                            }}
+                            src={MsgLogo}
+                            alt="msg logo"
+                        />
+                    </Link>
                 </Stack>
                 <Typography variant="h5" sx={{ marginBottom: 2 }}>
                     My Channels
                 </Typography>
                 <List>
                     {channels.map(channel => (
-                        <SidebarItem key={channel.id} name={channel.name} />
+                        <SidebarItem key={channel.id} channel={channel} />
                     ))}
                 </List>
                 {channels.length === 0 && (
@@ -90,9 +92,9 @@ export default function SidebarView({
                 <Divider />
                 <ListItem disablePadding sx={{ marginY: 1 }}>
                     <ListItemButton
-                        aria-controls={open ? 'basic-menu' : undefined}
+                        aria-controls={menuOpen ? 'basic-menu' : undefined}
                         aria-haspopup="true"
-                        aria-expanded={open ? 'true' : undefined}
+                        aria-expanded={menuOpen ? 'true' : undefined}
                         onClick={handleClick}
                     >
                         <ListItemIcon>
@@ -104,7 +106,7 @@ export default function SidebarView({
                 <Menu
                     id="basic-menu"
                     anchorEl={anchorElelement}
-                    open={open}
+                    open={menuOpen}
                     onClose={handleClose}
                     MenuListProps={{
                         'aria-labelledby': 'basic-button'
