@@ -31,7 +31,7 @@ export class Channel {
     // })
     // users: User[];
 
-    @ManyToMany(() => Topic, topic => topic.channels)
+    @ManyToMany(() => Topic, topic => topic.channels, { eager: true })
     @JoinTable({
         name: 'channel_topics',
         joinColumn: { name: 'channel_id', referencedColumnName: 'id' },

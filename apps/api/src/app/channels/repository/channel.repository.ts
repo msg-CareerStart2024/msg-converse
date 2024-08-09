@@ -23,15 +23,20 @@ export class ChannelRepository {
         return this.repository
             .createQueryBuilder('channel')
             .leftJoinAndSelect('channel.topics', 'topic')
-            .where(
-                new Brackets(qb => {
-                    qb.where('LOWER(channel.name) LIKE :searchPattern', { searchPattern })
-                        .orWhere('LOWER(topic.name) LIKE :searchPattern', { searchPattern })
-                        .orWhere('LOWER(LEFT(channel.description, 50)) LIKE :searchPattern', {
-                            searchPattern
-                        });
-                })
-            )
+            .where(qb => {
+                const subQuery = qb
+                    .subQuery()
+                    .select('c.id')
+                    .from(Channel, 'c')
+                    .leftJoin('c.topics', 't')
+                    .where('LOWER(c.name) LIKE :searchPattern', { searchPattern })
+                    .orWhere('LOWER(t.name) LIKE :searchPattern', { searchPattern })
+                    .orWhere('LOWER(LEFT(c.description, 50)) LIKE :searchPattern', {
+                        searchPattern
+                    })
+                    .getQuery();
+                return 'channel.id IN ' + subQuery;
+            })
             .orderBy('channel.createdAt', 'DESC')
             .getMany();
     }

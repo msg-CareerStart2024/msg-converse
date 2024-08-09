@@ -14,46 +14,34 @@ export class ChannelService {
     ) {}
 
     async searchChannels(searchTerm: string): Promise<Channel[]> {
-        if (!searchTerm || searchTerm.trim() === '') {
-            return this.channelRepository.findAll();
-        }
-        return this.channelRepository.searchChannels(searchTerm.trim());
+        const trimmedSearchTerm = searchTerm?.trim();
+        return trimmedSearchTerm
+            ? this.channelRepository.searchChannels(trimmedSearchTerm)
+            : this.channelRepository.findAll();
     }
 
     async getById(channelId: string): Promise<Channel> {
-        return await this.channelRepository.findOneById(channelId);
+        return this.channelRepository.findOneById(channelId);
     }
 
-    async create(newChannelData: Omit<Channel, 'id' | 'createdAt'>): Promise<Channel> {
+    async create(channelData: Omit<Channel, 'id' | 'createdAt'>): Promise<Channel> {
         return this.transactionManager.runInTransaction(async manager => {
-            const topicNames = newChannelData.topics.map(topic => topic.name);
-            const topics = await this.topicService.getOrCreateTopics(topicNames, manager);
-            const newChannel = this.createChannelEntity(newChannelData);
-            newChannel.topics = topics;
-
-            return await this.channelRepository.save(newChannel, manager);
+            const topics = await this.getTopics(channelData.topics, manager);
+            const newChannel = this.createChannelEntity(channelData, topics);
+            return this.channelRepository.save(newChannel, manager);
         });
     }
 
-    async update(channelId: string, updateChannelData: Partial<Channel>): Promise<Channel> {
-        return await this.transactionManager.runInTransaction(async manager => {
+    async update(channelId: string, updateData: Partial<Channel>): Promise<Channel> {
+        return this.transactionManager.runInTransaction(async manager => {
             const existingChannel = await this.channelRepository.findOneById(channelId);
+            this.updateChannelProperties(existingChannel, updateData);
 
-            if (updateChannelData.name) {
-                existingChannel.name = updateChannelData.name;
+            if (updateData.topics) {
+                existingChannel.topics = await this.getTopics(updateData.topics, manager);
             }
 
-            if (updateChannelData.description) {
-                existingChannel.description = updateChannelData.description;
-            }
-
-            if (updateChannelData.topics) {
-                const topicNames = updateChannelData.topics.map(topic => topic.name);
-                const topics = await this.topicService.getOrCreateTopics(topicNames, manager);
-                existingChannel.topics = topics;
-            }
-
-            return await this.channelRepository.save(existingChannel, manager);
+            return this.channelRepository.save(existingChannel, manager);
         });
     }
 
@@ -61,10 +49,27 @@ export class ChannelService {
         await this.channelRepository.deleteById(channelId, manager);
     }
 
-    private createChannelEntity(newChannelData: Omit<Channel, 'id' | 'createdAt'>): Channel {
+    private createChannelEntity(
+        data: Omit<Channel, 'id' | 'createdAt'>,
+        topics: Channel['topics']
+    ): Channel {
         const newChannel = new Channel();
-        newChannel.name = newChannelData.name;
-        newChannel.description = newChannelData.description;
+        newChannel.name = data.name;
+        newChannel.description = data.description;
+        newChannel.topics = topics;
         return newChannel;
+    }
+
+    private updateChannelProperties(channel: Channel, updateData: Partial<Channel>): void {
+        if (updateData.name) channel.name = updateData.name;
+        if (updateData.description) channel.description = updateData.description;
+    }
+
+    private async getTopics(
+        topics: Channel['topics'],
+        manager: EntityManager
+    ): Promise<Channel['topics']> {
+        const topicNames = topics.map(topic => topic.name);
+        return this.topicService.getOrCreateTopics(topicNames, manager);
     }
 }
