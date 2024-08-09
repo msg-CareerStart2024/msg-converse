@@ -1,12 +1,9 @@
+import { useRef } from 'react';
 import { Avatar, Box, Container, Grid, TextField } from '@mui/material';
 import ActionButton from './ActionButtonView';
 import TopicsView from './TopicsView';
 import { FieldErrors, UseFormHandleSubmit, UseFormRegister } from 'react-hook-form';
 import { FormValues } from '../../../types/channel/FormValues';
-
-function onSubmit() {
-    return;
-}
 
 export type ChannelFormProps = {
     handleSubmit: UseFormHandleSubmit<FormValues>;
@@ -28,10 +25,27 @@ export default function ChannelFormView({
     isEditForm,
     initialValues
 }: ChannelFormProps) {
+    const formRef = useRef<HTMLFormElement>(null);
+
+    const handleActionClick = (action: 'create' | 'delete' | 'update') => {
+        if (formRef.current) {
+            formRef.current.requestSubmit();
+        }
+    };
+
+    function onSubmit() {
+        return;
+    }
+
     return (
         <Container component="main" maxWidth="lg" sx={{ mt: 16, bgcolor: 'background.paper' }}>
             <Box sx={{ marginTop: 4, display: 'flex', flexDirection: 'column' }}>
-                <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ width: '100%' }}>
+                <Box
+                    component="form"
+                    ref={formRef}
+                    onSubmit={handleSubmit(onSubmit)}
+                    sx={{ width: '100%' }}
+                >
                     <Box
                         sx={{
                             display: 'flex',
@@ -44,19 +58,19 @@ export default function ChannelFormView({
                             <>
                                 <ActionButton
                                     action="delete"
-                                    handleAction={handleSubmit(onSubmit)}
+                                    handleAction={() => handleActionClick('delete')}
                                     isSubmitting={isSubmitting}
                                 />
                                 <ActionButton
                                     action="update"
-                                    handleAction={handleSubmit(onSubmit)}
+                                    handleAction={() => handleActionClick('update')}
                                     isSubmitting={isSubmitting}
                                 />
                             </>
                         ) : (
                             <ActionButton
                                 action="create"
-                                handleAction={handleSubmit(onSubmit)}
+                                handleAction={() => handleActionClick('create')}
                                 isSubmitting={isSubmitting}
                             />
                         )}
