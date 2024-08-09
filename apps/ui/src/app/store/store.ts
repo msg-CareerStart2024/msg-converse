@@ -1,10 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { authApi } from '../api/auth-api';
+import { channelsApi } from '../api/channelsApi';
 import { usersApi } from '../api/users-api';
 import channelsReducer from '../features/channels/slices/channels-slice';
 import authReducer from '../features/login/slices/auth-slice';
-import { channelsApi } from '../api/channelsApi';
 
 export const store = configureStore({
     reducer: {
@@ -16,10 +16,10 @@ export const store = configureStore({
     },
     middleware: getDefaultMiddleware =>
         getDefaultMiddleware().concat(
-                                      authApi.middleware, 
-                                      usersApi.middleware, 
-                                      channelsApi.middleware
-                                     )
+            authApi.middleware,
+            usersApi.middleware,
+            channelsApi.middleware
+        )
 });
 
 setupListeners(store.dispatch);
