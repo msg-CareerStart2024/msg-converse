@@ -26,9 +26,12 @@ export class ChannelService {
 
     async create(channelData: Omit<Channel, 'id' | 'createdAt'>): Promise<Channel> {
         return this.transactionManager.runInTransaction(async manager => {
-            const topics = await this.getTopics(channelData.topics, manager);
+            const topicNames = channelData.topics.map(topic => topic.name);
+            const topics = await this.topicService.getOrCreateTopics(topicNames, manager);
+
             const newChannel = this.createChannelEntity(channelData, topics);
-            return this.channelRepository.save(newChannel, manager);
+
+            return await this.channelRepository.save(newChannel, manager);
         });
     }
 
@@ -51,13 +54,15 @@ export class ChannelService {
 
     private createChannelEntity(
         data: Omit<Channel, 'id' | 'createdAt'>,
-        topics: Channel['topics']
+        desiredTopics: Channel['topics']
     ): Channel {
-        const newChannel = new Channel();
-        newChannel.name = data.name;
-        newChannel.description = data.description;
-        newChannel.topics = topics;
-        return newChannel;
+        return {
+            name: data.name,
+            description: data.description,
+            topics: desiredTopics,
+            id: undefined,
+            createdAt: undefined
+        };
     }
 
     private updateChannelProperties(channel: Channel, updateData: Partial<Channel>): void {

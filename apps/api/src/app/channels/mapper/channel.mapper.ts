@@ -6,13 +6,12 @@ import { UpdateChannelDto } from '../dto/channels/update-channel.dto';
 
 export class ChannelMapper {
     static toDto(entity: Channel): ChannelDto {
-        const { id, name, description, createdAt, topics } = entity;
         return {
-            id,
-            name,
-            description,
-            createdAt,
-            topics: topics.map(topicEntity => TopicMapper.toDto(topicEntity))
+            id: entity.id,
+            name: entity.name,
+            description: entity.description,
+            createdAt: entity.createdAt,
+            topics: entity.topics.map(topicEntity => TopicMapper.toDto(topicEntity))
         };
     }
 

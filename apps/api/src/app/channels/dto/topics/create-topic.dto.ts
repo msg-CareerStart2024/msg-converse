@@ -7,9 +7,6 @@ export class CreateTopicDto {
     @ApiProperty({ example: 'GAMING', description: 'The name of the topic' })
     @IsString()
     @IsNotEmpty()
-    @Transform(({ value }) => {
-        value.toUpperCase();
-        value.trim();
-    })
+    @Transform(({ value }) => value.toUpperCase().trim())
     name: string;
 }

@@ -19,21 +19,7 @@ export class TopicService {
 
     async getOrCreateTopics(topicNames: string[], manager: EntityManager): Promise<Topic[]> {
         const uniqueTopicNames = [...new Set(topicNames)];
-        const topics: Topic[] = [];
-
-        for (const topicName of uniqueTopicNames) {
-            let topic = await this.topicRepository.findByName(topicName);
-
-            if (!topic) {
-                topic = new Topic();
-                topic.name = topicName.trim();
-                topic = await this.topicRepository.save(topic, manager);
-            }
-
-            topics.push(topic);
-        }
-
-        return topics;
+        return this.topicRepository.findOrCreateTopics(uniqueTopicNames, manager);
     }
 
     async getByName(name: string): Promise<Topic> {
