@@ -1,9 +1,9 @@
-import { Channel } from '../domain/channel.entity';
-import { ChannelRepository } from '../repository/channel.repository';
+import { Channel } from '../../domain/channel.entity';
+import { ChannelRepository } from '../../repository/channel.repository';
 import { EntityManager } from 'typeorm';
 import { Injectable } from '@nestjs/common';
-import { TopicService } from './topic.service';
-import { TransactionManager } from '../../shared/services/transaction.manager';
+import { TopicService } from '../topics/topic.service';
+import { TransactionManager } from '../../../shared/services/transaction.manager';
 
 @Injectable()
 export class ChannelService {

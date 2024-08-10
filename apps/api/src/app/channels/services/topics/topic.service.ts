@@ -1,7 +1,7 @@
 import { EntityManager } from 'typeorm';
 import { Injectable } from '@nestjs/common';
-import { Topic } from '../domain/topic.entity';
-import { TopicRepository } from '../repository/topic.repository';
+import { Topic } from '../../domain/topic.entity';
+import { TopicRepository } from '../../repository/topics/topic.repository';
 
 @Injectable()
 export class TopicService {

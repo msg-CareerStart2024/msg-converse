@@ -7,11 +7,11 @@ import {
     ApiBearerAuth,
     ApiQuery
 } from '@nestjs/swagger';
-import { ChannelService } from '../services/channel.service';
 import { ChannelDto } from '../dto/channels/channel.dto';
-import { ChannelMapper } from '../mapper/channel.mapper';
 import { CreateChannelDto } from '../dto/channels/create-channel.dto';
 import { UpdateChannelDto } from '../dto/channels/update-channel.dto';
+import { ChannelMapper } from '../mapper/channel.mapper';
+import { ChannelService } from '../services/channels/channel.service';
 
 @ApiTags('Channels')
 @ApiBearerAuth()
