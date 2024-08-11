@@ -79,7 +79,7 @@ describe('ChannelService - update Integration Test', () => {
             topicService.getOrCreateTopics.mockResolvedValue(updatedTopics);
             channelRepository.save.mockResolvedValue(updatedChannel);
 
-            // @ts-ignore
+            // @ts-expect-error - TS doesnt recognize the description field as optional
             const result = await channelService.update(channelId, updateData);
 
             expect(result).toEqual(updatedChannel);
@@ -153,9 +153,9 @@ describe('ChannelService - update Integration Test', () => {
             const updatedChannel = { ...existingChannel, description: null };
 
             channelRepository.findOneById.mockResolvedValue(existingChannel);
-            // @ts-ignore
+            // @ts-expect-error - TS doesnt recognize the description field as optional
             channelRepository.save.mockResolvedValue(updatedChannel);
-            // @ts-ignore
+            // @ts-expect-error - TS doesnt recognize the description field as optional
             const result = await channelService.update(channelId, updateData);
 
             expect(result.description).toBeNull();
@@ -209,7 +209,7 @@ describe('ChannelService - update Integration Test', () => {
             channelRepository.findOneById.mockResolvedValue(existingChannel);
             topicService.getOrCreateTopics.mockResolvedValue(uniqueTopics);
             channelRepository.save.mockResolvedValue(updatedChannel);
-            // @ts-ignore
+            // @ts-expect-error - TS doesnt recognize the description field as optional
             const result = await channelService.update(channelId, updateData);
 
             expect(result.topics).toHaveLength(2);

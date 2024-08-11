@@ -70,7 +70,7 @@ describe('ChannelService - create Integration Test', () => {
             channelRepository.save.mockResolvedValue(expectedSavedChannel);
 
             const result = await channelService.create(newChannelData);
-
+            2;
             expect(result).toEqual(expectedSavedChannel);
             expect(transactionManager.runInTransaction).toHaveBeenCalled();
             expect(topicService.getOrCreateTopics).toHaveBeenCalledWith(
@@ -101,7 +101,7 @@ describe('ChannelService - create Integration Test', () => {
 
         it('should create a channel with null description', async () => {
             const channelData = { ...mockNewChannelData, description: null };
-            // @ts-ignore
+            // @ts-expect-error - TS doesnt recognize the description field as optional
             const expectedSavedChannel: Channel = {
                 ...channelData,
                 id: 'generated-id',
@@ -112,7 +112,7 @@ describe('ChannelService - create Integration Test', () => {
             topicService.getOrCreateTopics.mockResolvedValue(mockTopics);
             channelRepository.save.mockResolvedValue(expectedSavedChannel);
 
-            // @ts-ignore
+            // @ts-expect-error - TS doesnt recognize the description field as optional
             const result = await channelService.create(channelData);
 
             expect(result.description).toBeNull();
