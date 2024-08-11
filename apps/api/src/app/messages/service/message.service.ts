@@ -12,7 +12,7 @@ export class MessageService {
         private readonly channelService: ChannelService
     ) {}
 
-    getByChannel(channelId: string): Promise<Message[]> {
+    async getByChannel(channelId: string): Promise<Message[]> {
         return this.messageRepository.getByChannel(channelId);
     }
 
