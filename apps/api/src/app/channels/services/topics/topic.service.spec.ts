@@ -4,11 +4,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Topic } from '../../domain/topic.entity';
 import { TopicRepository } from '../../repository/topics/topic.repository';
 import { TopicService } from './topic.service';
-
-export const mockTopics: Topic[] = [
-    { id: '1', name: 'Topic 1', channels: [] },
-    { id: '2', name: 'Topic 2', channels: [] }
-];
+import { mockTopics } from '../../__mocks__/topic.mock';
 
 export const createMockTopicRepository = (): jest.Mocked<TopicRepository> => {
     const mockRepository: jest.Mocked<Repository<Topic>> = {
@@ -73,8 +69,8 @@ describe('TopicService', () => {
     });
 
     describe('create', () => {
-        const topicData: Partial<Topic> = { name: 'New Topic' };
-        const createdTopic: Topic = { id: '3', name: 'New Topic', channels: [] };
+        const topicData: Partial<Topic> = { name: 'NEW_TOPIC' };
+        const createdTopic: Topic = { id: '3', name: 'NEW_TOPIC', channels: [] };
 
         it('should create a new topic without entity manager', async () => {
             topicRepository.save.mockResolvedValue(createdTopic);
@@ -102,7 +98,7 @@ describe('TopicService', () => {
     });
 
     describe('getOrCreateTopics', () => {
-        const topicNames = ['Topic 1', 'Topic 2'];
+        const topicNames = ['TOPIC_1', 'TOPIC_2'];
 
         it('should get or create topics', async () => {
             topicRepository.findOrCreateTopics.mockResolvedValue(mockTopics);
@@ -117,7 +113,7 @@ describe('TopicService', () => {
         });
 
         it('should handle duplicate topic names', async () => {
-            const duplicateTopicNames = ['Topic 1', 'Topic 1', 'Topic 2'];
+            const duplicateTopicNames = ['TOPIC_1', 'TOPIC_1', 'TOPIC_2'];
             topicRepository.findOrCreateTopics.mockResolvedValue(mockTopics);
 
             const result = await topicService.getOrCreateTopics(
@@ -127,7 +123,7 @@ describe('TopicService', () => {
 
             expect(result).toEqual(mockTopics);
             expect(topicRepository.findOrCreateTopics).toHaveBeenCalledWith(
-                ['Topic 1', 'Topic 2'],
+                ['TOPIC_1', 'TOPIC_2'],
                 mockEntityManager
             );
         });
@@ -135,7 +131,7 @@ describe('TopicService', () => {
 
     describe('getByName', () => {
         it('should return a topic by name', async () => {
-            const topicName = 'Topic 1';
+            const topicName = 'TOPIC_1';
             const mockTopic = mockTopics[0];
             topicRepository.findByName.mockResolvedValue(mockTopic);
 

@@ -63,10 +63,10 @@ describe('ChannelController', () => {
         it('should return an array of ChannelDto when searching channels', async () => {
             channelService.searchChannels.mockResolvedValue(mockChannels);
 
-            const result = await controller.searchChannels('test');
+            const result = await controller.searchChannels(`${mockChannels[0].name}`);
 
             expect(result).toEqual(mockChannels.map(channel => ChannelMapper.toDto(channel)));
-            expect(channelService.searchChannels).toHaveBeenCalledWith('test');
+            expect(channelService.searchChannels).toHaveBeenCalledWith(`${mockChannels[0].name}`);
         });
 
         it('should return all channels when no search key is provided', async () => {
@@ -135,13 +135,13 @@ describe('ChannelController', () => {
                 'Max Topics Channel',
                 'Description',
                 new Date(),
-                Array(5).fill({ id: '1', name: 'Topic' })
+                Array(5).fill({ id: '1', name: 'TOPIC' })
             );
             channelService.create.mockResolvedValue(maxTopicsChannel);
 
             const result = await controller.createChannel({
                 ...mockCreateChannelDto,
-                topics: Array(5).fill({ name: 'Topic' })
+                topics: Array(5).fill({ name: 'TOPIC' })
             });
 
             expect(result).toEqual(ChannelMapper.toDto(maxTopicsChannel));

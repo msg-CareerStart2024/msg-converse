@@ -4,20 +4,20 @@ import { TopicDto } from '../dto/topics/topic.dto';
 
 export const mockTopic: Topic = {
     id: '1',
-    name: 'Test Topic',
+    name: 'TEST_TOPIC',
     channels: []
 };
 
 export const mockTopics: Topic[] = [
-    { id: '1', name: 'Topic 1', channels: [] },
-    { id: '2', name: 'Topic 2', channels: [] }
+    { id: '1', name: 'TOPIC_1', channels: [] },
+    { id: '2', name: 'TOPIC_2', channels: [] }
 ];
 
 export const mockTopicDto: TopicDto = {
     id: '1',
-    name: 'Test Topic'
+    name: 'TEST_TOPIC'
 };
 
 export const mockCreateTopicDto: CreateTopicDto = {
-    name: 'NEW TOPIC'
+    name: 'NEW_TOPIC'
 };

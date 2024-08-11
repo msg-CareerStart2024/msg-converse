@@ -40,7 +40,8 @@ export class ChannelController {
         description: 'Unauthorized - Valid authentication credentials are required'
     })
     async searchChannels(@Query('searchKey') searchKey = ''): Promise<ChannelDto[]> {
-        return await this.channelService.searchChannels(searchKey);
+        const channels = await this.channelService.searchChannels(searchKey);
+        return channels.map(channel => ChannelMapper.toDto(channel));
     }
 
     @Get(':channelId')

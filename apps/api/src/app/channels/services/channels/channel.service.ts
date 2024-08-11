@@ -16,7 +16,7 @@ export class ChannelService {
     async searchChannels(searchTerm: string): Promise<Channel[]> {
         const trimmedSearchTerm = searchTerm?.trim();
         return trimmedSearchTerm
-            ? this.channelRepository.searchChannels(trimmedSearchTerm)
+            ? this.channelRepository.searchChannels(this.escapeSpecialCharacters(trimmedSearchTerm))
             : this.channelRepository.findAll();
     }
 
@@ -50,6 +50,10 @@ export class ChannelService {
 
     async delete(channelId: string, manager?: EntityManager): Promise<void> {
         await this.channelRepository.deleteById(channelId, manager);
+    }
+
+    private escapeSpecialCharacters(term: string): string {
+        return term.replace(/[\\%&]/g, '\\$&');
     }
 
     private createChannelEntity(

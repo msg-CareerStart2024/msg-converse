@@ -1,5 +1,3 @@
-// channel.mock.ts
-
 import { Channel } from '../domain/channel.entity';
 import { ChannelDto } from '../dto/channels/channel.dto';
 import { CreateChannelDto } from '../dto/channels/create-channel.dto';
@@ -35,11 +33,6 @@ export const mockChannelDtoFactory = (
     createdAt,
     topics
 });
-
-export const mockChannels: Channel[] = [
-    mockChannelFactory(),
-    mockChannelFactory('2', 'Channel 2', 'Description 2', new Date('2024-08-09T00:00:00Z'))
-];
 
 export const mockNewChannelData: Omit<Channel, 'id' | 'createdAt'> = {
     name: 'New Channel',
@@ -79,5 +72,44 @@ export const mockChannelDtoWithTopics: ChannelDto = mockChannelDtoFactory(
 export const mockUpdateChannelData: Partial<Channel> = {
     name: 'Updated Channel',
     description: 'Updated Description',
-    topics: [{ id: undefined, name: 'NEW_TOPIC_2', channels: [] }] as Topic[]
+    topics: [{ id: undefined, name: 'NEW_TOPIC_2', channels: [] }]
 };
+
+export const mockChannels: Channel[] = [
+    mockChannelFactory(
+        '1',
+        'msg Career Start 2024',
+        'Channel for the 7th edition of Career Start',
+        new Date('2024-08-01'),
+        [{ id: '1', name: 'CAREER_START', channels: [] }]
+    ),
+    mockChannelFactory(
+        '2',
+        'msg Converse',
+        'Channel for the msg Converse project',
+        new Date('2024-08-02'),
+        [{ id: '2', name: 'PROJECT', channels: [] }]
+    ),
+    mockChannelFactory(
+        '3',
+        'msg Insurance',
+        'Channel for Insurance department',
+        new Date('2024-08-03'),
+        [{ id: '3', name: 'TECHNOLOGY', channels: [] }]
+    ),
+    mockChannelFactory(
+        '4',
+        'msg 2024 Projects',
+        'Overview of all msg projects',
+        new Date('2024-08-04'),
+        [
+            { id: '2', name: 'PROJECT', channels: [] },
+            { id: '4', name: '2024', channels: [] }
+        ]
+    ),
+    mockChannelFactory('5', 'msg Soft Skills', 'Soft skills resources', new Date('2024-08-05'), [
+        { id: '1', name: 'CAREER_START', channels: [] },
+        { id: '5', name: 'DEVELOPMENT', channels: [] },
+        { id: '6', name: 'SOFT_SKILLS', channels: [] }
+    ])
+];
