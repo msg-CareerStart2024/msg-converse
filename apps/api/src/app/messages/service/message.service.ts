@@ -1,5 +1,3 @@
-// don't forget to add the date when creating a new message (message.createdAt = new Date() like in the order service)
-
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { MessageRepository } from '../repository/message.repository';
 import { Message } from '../domain/message.domain';
