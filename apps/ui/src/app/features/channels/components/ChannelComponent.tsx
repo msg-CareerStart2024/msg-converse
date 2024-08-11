@@ -13,8 +13,7 @@ import {
 import SendIcon from '@mui/icons-material/Send';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { Message } from '../../../types/messages/Message';
-import ReceivedMessageComponent from './ReceivedMesageComponent';
-import SentMessageComponent from './SentMessageComponent';
+import MessageComponent from './MessageComponent';
 
 const currentUserId = '1';
 
@@ -86,17 +85,11 @@ export default function ChannelComponent() {
                                                     : 'flex-start'
                                         }}
                                     >
-                                        {chatMessage.userId === currentUserId ? (
-                                            <SentMessageComponent
-                                                message={chatMessage.text}
-                                                firstNameInitial={chatMessage.firstNameInitial}
-                                            />
-                                        ) : (
-                                            <ReceivedMessageComponent
-                                                message={chatMessage.text}
-                                                firstNameInitial={chatMessage.firstNameInitial}
-                                            />
-                                        )}
+                                        <MessageComponent
+                                            message={chatMessage.text}
+                                            firstNameInitial={chatMessage.firstNameInitial}
+                                            isSent={chatMessage.userId === currentUserId}
+                                        />
                                     </ListItem>
                                 ))}
                                 <div ref={messagesEndRef} />
