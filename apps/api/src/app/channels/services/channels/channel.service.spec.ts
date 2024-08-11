@@ -168,39 +168,38 @@ describe('ChannelService', () => {
     });
 
     describe('create', () => {
-      it('should create a new channel with topics', async () => {
-        const newChannelData: Omit<Channel, 'id' | 'createdAt'> = mockNewChannelData;
-        const createdTopics = mockTopics;
-        const expectedSavedChannel: Channel = {
-            ...newChannelData,
-            id: expect.any(String),
-            createdAt: expect.any(Date),
-            topics: createdTopics
-        };
+        it('should create a new channel with topics', async () => {
+            const newChannelData: Omit<Channel, 'id' | 'createdAt'> = mockNewChannelData;
+            const createdTopics = mockTopics;
+            const expectedSavedChannel: Channel = {
+                ...newChannelData,
+                id: expect.any(String),
+                createdAt: expect.any(Date),
+                topics: createdTopics
+            };
 
-        topicService.getOrCreateTopics.mockResolvedValue(createdTopics);
-        channelRepository.save.mockResolvedValue(expectedSavedChannel);
+            topicService.getOrCreateTopics.mockResolvedValue(createdTopics);
+            channelRepository.save.mockResolvedValue(expectedSavedChannel);
 
-        const result: Channel = await channelService.create(newChannelData);
+            const result: Channel = await channelService.create(newChannelData);
 
-        expect(result).toEqual(expectedSavedChannel);
-        expect(transactionManager.runInTransaction).toHaveBeenCalled();
-        expect(topicService.getOrCreateTopics).toHaveBeenCalledWith(
-            newChannelData.topics.map(t => t.name),
-            expect.any(Object)
-        );
-        expect(channelRepository.save).toHaveBeenCalledWith(
-            {
-                name: newChannelData.name,
-                description: newChannelData.description,
-                topics: createdTopics,
-                id: undefined,
-                createdAt: undefined
-            },
-            expect.any(Object)
-        );
-    });
-
+            expect(result).toEqual(expectedSavedChannel);
+            expect(transactionManager.runInTransaction).toHaveBeenCalled();
+            expect(topicService.getOrCreateTopics).toHaveBeenCalledWith(
+                newChannelData.topics.map(t => t.name),
+                expect.any(Object)
+            );
+            expect(channelRepository.save).toHaveBeenCalledWith(
+                {
+                    name: newChannelData.name,
+                    description: newChannelData.description,
+                    topics: createdTopics,
+                    id: undefined,
+                    createdAt: undefined
+                },
+                expect.any(Object)
+            );
+        });
 
         it('should throw an error if channel creation fails', async () => {
             const error = new Error('Channel creation failed');
