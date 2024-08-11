@@ -1,6 +1,5 @@
 import { CssBaseline, ThemeProvider, useMediaQuery } from '@mui/material';
 import { Link, Route, Routes } from 'react-router-dom';
-import SignInPage from './features/login/pages/SignInPage';
 import SignUpPage from './features/register/pages/SignUpPage';
 import { darkTheme, lightTheme } from './lib/themes';
 import SiderbarLayout from './layouts/SidebarLayout';
@@ -25,7 +24,6 @@ export function App() {
                         <Route path=":id" element={<ChannelComponent />} />
                     </Route>
                 </Route>
-                <Route path="/login" element={<SignInPage />} />
                 <Route path="/signup" element={<SignUpPage />} />
             </Routes>
         </ThemeProvider>

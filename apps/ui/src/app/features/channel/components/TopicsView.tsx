@@ -1,14 +1,15 @@
 import { AddCircle, Cancel } from '@mui/icons-material';
 import { Grid, TextField, IconButton, Box, Chip } from '@mui/material';
-import { UseFormRegister } from 'react-hook-form';
+import { FieldError, UseFormRegister } from 'react-hook-form';
 import { FormValues } from '../../../types/channel/FormValues';
 
 type TopicsViewProps = {
     register: UseFormRegister<FormValues>;
+    error?: FieldError;
     topics: string[];
 };
 
-export default function TopicsView({ register, topics }: TopicsViewProps) {
+export default function TopicsView({ register, topics, error }: TopicsViewProps) {
     const handleAddTopic = () => {
         return;
     };
@@ -25,7 +26,11 @@ export default function TopicsView({ register, topics }: TopicsViewProps) {
                     focused
                     variant="outlined"
                     label="Topics"
-                    {...register('topics')}
+                    {...register('topics', {
+                        required: 'at least one topic is required'
+                    })}
+                    error={!!error}
+                    helperText={error?.message}
                 />
             </Grid>
             <Grid item xs={12} sm={6}>

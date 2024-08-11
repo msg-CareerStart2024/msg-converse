@@ -4,10 +4,21 @@ import { ChannelFormValues, channelSchema } from '../../../types/channel/channel
 import { zodResolver } from '@hookform/resolvers/zod';
 
 export default function ChannelPage() {
-    const channelData = {
-        channelName: 'Example Channel',
+    const isEdit = false;
+
+    let channelData = {
+        channelName: '',
+        description: '',
         topics: []
     };
+
+    if (isEdit) {
+        channelData = {
+            channelName: 'Example Channel',
+            description: 'Example Description',
+            topics: []
+        };
+    }
 
     const {
         handleSubmit,
@@ -30,6 +41,9 @@ export default function ChannelPage() {
             isSubmitting={false}
             isEditForm={false}
             initialValues={channelData}
+            onSubmit={function (): void {
+                throw new Error('Function not implemented.');
+            }}
         />
     );
 }

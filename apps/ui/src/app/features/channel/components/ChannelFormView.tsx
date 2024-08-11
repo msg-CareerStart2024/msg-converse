@@ -11,6 +11,7 @@ export type ChannelFormProps = {
     errors: FieldErrors<FormValues>;
     isSubmitting: boolean;
     isEditForm: boolean;
+    onSubmit: () => void;
     initialValues?: FormValues;
 };
 
@@ -23,19 +24,16 @@ export default function ChannelFormView({
     errors,
     isSubmitting,
     isEditForm,
+    onSubmit,
     initialValues
 }: ChannelFormProps) {
     const formRef = useRef<HTMLFormElement>(null);
 
-    const handleActionClick = (action: 'create' | 'delete' | 'update') => {
+    const handleCreateOrUpdate = () => {
         if (formRef.current) {
             formRef.current.requestSubmit();
         }
     };
-
-    function onSubmit() {
-        return;
-    }
 
     return (
         <Container component="main" maxWidth="lg" sx={{ mt: 16, bgcolor: 'background.paper' }}>
@@ -58,19 +56,19 @@ export default function ChannelFormView({
                             <>
                                 <ActionButton
                                     action="delete"
-                                    handleAction={() => handleActionClick('delete')}
+                                    handleAction={() => onSubmit()}
                                     isSubmitting={isSubmitting}
                                 />
                                 <ActionButton
                                     action="update"
-                                    handleAction={() => handleActionClick('update')}
+                                    handleAction={handleCreateOrUpdate}
                                     isSubmitting={isSubmitting}
                                 />
                             </>
                         ) : (
                             <ActionButton
                                 action="create"
-                                handleAction={() => handleActionClick('create')}
+                                handleAction={handleCreateOrUpdate}
                                 isSubmitting={isSubmitting}
                             />
                         )}
@@ -84,6 +82,7 @@ export default function ChannelFormView({
                         <Grid item xs={12} sm={6}>
                             <TextField
                                 fullWidth
+                                focused
                                 defaultValue={isEditForm ? initialValues?.channelName : ''}
                                 label="Channel Name"
                                 variant="outlined"
@@ -97,6 +96,7 @@ export default function ChannelFormView({
                         <Grid item xs={12} sm={6}>
                             <TextField
                                 fullWidth
+                                focused
                                 defaultValue={isEditForm ? initialValues?.description : ''}
                                 label="Description"
                                 variant="outlined"
