@@ -3,13 +3,13 @@ import {
     createMockChannelRepository,
     createMockTopicService,
     createMockTransactionManager
-} from '../../../app/channels/services/channels/channel.service.spec';
+} from '../../../src/app/channels/services/channels/channel.service.spec';
 
-import { ChannelRepository } from '../../../app/channels/repository/channel.repository';
-import { ChannelService } from '../../../app/channels/services/channels/channel.service';
-import { TopicService } from '../../../app/channels/services/topics/topic.service';
-import { TransactionManager } from '../../../app/shared/services/transaction.manager';
-import { mockChannels } from '../../../app/channels/__mocks__/channel.mock';
+import { ChannelRepository } from '../../../src/app/channels/repository/channel.repository';
+import { ChannelService } from '../../../src/app/channels/services/channels/channel.service';
+import { TopicService } from '../../../src/app/channels/services/topics/topic.service';
+import { TransactionManager } from '../../../src/app/shared/services/transaction.manager';
+import { mockChannels } from '../../../src/app/channels/__mocks__/channel.mock';
 
 describe('ChannelService - searchChannels Integration Test', () => {
     let channelService: ChannelService;

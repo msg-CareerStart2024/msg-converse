@@ -3,16 +3,16 @@ import {
     createMockChannelRepository,
     createMockTopicService,
     createMockTransactionManager
-} from '../../../app/channels/services/channels/channel.service.spec';
+} from '../../../src/app/channels/services/channels/channel.service.spec';
 
-import { Channel } from '../../../app/channels/domain/channel.entity';
-import { ChannelRepository } from '../../../app/channels/repository/channel.repository';
-import { ChannelService } from '../../../app/channels/services/channels/channel.service';
+import { Channel } from '../../../src/app/channels/domain/channel.entity';
+import { ChannelRepository } from '../../../src/app/channels/repository/channel.repository';
+import { ChannelService } from '../../../src/app/channels/services/channels/channel.service';
 import { EntityManager } from 'typeorm';
-import { TopicService } from '../../../app/channels/services/topics/topic.service';
-import { TransactionManager } from '../../../app/shared/services/transaction.manager';
-import { mockNewChannelData } from '../../../app/channels/__mocks__/channel.mock';
-import { mockTopics } from '../../../app/channels/__mocks__/topic.mock';
+import { TopicService } from '../../../src/app/channels/services/topics/topic.service';
+import { TransactionManager } from '../../../src/app/shared/services/transaction.manager';
+import { mockNewChannelData } from '../../../src/app/channels/__mocks__/channel.mock';
+import { mockTopics } from '../../../src/app/channels/__mocks__/topic.mock';
 
 describe('ChannelService - create Integration Test', () => {
     let channelService: ChannelService;
@@ -101,6 +101,7 @@ describe('ChannelService - create Integration Test', () => {
 
         it('should create a channel with null description', async () => {
             const channelData = { ...mockNewChannelData, description: null };
+            // @ts-ignore
             const expectedSavedChannel: Channel = {
                 ...channelData,
                 id: 'generated-id',
@@ -111,6 +112,7 @@ describe('ChannelService - create Integration Test', () => {
             topicService.getOrCreateTopics.mockResolvedValue(mockTopics);
             channelRepository.save.mockResolvedValue(expectedSavedChannel);
 
+            // @ts-ignore
             const result = await channelService.create(channelData);
 
             expect(result.description).toBeNull();

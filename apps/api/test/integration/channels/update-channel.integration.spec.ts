@@ -1,11 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { mockChannels, mockUpdateChannelData } from '../../../app/channels/__mocks__/channel.mock';
+import {
+    mockChannels,
+    mockUpdateChannelData
+} from '../../../src/app/channels/__mocks__/channel.mock';
 
-import { ChannelRepository } from '../../../app/channels/repository/channel.repository';
-import { ChannelService } from '../../../app/channels/services/channels/channel.service';
+import { ChannelRepository } from '../../../src/app/channels/repository/channel.repository';
+import { ChannelService } from '../../../src/app/channels/services/channels/channel.service';
 import { EntityManager } from 'typeorm';
-import { TopicService } from '../../../app/channels/services/topics/topic.service';
-import { TransactionManager } from '../../../app/shared/services/transaction.manager';
+import { TopicService } from '../../../src/app/channels/services/topics/topic.service';
+import { TransactionManager } from '../../../src/app/shared/services/transaction.manager';
 
 describe('ChannelService - update Integration Test', () => {
     let channelService: ChannelService;
@@ -76,6 +79,7 @@ describe('ChannelService - update Integration Test', () => {
             topicService.getOrCreateTopics.mockResolvedValue(updatedTopics);
             channelRepository.save.mockResolvedValue(updatedChannel);
 
+            // @ts-ignore
             const result = await channelService.update(channelId, updateData);
 
             expect(result).toEqual(updatedChannel);
@@ -149,8 +153,9 @@ describe('ChannelService - update Integration Test', () => {
             const updatedChannel = { ...existingChannel, description: null };
 
             channelRepository.findOneById.mockResolvedValue(existingChannel);
+            // @ts-ignore
             channelRepository.save.mockResolvedValue(updatedChannel);
-
+            // @ts-ignore
             const result = await channelService.update(channelId, updateData);
 
             expect(result.description).toBeNull();
@@ -204,7 +209,7 @@ describe('ChannelService - update Integration Test', () => {
             channelRepository.findOneById.mockResolvedValue(existingChannel);
             topicService.getOrCreateTopics.mockResolvedValue(uniqueTopics);
             channelRepository.save.mockResolvedValue(updatedChannel);
-
+            // @ts-ignore
             const result = await channelService.update(channelId, updateData);
 
             expect(result.topics).toHaveLength(2);

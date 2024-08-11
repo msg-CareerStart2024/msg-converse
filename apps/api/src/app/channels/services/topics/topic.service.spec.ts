@@ -1,10 +1,10 @@
 import { EntityManager, Repository } from 'typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
+import { mockCreateTopicDto, mockTopic, mockTopics } from '../../__mocks__/topic.mock';
 
 import { Topic } from '../../domain/topic.entity';
 import { TopicRepository } from '../../repository/topics/topic.repository';
 import { TopicService } from './topic.service';
-import { mockTopics } from '../../__mocks__/topic.mock';
 
 export const createMockTopicRepository = (): jest.Mocked<TopicRepository> => {
     const mockRepository: jest.Mocked<Repository<Topic>> = {
@@ -69,36 +69,33 @@ describe('TopicService', () => {
     });
 
     describe('create', () => {
-        const topicData: Partial<Topic> = { name: 'NEW_TOPIC' };
-        const createdTopic: Topic = { id: '3', name: 'NEW_TOPIC', channels: [] };
-
         it('should create a new topic without entity manager', async () => {
-            topicRepository.save.mockResolvedValue(createdTopic);
+            topicRepository.save.mockResolvedValue(mockTopic);
 
-            const result = await topicService.create(topicData);
+            const result = await topicService.create(mockCreateTopicDto);
 
-            expect(result).toEqual(createdTopic);
+            expect(result).toEqual(mockTopic);
             expect(topicRepository.save).toHaveBeenCalledWith(
-                expect.objectContaining(topicData),
+                expect.objectContaining({ name: mockCreateTopicDto.name }),
                 undefined
             );
         });
 
         it('should create a new topic with entity manager', async () => {
-            topicRepository.save.mockResolvedValue(createdTopic);
+            topicRepository.save.mockResolvedValue(mockTopic);
 
-            const result = await topicService.create(topicData, mockEntityManager);
+            const result = await topicService.create(mockCreateTopicDto, mockEntityManager);
 
-            expect(result).toEqual(createdTopic);
+            expect(result).toEqual(mockTopic);
             expect(topicRepository.save).toHaveBeenCalledWith(
-                expect.objectContaining(topicData),
+                expect.objectContaining({ name: mockCreateTopicDto.name }),
                 mockEntityManager
             );
         });
     });
 
     describe('getOrCreateTopics', () => {
-        const topicNames = ['TOPIC_1', 'TOPIC_2'];
+        const topicNames = mockTopics.map(topic => topic.name);
 
         it('should get or create topics', async () => {
             topicRepository.findOrCreateTopics.mockResolvedValue(mockTopics);
@@ -113,7 +110,7 @@ describe('TopicService', () => {
         });
 
         it('should handle duplicate topic names', async () => {
-            const duplicateTopicNames = ['TOPIC_1', 'TOPIC_1', 'TOPIC_2'];
+            const duplicateTopicNames = [...topicNames, topicNames[0]];
             topicRepository.findOrCreateTopics.mockResolvedValue(mockTopics);
 
             const result = await topicService.getOrCreateTopics(
@@ -123,7 +120,7 @@ describe('TopicService', () => {
 
             expect(result).toEqual(mockTopics);
             expect(topicRepository.findOrCreateTopics).toHaveBeenCalledWith(
-                ['TOPIC_1', 'TOPIC_2'],
+                topicNames,
                 mockEntityManager
             );
         });
@@ -131,43 +128,40 @@ describe('TopicService', () => {
 
     describe('getByName', () => {
         it('should return a topic by name', async () => {
-            const topicName = 'TOPIC_1';
-            const mockTopic = mockTopics[0];
             topicRepository.findByName.mockResolvedValue(mockTopic);
 
-            const result = await topicService.getByName(topicName);
+            const result = await topicService.getByName(mockTopic.name);
 
             expect(result).toEqual(mockTopic);
-            expect(topicRepository.findByName).toHaveBeenCalledWith(topicName);
+            expect(topicRepository.findByName).toHaveBeenCalledWith(mockTopic.name);
         });
     });
 
     describe('getById', () => {
         it('should return a topic by id', async () => {
-            const topicId = '1';
-            const mockTopic = mockTopics[0];
             topicRepository.getById.mockResolvedValue(mockTopic);
 
-            const result = await topicService.getById(topicId);
+            const result = await topicService.getById(mockTopic.id);
 
             expect(result).toEqual(mockTopic);
-            expect(topicRepository.getById).toHaveBeenCalledWith(topicId);
+            expect(topicRepository.getById).toHaveBeenCalledWith(mockTopic.id);
         });
     });
 
     describe('delete', () => {
-        const topicId = '1';
-
         it('should delete a topic without entity manager', async () => {
-            await topicService.delete(topicId);
+            await topicService.delete(mockTopic.id);
 
-            expect(topicRepository.deleteById).toHaveBeenCalledWith(topicId, undefined);
+            expect(topicRepository.deleteById).toHaveBeenCalledWith(mockTopic.id, undefined);
         });
 
         it('should delete a topic with entity manager', async () => {
-            await topicService.delete(topicId, mockEntityManager);
+            await topicService.delete(mockTopic.id, mockEntityManager);
 
-            expect(topicRepository.deleteById).toHaveBeenCalledWith(topicId, mockEntityManager);
+            expect(topicRepository.deleteById).toHaveBeenCalledWith(
+                mockTopic.id,
+                mockEntityManager
+            );
         });
     });
 });
