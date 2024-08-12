@@ -1,5 +1,5 @@
 import { CssBaseline, ThemeProvider, useMediaQuery } from '@mui/material';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, Route, Routes, useNavigate } from 'react-router-dom';
 import { useLazyGetUserByIdQuery } from './api/users-api';

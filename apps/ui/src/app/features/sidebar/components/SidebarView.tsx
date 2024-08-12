@@ -15,7 +15,6 @@ import {
     Stack,
     Typography
 } from '@mui/material';
-import React from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import MsgLogo from '../../../../assets/msg_logo.png';
