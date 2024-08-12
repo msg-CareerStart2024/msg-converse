@@ -43,7 +43,7 @@ export const createMockTopicRepository = (): jest.Mocked<TopicRepository> => {
     return mock as unknown as jest.Mocked<TopicRepository>;
 };
 
-const createMockUserService = () => ({
+export const createMockUserService = () => ({
     getById: jest.fn(),
     getByEmail: jest.fn(),
     create: jest.fn(),
@@ -83,7 +83,6 @@ describe('ChannelService', () => {
     let channelService: ChannelService;
     let channelRepository: ReturnType<typeof createMockChannelRepository>;
     let topicService: ReturnType<typeof createMockTopicService>;
-    let userService: ReturnType<typeof createMockUserService>;
     let transactionManager: ReturnType<typeof createMockTransactionManager>;
 
     beforeEach(async () => {
