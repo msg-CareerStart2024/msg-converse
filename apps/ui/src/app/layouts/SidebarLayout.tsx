@@ -4,7 +4,7 @@ import { Box, Container, IconButton, Typography } from '@mui/material';
 import { Outlet } from 'react-router-dom';
 import SidebarContainer from '../features/sidebar/containers/SidebarContainer';
 
-export default function ProtectedLayout() {
+export default function SidebarLayout() {
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
 
     const toggleSidebar = () => {
