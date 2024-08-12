@@ -19,11 +19,11 @@ export const createMockTopicRepository = (): jest.Mocked<TopicRepository> => {
         repository: mockRepository,
         getAll: jest.fn(),
         save: jest.fn(),
-        findOrCreateTopics: jest.fn(),
-        findByName: jest.fn(),
+        getOrCreateTopics: jest.fn(),
+        getByName: jest.fn(),
         getById: jest.fn(),
-        deleteById: jest.fn(),
-        getRepo: jest.fn().mockReturnValue(mockRepository)
+        remove: jest.fn(),
+        getRepository: jest.fn().mockReturnValue(mockRepository)
     } as unknown as jest.Mocked<TopicRepository>;
 };
 
@@ -150,13 +150,13 @@ describe('TopicService', () => {
 
     describe('delete', () => {
         it('should delete a topic without entity manager', async () => {
-            await topicService.delete(mockTopic.id);
+            await topicService.remove(mockTopic.id);
 
             expect(topicRepository.remove).toHaveBeenCalledWith(mockTopic.id, undefined);
         });
 
         it('should delete a topic with entity manager', async () => {
-            await topicService.delete(mockTopic.id, mockEntityManager);
+            await topicService.remove(mockTopic.id, mockEntityManager);
 
             expect(topicRepository.remove).toHaveBeenCalledWith(mockTopic.id, mockEntityManager);
         });
