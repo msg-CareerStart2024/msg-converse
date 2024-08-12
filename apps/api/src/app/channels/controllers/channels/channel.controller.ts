@@ -88,6 +88,7 @@ export class ChannelController {
         @CurrentUserId() userId: string,
         @Body() createChannelDto: CreateChannelDto
     ): Promise<ChannelDto> {
+        console.log('post');
         const newChannel = ChannelMapper.fromCreateDto(createChannelDto);
         const createdChannel = await this.channelService.create(newChannel, userId);
         return ChannelMapper.toDto(createdChannel);

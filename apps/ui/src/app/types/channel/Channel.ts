@@ -7,3 +7,9 @@ export interface Channel {
     description: string;
     createdAt: Date;
 }
+
+export interface ChannelDTO {
+    name: string;
+    topics: string[];
+    description: string;
+}

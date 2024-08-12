@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { API_URLS, BASE_URL } from '../config/api-config';
 import { setChannels } from '../features/channels/slices/channels-slice';
-import { Channel } from '../types/channel/Channel';
+import { Channel, ChannelDTO } from '../types/channel/Channel';
 import { API_CACHE_TAGS } from '../config/api-tags';
 
 export const channelsApi = createApi({
@@ -35,6 +35,15 @@ export const channelsApi = createApi({
                 body: { user: data.user, channel: data.channel }
             }),
             invalidatesTags: [API_CACHE_TAGS.CHANNELS]
+        }),
+
+        createChannel: builder.mutation<Channel, ChannelDTO>({
+            query: channel => ({
+                url: `${API_URLS.CHANNELS}`,
+                method: 'POST',
+                body: { channel }
+            }),
+            invalidatesTags: [API_CACHE_TAGS.CHANNELS]
         })
     })
 });
@@ -43,5 +52,6 @@ export const {
     useLazyGetChannelsQuery,
     useGetChannelsQuery,
     useJoinChannelMutation,
-    useLazyGetChannelByIdQuery
+    useLazyGetChannelByIdQuery,
+    useCreateChannelMutation
 } = channelsApi;

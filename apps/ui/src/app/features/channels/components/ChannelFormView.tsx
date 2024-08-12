@@ -2,9 +2,17 @@ import { Avatar, Box, Container, Grid, TextField } from '@mui/material';
 import ActionButtonView from './ActionButtonView';
 import { ACTION_TYPE, FormValues } from '../../../types/channel/channel.types';
 import TopicsView from './TopicsView';
-import { FieldErrors, UseFormHandleSubmit, UseFormRegister } from 'react-hook-form';
+import {
+    FieldErrors,
+    UseFormGetValues,
+    UseFormHandleSubmit,
+    UseFormRegister,
+    UseFormSetValue
+} from 'react-hook-form';
 import { Topic } from '../../../types/channel/Topic';
 import { ChannelFormValues } from '../../../types/channel/schemas/channel.schema';
+import { useCreateChannelMutation } from '../../../api/channelsApi';
+import { useState } from 'react';
 
 type ChannelFormProps = {
     handleSubmit: UseFormHandleSubmit<ChannelFormValues>;
@@ -12,7 +20,16 @@ type ChannelFormProps = {
     errors: FieldErrors<FormValues>;
     isSubmitting: boolean;
     isEditForm: boolean;
-    initialValues?: ChannelFormValues;
+    getValues: UseFormGetValues<{
+        name: string;
+        topics: string;
+        description: string;
+    }>;
+    setValue: UseFormSetValue<{
+        name: string;
+        description: string;
+        topics: string;
+    }>;
 };
 
 const topic1: Topic = {
@@ -25,7 +42,6 @@ const topic2: Topic = {
     name: 'name2'
 };
 
-const topics: Topic[] = [topic1, topic2];
 const userInitial = 'M';
 
 export default function ChannelFormView({
@@ -34,10 +50,19 @@ export default function ChannelFormView({
     errors,
     isSubmitting,
     isEditForm,
-    initialValues
+    getValues,
+    setValue
 }: ChannelFormProps) {
+    const [topics, setTopics] = useState<Topic[]>([topic1, topic2]);
+
+    const [createChannel] = useCreateChannelMutation();
+
     function onSubmit() {
-        return;
+        createChannel({
+            name: getValues('name'),
+            description: getValues('description'),
+            topics: topics.map(topic => topic.name)
+        });
     }
 
     return (
@@ -82,7 +107,6 @@ export default function ChannelFormView({
                         <Grid item xs={12} sm={6}>
                             <TextField
                                 fullWidth
-                                defaultValue={isEditForm ? initialValues?.name : ''}
                                 focused
                                 label="Channel Name"
                                 variant="outlined"
@@ -96,7 +120,6 @@ export default function ChannelFormView({
                         <Grid item xs={12} sm={6}>
                             <TextField
                                 fullWidth
-                                defaultValue={isEditForm ? initialValues?.description : ''}
                                 focused
                                 label="Description"
                                 variant="outlined"
@@ -105,7 +128,13 @@ export default function ChannelFormView({
                                 helperText={errors.description?.message}
                             />
                         </Grid>
-                        <TopicsView register={register} topics={topics} />
+                        <TopicsView
+                            register={register}
+                            topics={topics}
+                            getValues={getValues}
+                            setTopics={setTopics}
+                            setValue={setValue}
+                        />
                     </Grid>
                 </form>
             </Box>

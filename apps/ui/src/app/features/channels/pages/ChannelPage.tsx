@@ -20,20 +20,14 @@ export default function ChannelPage() {
         }
     }, [id, getChannelById]);
 
-    // const channelData = data as Channel;
-
     const {
         handleSubmit,
         register,
         setValue,
+        getValues,
         formState: { errors }
     } = useForm<ChannelFormValues>({
         resolver: zodResolver(channelSchema)
-        // defaultValues: {
-        //     name: channelData?.name ?? '',
-        //     description: channelData?.description ?? '',
-        //     topics: channelData?.topics ?? []
-        // }
     });
 
     useEffect(() => {
@@ -41,7 +35,6 @@ export default function ChannelPage() {
             console.log('data has arrived');
             setValue('name', data.name);
             setValue('description', data.description);
-            setValue('topics', data.topics);
         }
     }, [data, setValue]);
 
@@ -59,7 +52,8 @@ export default function ChannelPage() {
             errors={errors}
             isSubmitting={false}
             isEditForm={!!id}
-            initialValues={data}
+            getValues={getValues}
+            setValue={setValue}
         />
     );
 }

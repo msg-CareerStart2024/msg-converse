@@ -1,21 +1,51 @@
 import { AddCircle, Cancel } from '@mui/icons-material';
 import { Grid, TextField, IconButton, Box, Chip } from '@mui/material';
-import { UseFormRegister } from 'react-hook-form';
+import { UseFormGetValues, UseFormRegister, UseFormSetValue } from 'react-hook-form';
 import { Topic } from '../../../types/channel/Topic';
 import { ChannelFormValues } from '../../../types/channel/schemas/channel.schema';
 
 type TopicsViewProps = {
     register: UseFormRegister<ChannelFormValues>;
     topics: Topic[];
+    getValues: UseFormGetValues<{
+        name: string;
+        topics: string;
+        description: string;
+    }>;
+    setValue: UseFormSetValue<{
+        name: string;
+        description: string;
+        topics: string;
+    }>;
+    setTopics: React.Dispatch<React.SetStateAction<Topic[]>>;
 };
 
-export default function TopicsView({ register, topics }: TopicsViewProps) {
+export default function TopicsView({
+    register,
+    topics,
+    getValues,
+    setTopics,
+    setValue
+}: TopicsViewProps) {
     const handleAddTopic = () => {
-        return;
+        const tempTopics = [...topics];
+        if (!tempTopics.find(topic => topic.name === getValues('topics'))) {
+            tempTopics.push({
+                id: '',
+                name: getValues('topics')
+            });
+            setTopics(tempTopics);
+        }
+        setValue('topics', '');
     };
 
-    const handleDeleteTopic = () => {
-        return;
+    const handleDeleteTopic = (name: string) => {
+        const tempTopics = [...topics];
+        const topic = tempTopics.find(topic => topic.name === name);
+        if (topic) {
+            tempTopics.splice(tempTopics.indexOf(topic), 1);
+            setTopics(tempTopics);
+        }
     };
 
     return (
@@ -41,7 +71,7 @@ export default function TopicsView({ register, topics }: TopicsViewProps) {
                             key={index}
                             label={topic.name}
                             color="primary"
-                            onDelete={handleDeleteTopic}
+                            onDelete={() => handleDeleteTopic(topic.name)}
                             deleteIcon={<Cancel />}
                         />
                     ))}
