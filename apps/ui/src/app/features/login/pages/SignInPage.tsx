@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import { useLoginUserMutation } from '../../../api/auth-api';
 import { LoginFormValues, userSchema } from '../../../types/users/login.types';
 import SignInFormView from '../components/SignInFormView';
-import React from 'react';
 
 export default function SignInPage() {
     const {
