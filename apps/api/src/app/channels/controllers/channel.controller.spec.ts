@@ -7,11 +7,11 @@ import {
     mockChannels,
     mockCreateChannelDto,
     mockUpdateChannelDto
-} from '../../__mocks__/channel.mock';
+} from '../__mocks__/channel.mock';
 
 import { ChannelController } from './channel.controller';
-import { ChannelMapper } from '../../mapper/channel.mapper';
-import { ChannelService } from '../../services/channels/channel.service';
+import { ChannelMapper } from '../mapper/channel.mapper';
+import { ChannelService } from '../services/channels/channel.service';
 
 describe('ChannelController', () => {
     let controller: ChannelController;
@@ -112,10 +112,10 @@ describe('ChannelController', () => {
         it('should create a new channel and return a ChannelDto', async () => {
             channelService.create.mockResolvedValue(mockChannelWithTopics);
 
-            const result = await controller.createChannel('user-id', mockCreateChannelDto);
+            const result = await controller.createChannel(mockCreateChannelDto);
 
             expect(result).toEqual(mockChannelDtoWithTopics);
-            expect(channelService.create).toHaveBeenCalledWith(expect.any(Object), 'user-id');
+            expect(channelService.create).toHaveBeenCalledWith(expect.any(Object));
             expect(ChannelMapper.fromCreateDto).toHaveBeenCalledWith(mockCreateChannelDto);
         });
 
@@ -125,7 +125,7 @@ describe('ChannelController', () => {
             );
 
             await expect(
-                controller.createChannel('user-id', { ...mockCreateChannelDto, name: '' })
+                controller.createChannel({ ...mockCreateChannelDto, name: '' })
             ).rejects.toThrow(BadRequestException);
         });
 
@@ -139,7 +139,7 @@ describe('ChannelController', () => {
             );
             channelService.create.mockResolvedValue(maxTopicsChannel);
 
-            const result = await controller.createChannel('user-id', {
+            const result = await controller.createChannel({
                 ...mockCreateChannelDto,
                 topics: Array(5).fill({ name: 'TOPIC' })
             });
