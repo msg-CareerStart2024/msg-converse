@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { UseFormRegister } from 'react-hook-form';
-import { beforeEach, describe, it, test, vi } from 'vitest';
+import { beforeEach, describe, vi } from 'vitest';
 import { LoginFormValues } from '../../../types/users/login.types';
 import SignInFormView from './SignInFormView';
 console.log('SignInFormView.test.tsx Loaded');
@@ -32,7 +32,7 @@ describe('SignInFormView', () => {
         expect(screen.getByRole('button', { name: /sign in/i })).toBeInTheDocument();
     });
 
-    test('shows error message when email is invalid', async () => {
+    it('shows error message when email is invalid', async () => {
         render(
             <SignInFormView
                 handleSubmit={handleSubmit}
@@ -46,7 +46,7 @@ describe('SignInFormView', () => {
         expect(screen.getByText('You have to provide a valid email!')).toBeInTheDocument();
     });
 
-    test('calls handleSubmit when the form is submitted', async () => {
+    it('calls handleSubmit when the form is submitted', async () => {
         const emailInput = screen.getByLabelText(/email/i);
         const passwordInput = screen.getByLabelText(/password/i);
         const submitButton = screen.getByRole('button', { name: /sign in/i });
@@ -61,7 +61,7 @@ describe('SignInFormView', () => {
         });
     });
 
-    test('displays a loading indicator when submitting', () => {
+    it('displays a loading indicator when submitting', () => {
         render(
             <SignInFormView
                 handleSubmit={handleSubmit}
@@ -75,7 +75,7 @@ describe('SignInFormView', () => {
         expect(screen.getByRole('progressbar')).toBeInTheDocument();
     });
 
-    test('shows an error message if login fails', () => {
+    it('shows an error message if login fails', () => {
         render(
             <SignInFormView
                 handleSubmit={handleSubmit}
