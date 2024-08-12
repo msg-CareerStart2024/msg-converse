@@ -2,9 +2,14 @@ import { useForm } from 'react-hook-form';
 import ChannelFormView from '../components/ChannelFormView';
 import { ChannelFormValues, channelSchema } from '../../../types/channel/channel.types';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useParams } from 'react-router-dom';
 
-export default function ChannelPage() {
-    const isEdit = false;
+type ChannelPageProps = {
+    isEdit: boolean;
+};
+
+export default function ChannelPage({ isEdit }: ChannelPageProps) {
+    const { id } = useParams<{ id?: string }>();
 
     let channelData = {
         channelName: '',
@@ -12,7 +17,7 @@ export default function ChannelPage() {
         topics: []
     };
 
-    if (isEdit) {
+    if (isEdit && id) {
         channelData = {
             channelName: 'Example Channel',
             description: 'Example Description',
@@ -39,7 +44,7 @@ export default function ChannelPage() {
             handleSubmit={handleSubmit}
             errors={errors}
             isSubmitting={false}
-            isEditForm={false}
+            isEditForm={isEdit}
             initialValues={channelData}
             onSubmit={function (): void {
                 throw new Error('Function not implemented.');
