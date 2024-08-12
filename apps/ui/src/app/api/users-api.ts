@@ -1,15 +1,11 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { API_URLS, BASE_URL } from '../config/api-config';
+import { createApi } from '@reduxjs/toolkit/query/react';
 import { API_CACHE_TAGS } from '../config/api-tags';
-import { addBearerAuthHeader } from '../utils/utils';
+import getFetchBaseQuery from './fetch-base-query';
 
 export const usersApi = createApi({
     reducerPath: 'usersApi',
     tagTypes: [API_CACHE_TAGS.USERS],
-    baseQuery: fetchBaseQuery({
-        baseUrl: BASE_URL + API_URLS.USERS,
-        prepareHeaders: addBearerAuthHeader
-    }),
+    baseQuery: getFetchBaseQuery(),
     endpoints: builder => ({
         getUserById: builder.query({
             query: id => `${id}`,
