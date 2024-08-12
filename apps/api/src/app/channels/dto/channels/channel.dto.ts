@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { TopicDto } from '../topics/topic.dto';
+import { MessageDTO } from '../../../messages/dto/message.dto';
+import { UserDTO } from '../../../users/dto/user.dto';
 
 export class ChannelDto {
     @ApiProperty({
@@ -32,9 +34,23 @@ export class ChannelDto {
     createdAt: Date;
 
     @ApiProperty({
+        description: 'The list of users associated with this channel',
+        type: [UserDTO],
+        isArray: true
+    })
+    users: UserDTO[];
+
+    @ApiProperty({
         description: 'The list of topics associated with this channel',
         type: [TopicDto],
         isArray: true
     })
     topics: TopicDto[];
+
+    @ApiProperty({
+        description: 'The list of topics associated with this channel',
+        type: [MessageDTO],
+        isArray: true
+    })
+    messages: MessageDTO[];
 }

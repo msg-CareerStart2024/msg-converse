@@ -1,11 +1,15 @@
-import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_FILTER } from '@nestjs/core';
+import { AppConfigPaths } from './shared/config/app.config';
+import { AuthModule } from './auth/auth.module';
+import { ChannelsModule } from './channels/channels.module';
+import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import Joi from 'joi';
-import { AuthModule } from './auth/auth.module';
 import { HealthModule } from './health/health.module';
-import { AppConfigPaths } from './shared/config/app.config';
-import { UserModule } from './users/user.module';
+import { UsersModule } from './users/user.module';
+import { MessagesModule } from './messages/messages.module';
 
 @Module({
     imports: [
@@ -34,11 +38,18 @@ import { UserModule } from './users/user.module';
             }),
             inject: [ConfigService]
         }),
+        MessagesModule,
+        ChannelsModule,
         HealthModule,
-        UserModule,
+        UsersModule,
         AuthModule
     ],
     controllers: [],
-    providers: []
+    providers: [
+        {
+            provide: APP_FILTER,
+            useClass: HttpExceptionFilter
+        }
+    ]
 })
 export class AppModule {}

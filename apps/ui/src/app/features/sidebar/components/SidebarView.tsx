@@ -1,3 +1,4 @@
+import { ChevronLeft, Logout } from '@mui/icons-material';
 import {
     Avatar,
     Box,
@@ -14,16 +15,19 @@ import {
     Stack,
     Typography
 } from '@mui/material';
+import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import MsgLogo from '../../../../assets/msg_logo.png';
-import SidebarItem from './SidebarItem';
-import { ChevronLeft, Logout } from '@mui/icons-material';
-import { USER } from '../../channels/static';
+import { RootState } from '../../../store/store';
 import { Channel } from '../../../types/channels/Channel';
+import { generateUserName } from '../../../utils/utils';
+import SidebarItem from './SidebarItem';
 
 type SidebarViewProps = {
-    open: boolean;
-    anchorElelement: HTMLElement | null;
+    menuOpen: boolean;
+    anchorElement: HTMLElement | null;
     handleClick: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+    handleLogout: () => void;
     handleClose: () => void;
     channels: Channel[];
     toggleSidebar: () => void;
@@ -31,19 +35,22 @@ type SidebarViewProps = {
 };
 
 export default function SidebarView({
-    open,
-    anchorElelement,
+    menuOpen,
+    anchorElement,
     handleClick,
     handleClose,
     channels,
     toggleSidebar,
-    sidebarOpen
+    sidebarOpen,
+    handleLogout
 }: SidebarViewProps) {
+    const user = useSelector((state: RootState) => state.auth.user);
+    if (!user) return null;
     return (
         <Drawer
             variant="persistent"
             anchor="left"
-            open={true}
+            open={sidebarOpen}
             sx={{
                 width: '16.666667%',
                 textAlign: 'center',
@@ -58,22 +65,24 @@ export default function SidebarView({
         >
             <Box sx={{ flex: 1, overflowY: 'auto' }}>
                 <Stack alignItems="center" sx={{ my: 3 }}>
-                    <Box
-                        component="img"
-                        sx={{
-                            maxWidth: '50%',
-                            marginBottom: 1
-                        }}
-                        src={MsgLogo}
-                        alt="msg logo"
-                    />
+                    <Link to={'/'}>
+                        <Box
+                            component="img"
+                            sx={{
+                                maxWidth: '50%',
+                                marginBottom: 1
+                            }}
+                            src={MsgLogo}
+                            alt="msg logo"
+                        />
+                    </Link>
                 </Stack>
                 <Typography variant="h5" sx={{ marginBottom: 2 }}>
                     My Channels
                 </Typography>
                 <List>
                     {channels.map(channel => (
-                        <SidebarItem key={channel.id} name={channel.name} />
+                        <SidebarItem key={channel.id} channel={channel} />
                     ))}
                 </List>
                 {channels.length === 0 && (
@@ -84,21 +93,21 @@ export default function SidebarView({
                 <Divider />
                 <ListItem disablePadding sx={{ marginY: 1 }}>
                     <ListItemButton
-                        aria-controls={open ? 'basic-menu' : undefined}
+                        aria-controls={menuOpen ? 'basic-menu' : undefined}
                         aria-haspopup="true"
-                        aria-expanded={open ? 'true' : undefined}
+                        aria-expanded={menuOpen ? 'true' : undefined}
                         onClick={handleClick}
                     >
                         <ListItemIcon>
-                            <Avatar>{USER.charAt(0)}</Avatar>
+                            <Avatar>{user.firstName.charAt(0)}</Avatar>
                         </ListItemIcon>
-                        <ListItemText primary={USER} />
+                        <ListItemText primary={generateUserName(user.firstName, user.lastName)} />
                     </ListItemButton>
                 </ListItem>
                 <Menu
                     id="basic-menu"
-                    anchorEl={anchorElelement}
-                    open={open}
+                    anchorEl={anchorElement}
+                    open={menuOpen}
                     onClose={handleClose}
                     MenuListProps={{
                         'aria-labelledby': 'basic-button'
@@ -112,7 +121,7 @@ export default function SidebarView({
                         horizontal: 'right'
                     }}
                 >
-                    <MenuItem onClick={handleClose}>
+                    <MenuItem onClick={handleLogout}>
                         <ListItemIcon>
                             <Logout />
                         </ListItemIcon>

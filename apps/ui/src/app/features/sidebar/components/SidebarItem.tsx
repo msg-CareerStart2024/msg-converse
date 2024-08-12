@@ -1,21 +1,32 @@
-import { ListItem, ListItemButton, ListItemIcon, Avatar, ListItemText } from '@mui/material';
+import { Avatar, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import { Link } from 'react-router-dom';
 import { getColor } from '../../../lib/avatar-colors';
+import { Channel } from '../../../types/channels/Channel';
 
 type SidebarItemProps = {
-    name: string;
+    channel: Channel;
 };
 
-export default function SidebarItem({ name }: SidebarItemProps) {
+export default function SidebarItem({ channel }: SidebarItemProps) {
     return (
         <ListItem disablePadding>
-            <ListItemButton>
-                <ListItemIcon>
-                    <Avatar style={{ backgroundColor: getColor(name.charAt(0).toUpperCase()) }}>
-                        {name.charAt(0)}
-                    </Avatar>
-                </ListItemIcon>
-                <ListItemText primary={name} />
-            </ListItemButton>
+            <Link
+                to={`/channels/${channel.id}`}
+                style={{ textDecoration: 'none', color: 'inherit', width: '100%' }}
+            >
+                <ListItemButton>
+                    <ListItemIcon>
+                        <Avatar
+                            style={{
+                                backgroundColor: getColor(channel.name.charAt(0).toUpperCase())
+                            }}
+                        >
+                            {channel.name.charAt(0)}
+                        </Avatar>
+                    </ListItemIcon>
+                    <ListItemText primary={channel.name} />
+                </ListItemButton>
+            </Link>
         </ListItem>
     );
 }

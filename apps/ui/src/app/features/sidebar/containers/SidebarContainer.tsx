@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import SidebarView from '../components/SidebarView';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../../store/store';
+import { useNavigate } from 'react-router-dom';
+import { RootState, store } from '../../../store/store';
+import { clearCredentials } from '../../login/slices/auth-slice';
+import SidebarView from '../components/SidebarView';
 
 type SidebarContainerProps = {
     toggleSidebar: () => void;
@@ -9,22 +11,29 @@ type SidebarContainerProps = {
 };
 
 export default function SidebarContainer({ toggleSidebar, sidebarOpen }: SidebarContainerProps) {
-    const [anchorElelement, setAnchorElelement] = useState<null | HTMLElement>(null);
-    const open = Boolean(anchorElelement);
+    const [anchorElement, setAnchorElement] = useState<null | HTMLElement>(null);
+    const menuOpen = Boolean(anchorElement);
     const handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        setAnchorElelement(event.currentTarget);
+        setAnchorElement(event.currentTarget);
     };
+    const navigate = useNavigate();
     const handleClose = () => {
-        setAnchorElelement(null);
+        setAnchorElement(null);
+    };
+    const handleLogout = () => {
+        handleClose();
+        store.dispatch(clearCredentials());
+        navigate('/login');
     };
     const channels = useSelector((state: RootState) => state.channels);
 
     return (
         <SidebarView
-            open={open}
-            anchorElelement={anchorElelement}
+            menuOpen={menuOpen}
+            anchorElement={anchorElement}
             handleClick={handleClick}
             handleClose={handleClose}
+            handleLogout={handleLogout}
             channels={channels}
             toggleSidebar={toggleSidebar}
             sidebarOpen={sidebarOpen}
