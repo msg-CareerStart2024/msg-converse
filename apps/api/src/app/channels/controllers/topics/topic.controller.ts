@@ -1,9 +1,9 @@
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { Controller, Get } from "@nestjs/common";
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Controller, Get } from '@nestjs/common';
 
-import { TopicDto } from "../../dto/topics/topic.dto";
-import { TopicMapper } from "../../mapper/topic.mapper";
-import { TopicService } from "../../services/topics/topic.service";
+import { TopicDto } from '../../dto/topics/topic.dto';
+import { TopicMapper } from '../../mapper/topic.mapper';
+import { TopicService } from '../../services/topics/topic.service';
 
 @ApiTags('Topics')
 @ApiBearerAuth()
