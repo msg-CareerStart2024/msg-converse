@@ -15,7 +15,7 @@ import {
 import { formatDate, shrinkToWords } from '../../../utils/utils';
 import { getColor } from '../../../lib/avatar-colors';
 import { Link } from 'react-router-dom';
-import { useJoinChannelMutation } from '../../../api/channelsApi';
+import { useJoinChannelMutation } from '../../../api/channels-api';
 import { Channel } from '../../../types/channels/Channel';
 
 interface ChannelCardProps {
