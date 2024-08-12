@@ -23,7 +23,7 @@ describe('ChannelService - update Integration Test', () => {
                 {
                     provide: ChannelRepository,
                     useFactory: () => ({
-                        findOneById: jest.fn(),
+                        getOneById: jest.fn(),
                         save: jest.fn()
                     })
                 },
@@ -75,7 +75,7 @@ describe('ChannelService - update Integration Test', () => {
                 topics: updatedTopics
             };
 
-            channelRepository.findOneById.mockResolvedValue(existingChannel);
+            channelRepository.getOneById.mockResolvedValue(existingChannel);
             topicService.getOrCreateTopics.mockResolvedValue(updatedTopics);
             channelRepository.save.mockResolvedValue(updatedChannel);
 
@@ -104,7 +104,7 @@ describe('ChannelService - update Integration Test', () => {
             const existingChannel = mockChannels[0];
             const updatedChannel = { ...existingChannel, ...partialUpdate };
 
-            channelRepository.findOneById.mockResolvedValue(existingChannel);
+            channelRepository.getOneById.mockResolvedValue(existingChannel);
             channelRepository.save.mockResolvedValue(updatedChannel);
 
             const result = await channelService.update(channelId, partialUpdate);
@@ -118,7 +118,7 @@ describe('ChannelService - update Integration Test', () => {
             const emptyUpdate = {};
             const existingChannel = mockChannels[0];
 
-            channelRepository.findOneById.mockResolvedValue(existingChannel);
+            channelRepository.getOneById.mockResolvedValue(existingChannel);
             channelRepository.save.mockResolvedValue(existingChannel);
 
             const result = await channelService.update(channelId, emptyUpdate);
@@ -137,7 +137,7 @@ describe('ChannelService - update Integration Test', () => {
                 description: 'Trimmed Description'
             };
 
-            channelRepository.findOneById.mockResolvedValue(existingChannel);
+            channelRepository.getOneById.mockResolvedValue(existingChannel);
             channelRepository.save.mockResolvedValue(expectedUpdatedChannel);
 
             const result = await channelService.update(channelId, updateData);
@@ -152,7 +152,7 @@ describe('ChannelService - update Integration Test', () => {
             const existingChannel = mockChannels[0];
             const updatedChannel = { ...existingChannel, description: null };
 
-            channelRepository.findOneById.mockResolvedValue(existingChannel);
+            channelRepository.getOneById.mockResolvedValue(existingChannel);
             // @ts-expect-error - TS doesnt recognize the description field as optional
             channelRepository.save.mockResolvedValue(updatedChannel);
             // @ts-expect-error - TS doesnt recognize the description field as optional
@@ -166,7 +166,7 @@ describe('ChannelService - update Integration Test', () => {
             const updateData = mockUpdateChannelData;
             const dbError = new Error('Database error');
 
-            channelRepository.findOneById.mockResolvedValue(mockChannels[0]);
+            channelRepository.getOneById.mockResolvedValue(mockChannels[0]);
             channelRepository.save.mockRejectedValue(dbError);
 
             await expect(channelService.update(channelId, updateData)).rejects.toThrow(
@@ -181,7 +181,7 @@ describe('ChannelService - update Integration Test', () => {
             const existingChannel = mockChannels[0];
             const updatedChannel = { ...existingChannel, name: maxLengthName };
 
-            channelRepository.findOneById.mockResolvedValue(existingChannel);
+            channelRepository.getOneById.mockResolvedValue(existingChannel);
             channelRepository.save.mockResolvedValue(updatedChannel);
 
             const result = await channelService.update(channelId, updateData);
@@ -206,7 +206,7 @@ describe('ChannelService - update Integration Test', () => {
             ];
             const updatedChannel = { ...existingChannel, topics: uniqueTopics };
 
-            channelRepository.findOneById.mockResolvedValue(existingChannel);
+            channelRepository.getOneById.mockResolvedValue(existingChannel);
             topicService.getOrCreateTopics.mockResolvedValue(uniqueTopics);
             channelRepository.save.mockResolvedValue(updatedChannel);
             // @ts-expect-error - TS doesnt recognize the description field as optional

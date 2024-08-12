@@ -17,11 +17,11 @@ export class ChannelService {
         const trimmedSearchTerm = searchTerm?.trim();
         return trimmedSearchTerm
             ? this.channelRepository.searchChannels(this.escapeSpecialCharacters(trimmedSearchTerm))
-            : this.channelRepository.findAll();
+            : this.channelRepository.getAll();
     }
 
     async getById(channelId: string): Promise<Channel> {
-        return this.channelRepository.findOneById(channelId);
+        return this.channelRepository.getOneById(channelId);
     }
 
     async create(channelData: Omit<Channel, 'id' | 'createdAt'>): Promise<Channel> {
@@ -37,7 +37,7 @@ export class ChannelService {
 
     async update(channelId: string, updateData: Partial<Channel>): Promise<Channel> {
         return this.transactionManager.runInTransaction(async manager => {
-            const existingChannel = await this.channelRepository.findOneById(channelId);
+            const existingChannel = await this.channelRepository.getOneById(channelId);
             this.updateChannelProperties(existingChannel, updateData);
 
             if (updateData.topics) {
@@ -49,7 +49,7 @@ export class ChannelService {
     }
 
     async delete(channelId: string, manager?: EntityManager): Promise<void> {
-        await this.channelRepository.deleteById(channelId, manager);
+        await this.channelRepository.remove(channelId, manager);
     }
 
     private escapeSpecialCharacters(term: string): string {

@@ -10,15 +10,15 @@ export class ChannelRepository {
         private readonly repository: Repository<Channel>
     ) {}
 
-    async findOneById(id: string): Promise<Channel | null> {
+    async getOneById(id: string): Promise<Channel | null> {
         return this.repository.findOneBy({ id });
     }
 
-    async findAll(): Promise<Channel[]> {
+    async getAll(): Promise<Channel[]> {
         return this.repository.find();
     }
 
-    async findByName(name: string): Promise<Channel | null> {
+    async getByName(name: string): Promise<Channel | null> {
         return this.repository.findOne({
             where: { name },
             relations: ['topics', 'users']
@@ -54,7 +54,7 @@ export class ChannelRepository {
         return repo.save(channel);
     }
 
-    async deleteById(id: string, manager?: EntityManager): Promise<void> {
+    async remove(id: string, manager?: EntityManager): Promise<void> {
         const repo = this.getRepo(manager);
         await repo.delete(id);
     }

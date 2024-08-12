@@ -44,12 +44,12 @@ describe('ChannelService - searchChannels Integration Test', () => {
 
     describe('searchChannels', () => {
         it('should return all channels when search term is empty', async () => {
-            channelRepository.findAll.mockResolvedValue(mockChannels);
+            channelRepository.getAll.mockResolvedValue(mockChannels);
 
             const result = await channelService.searchChannels('');
 
             expect(result).toEqual(mockChannels);
-            expect(channelRepository.findAll).toHaveBeenCalledTimes(1);
+            expect(channelRepository.getAll).toHaveBeenCalledTimes(1);
             expect(channelRepository.searchChannels).not.toHaveBeenCalled();
         });
 
@@ -69,7 +69,7 @@ describe('ChannelService - searchChannels Integration Test', () => {
 
             expect(result).toEqual(filteredChannels);
             expect(channelRepository.searchChannels).toHaveBeenCalledWith(searchTerm);
-            expect(channelRepository.findAll).not.toHaveBeenCalled();
+            expect(channelRepository.getAll).not.toHaveBeenCalled();
         });
 
         it('should return empty array when no channels match the search term', async () => {

@@ -19,11 +19,11 @@ export class TopicService {
 
     async getOrCreateTopics(topicNames: string[], manager: EntityManager): Promise<Topic[]> {
         const uniqueTopicNames = [...new Set(topicNames)];
-        return this.topicRepository.findOrCreateTopics(uniqueTopicNames, manager);
+        return this.topicRepository.getOrCreateTopics(uniqueTopicNames, manager);
     }
 
     async getByName(name: string): Promise<Topic> {
-        return await this.topicRepository.findByName(name);
+        return await this.topicRepository.getByName(name);
     }
 
     async getById(id: string): Promise<Topic> {
@@ -31,6 +31,6 @@ export class TopicService {
     }
 
     async delete(id: string, manager?: EntityManager): Promise<void> {
-        await this.topicRepository.deleteById(id, manager);
+        await this.topicRepository.remove(id, manager);
     }
 }

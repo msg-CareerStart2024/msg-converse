@@ -43,25 +43,25 @@ describe('ChannelService - getById Integration Test', () => {
 
     describe('getById', () => {
         it('should successfully retrieve a channel by id', async () => {
-            channelRepository.findOneById.mockResolvedValue(mockChannels[0]);
+            channelRepository.getOneById.mockResolvedValue(mockChannels[0]);
 
             const result = await channelService.getById(mockChannels[0].id);
 
             expect(result).toEqual(mockChannels[0]);
-            expect(channelRepository.findOneById).toHaveBeenCalledWith(mockChannels[0].id);
+            expect(channelRepository.getOneById).toHaveBeenCalledWith(mockChannels[0].id);
         });
 
         it('should handle and rethrow repository errors', async () => {
             const error = new Error('Database error');
-            channelRepository.findOneById.mockRejectedValue(error);
+            channelRepository.getOneById.mockRejectedValue(error);
 
             await expect(channelService.getById('1')).rejects.toThrow('Database error');
-            expect(channelRepository.findOneById).toHaveBeenCalledWith('1');
+            expect(channelRepository.getOneById).toHaveBeenCalledWith('1');
         });
 
         it('should handle retrieval with a valid UUID', async () => {
             const uuid = '123e4567-e89b-12d3-a456-426614174000';
-            channelRepository.findOneById.mockResolvedValue({
+            channelRepository.getOneById.mockResolvedValue({
                 ...mockChannels[0],
                 id: uuid
             });
@@ -69,7 +69,7 @@ describe('ChannelService - getById Integration Test', () => {
             const result = await channelService.getById(uuid);
 
             expect(result.id).toBe(uuid);
-            expect(channelRepository.findOneById).toHaveBeenCalledWith(uuid);
+            expect(channelRepository.getOneById).toHaveBeenCalledWith(uuid);
         });
     });
 });

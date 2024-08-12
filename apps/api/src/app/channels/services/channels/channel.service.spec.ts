@@ -16,12 +16,12 @@ import { mockTopics } from '../../__mocks__/topic.mock';
 
 export const createMockChannelRepository = (): jest.Mocked<ChannelRepository> => {
     const mock = {
-        findOneById: jest.fn(),
-        findAll: jest.fn(),
+        getOneById: jest.fn(),
+        getAll: jest.fn(),
         findByName: jest.fn(),
         searchChannels: jest.fn(),
         save: jest.fn(),
-        deleteById: jest.fn(),
+        remove: jest.fn(),
         getRepo: jest.fn()
     };
 
@@ -35,7 +35,7 @@ export const createMockTopicRepository = (): jest.Mocked<TopicRepository> => {
         findOrCreateTopics: jest.fn(),
         findByName: jest.fn(),
         save: jest.fn(),
-        deleteById: jest.fn(),
+        remove: jest.fn(),
         getRepo: jest.fn()
     };
 
@@ -99,14 +99,14 @@ describe('ChannelService', () => {
 
     describe('searchChannels', () => {
         it('should return all channels when search term is empty or whitespace', async () => {
-            channelRepository.findAll.mockResolvedValue(mockChannels);
+            channelRepository.getAll.mockResolvedValue(mockChannels);
 
             const result1: Channel[] = await channelService.searchChannels('');
             const result2: Channel[] = await channelService.searchChannels('   ');
 
             expect(result1).toEqual(mockChannels);
             expect(result2).toEqual(mockChannels);
-            expect(channelRepository.findAll).toHaveBeenCalledTimes(2);
+            expect(channelRepository.getAll).toHaveBeenCalledTimes(2);
             expect(channelRepository.searchChannels).not.toHaveBeenCalled();
         });
 
@@ -119,7 +119,7 @@ describe('ChannelService', () => {
 
             expect(result).toEqual(expectedResult);
             expect(channelRepository.searchChannels).toHaveBeenCalledWith(searchTerm);
-            expect(channelRepository.findAll).not.toHaveBeenCalled();
+            expect(channelRepository.getAll).not.toHaveBeenCalled();
         });
 
         it('should return empty array when no channels match the search term', async () => {
@@ -130,7 +130,7 @@ describe('ChannelService', () => {
 
             expect(result).toEqual([]);
             expect(channelRepository.searchChannels).toHaveBeenCalledWith(searchTerm);
-            expect(channelRepository.findAll).not.toHaveBeenCalled();
+            expect(channelRepository.getAll).not.toHaveBeenCalled();
         });
 
         it('should trim the search term before searching', async () => {
@@ -148,22 +148,22 @@ describe('ChannelService', () => {
         it('should return a channel by id', async () => {
             const channelId = '1';
             const expectedChannel = mockChannels[0];
-            channelRepository.findOneById.mockResolvedValue(expectedChannel);
+            channelRepository.getOneById.mockResolvedValue(expectedChannel);
 
             const result = await channelService.getById(channelId);
 
             expect(result).toEqual(expectedChannel);
-            expect(channelRepository.findOneById).toHaveBeenCalledWith(channelId);
+            expect(channelRepository.getOneById).toHaveBeenCalledWith(channelId);
         });
 
         it('should return null when channel is not found', async () => {
             const nonExistentId = 'nonexistent';
-            channelRepository.findOneById.mockResolvedValue(null);
+            channelRepository.getOneById.mockResolvedValue(null);
 
             const result = await channelService.getById(nonExistentId);
 
             expect(result).toBeNull();
-            expect(channelRepository.findOneById).toHaveBeenCalledWith(nonExistentId);
+            expect(channelRepository.getOneById).toHaveBeenCalledWith(nonExistentId);
         });
     });
 
@@ -222,7 +222,7 @@ describe('ChannelService', () => {
                 topics: updatedTopics
             };
 
-            channelRepository.findOneById.mockResolvedValue(existingChannel);
+            channelRepository.getOneById.mockResolvedValue(existingChannel);
             topicService.getOrCreateTopics.mockResolvedValue(updatedTopics);
             channelRepository.save.mockResolvedValue(expectedUpdatedChannel);
 
@@ -230,7 +230,7 @@ describe('ChannelService', () => {
 
             expect(result).toEqual(expectedUpdatedChannel);
             expect(transactionManager.runInTransaction).toHaveBeenCalled();
-            expect(channelRepository.findOneById).toHaveBeenCalledWith(channelId);
+            expect(channelRepository.getOneById).toHaveBeenCalledWith(channelId);
             expect(topicService.getOrCreateTopics).toHaveBeenCalledWith(
                 updateData.topics.map(t => t.name),
                 expect.any(Object)
@@ -253,7 +253,7 @@ describe('ChannelService', () => {
                 ...updateDataWithoutTopics
             };
 
-            channelRepository.findOneById.mockResolvedValue(existingChannel);
+            channelRepository.getOneById.mockResolvedValue(existingChannel);
             channelRepository.save.mockResolvedValue(expectedUpdatedChannel);
 
             const result = await channelService.update(channelId, updateDataWithoutTopics);
@@ -286,7 +286,7 @@ describe('ChannelService', () => {
                 topics: updatedTopics
             };
 
-            channelRepository.findOneById.mockResolvedValue(existingChannel);
+            channelRepository.getOneById.mockResolvedValue(existingChannel);
             topicService.getOrCreateTopics.mockResolvedValue(updatedTopics);
             channelRepository.save.mockResolvedValue(expectedUpdatedChannel);
 
@@ -294,7 +294,7 @@ describe('ChannelService', () => {
 
             expect(result).toEqual(expectedUpdatedChannel);
             expect(transactionManager.runInTransaction).toHaveBeenCalled();
-            expect(channelRepository.findOneById).toHaveBeenCalledWith(channelId);
+            expect(channelRepository.getOneById).toHaveBeenCalledWith(channelId);
             expect(topicService.getOrCreateTopics).toHaveBeenCalledWith(
                 [existingTopic.name, newTopicName],
                 expect.any(Object)
@@ -307,13 +307,13 @@ describe('ChannelService', () => {
 
         it('should throw an error when updating non-existent channel', async () => {
             const nonExistentId = 'nonexistent';
-            channelRepository.findOneById.mockResolvedValue(null);
+            channelRepository.getOneById.mockResolvedValue(null);
 
             await expect(
                 channelService.update(nonExistentId, mockUpdateChannelData)
             ).rejects.toThrow();
             expect(transactionManager.runInTransaction).toHaveBeenCalled();
-            expect(channelRepository.findOneById).toHaveBeenCalledWith(nonExistentId);
+            expect(channelRepository.getOneById).toHaveBeenCalledWith(nonExistentId);
         });
 
         it('should only update provided fields', async () => {
@@ -322,7 +322,7 @@ describe('ChannelService', () => {
             const existingChannel = mockChannels[0];
             const expectedUpdatedChannel = { ...existingChannel, ...partialUpdate };
 
-            channelRepository.findOneById.mockResolvedValue(existingChannel);
+            channelRepository.getOneById.mockResolvedValue(existingChannel);
             channelRepository.save.mockResolvedValue(expectedUpdatedChannel);
 
             const result = await channelService.update(channelId, partialUpdate);
@@ -342,7 +342,7 @@ describe('ChannelService', () => {
 
             await channelService.delete(channelId);
 
-            expect(channelRepository.deleteById).toHaveBeenCalledWith(channelId, undefined);
+            expect(channelRepository.remove).toHaveBeenCalledWith(channelId, undefined);
         });
 
         it('should delete a channel with entity manager', async () => {
@@ -351,16 +351,16 @@ describe('ChannelService', () => {
 
             await channelService.delete(channelId, mockEntityManager);
 
-            expect(channelRepository.deleteById).toHaveBeenCalledWith(channelId, mockEntityManager);
+            expect(channelRepository.remove).toHaveBeenCalledWith(channelId, mockEntityManager);
         });
 
         it('should throw an error when deleting non-existent channel', async () => {
             const nonExistentId = 'nonexistent';
             const error = new Error('Channel not found');
-            channelRepository.deleteById.mockRejectedValue(error);
+            channelRepository.remove.mockRejectedValue(error);
 
             await expect(channelService.delete(nonExistentId)).rejects.toThrow(error);
-            expect(channelRepository.deleteById).toHaveBeenCalledWith(nonExistentId, undefined);
+            expect(channelRepository.remove).toHaveBeenCalledWith(nonExistentId, undefined);
         });
     });
 });
