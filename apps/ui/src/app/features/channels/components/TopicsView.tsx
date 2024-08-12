@@ -1,11 +1,12 @@
 import { AddCircle, Cancel } from '@mui/icons-material';
 import { Grid, TextField, IconButton, Box, Chip } from '@mui/material';
-import { FormValues } from '../../../types/channels/channel.types';
 import { UseFormRegister } from 'react-hook-form';
+import { Topic } from '../../../types/channel/Topic';
+import { ChannelFormValues } from '../../../types/channel/schemas/channel.schema';
 
 type TopicsViewProps = {
-    register: UseFormRegister<FormValues>;
-    topics: string[];
+    register: UseFormRegister<ChannelFormValues>;
+    topics: Topic[];
 };
 
 export default function TopicsView({ register, topics }: TopicsViewProps) {
@@ -38,7 +39,7 @@ export default function TopicsView({ register, topics }: TopicsViewProps) {
                     {topics.map((topic, index) => (
                         <Chip
                             key={index}
-                            label={topic}
+                            label={topic.name}
                             color="primary"
                             onDelete={handleDeleteTopic}
                             deleteIcon={<Cancel />}

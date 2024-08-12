@@ -1,19 +1,31 @@
 import { Avatar, Box, Container, Grid, TextField } from '@mui/material';
 import ActionButtonView from './ActionButtonView';
-import { ACTION_TYPE, FormValues } from '../../../types/channels/channel.types';
+import { ACTION_TYPE, FormValues } from '../../../types/channel/channel.types';
 import TopicsView from './TopicsView';
 import { FieldErrors, UseFormHandleSubmit, UseFormRegister } from 'react-hook-form';
+import { Topic } from '../../../types/channel/Topic';
+import { ChannelFormValues } from '../../../types/channel/schemas/channel.schema';
 
 type ChannelFormProps = {
-    handleSubmit: UseFormHandleSubmit<FormValues>;
-    register: UseFormRegister<FormValues>;
+    handleSubmit: UseFormHandleSubmit<ChannelFormValues>;
+    register: UseFormRegister<ChannelFormValues>;
     errors: FieldErrors<FormValues>;
     isSubmitting: boolean;
     isEditForm: boolean;
-    initialValues?: FormValues;
+    initialValues?: ChannelFormValues;
 };
 
-const topics = ['Topic 1', 'Topic 2', 'Topic 3'];
+const topic1: Topic = {
+    id: 'id1',
+    name: 'name1'
+};
+
+const topic2: Topic = {
+    id: 'id2',
+    name: 'name2'
+};
+
+const topics: Topic[] = [topic1, topic2];
 const userInitial = 'M';
 
 export default function ChannelFormView({
@@ -70,11 +82,11 @@ export default function ChannelFormView({
                         <Grid item xs={12} sm={6}>
                             <TextField
                                 fullWidth
-                                defaultValue={isEditForm ? initialValues?.channelName : ''}
+                                defaultValue={isEditForm ? initialValues?.name : ''}
                                 focused
                                 label="Channel Name"
                                 variant="outlined"
-                                {...register('channelName', {
+                                {...register('name', {
                                     required: 'Channel name is required'
                                 })}
                                 error={!!errors.channelName}

@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { API_URLS, BASE_URL } from '../config/api-config';
 import { setChannels } from '../features/channels/slices/channels-slice';
-import { Channel } from '../types/channels/Channel';
+import { Channel } from '../types/channel/Channel';
 import { API_CACHE_TAGS } from '../config/api-tags';
 
 export const channelsApi = createApi({
@@ -24,6 +24,10 @@ export const channelsApi = createApi({
             }
         }),
 
+        getChannelById: builder.query<Channel, string>({
+            query: id => `${API_URLS.CHANNELS}/${id}`
+        }),
+
         joinChannel: builder.mutation<void, { user: string; channel: string }>({
             query: data => ({
                 url: `${API_URLS.CHANNELS}/join`,
@@ -35,4 +39,9 @@ export const channelsApi = createApi({
     })
 });
 
-export const { useLazyGetChannelsQuery, useGetChannelsQuery, useJoinChannelMutation } = channelsApi;
+export const {
+    useLazyGetChannelsQuery,
+    useGetChannelsQuery,
+    useJoinChannelMutation,
+    useLazyGetChannelByIdQuery
+} = channelsApi;

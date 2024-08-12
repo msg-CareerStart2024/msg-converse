@@ -1,7 +1,9 @@
+import { Topic } from './Topic';
+
 export type FormValues = {
     channelName: string;
     description?: string;
-    topics: string[];
+    topics: Topic[];
 };
 
 export enum ACTION_TYPE {
