@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EntityManager, Repository } from 'typeorm';
+import { Brackets, EntityManager, Repository } from 'typeorm';
 import { Channel } from '../domain/channel.entity';
 
 @Injectable()
@@ -13,12 +13,31 @@ export class ChannelRepository {
     async findOneById(id: string): Promise<Channel> {
         return this.repository.findOne({
             where: { id },
-            relations: ['topics', 'users']
+            relations: ['topics']
         });
     }
 
+    async searchChannels(searchKey: string): Promise<Channel[]> {
+        const searchPattern = `%${searchKey.toLowerCase()}%`;
+
+        return this.repository
+            .createQueryBuilder('channel')
+            .leftJoinAndSelect('channel.topics', 'topic')
+            .where(
+                new Brackets(qb => {
+                    qb.where('LOWER(channel.name) LIKE :searchPattern', { searchPattern })
+                        .orWhere('LOWER(topic.name) LIKE :searchPattern', { searchPattern })
+                        .orWhere('LOWER(LEFT(channel.description, 50)) LIKE :searchPattern', {
+                            searchPattern
+                        });
+                })
+            )
+            .orderBy('channel.createdAt', 'DESC')
+            .getMany();
+    }
+
     async findAll(): Promise<Channel[]> {
-        return this.repository.find({ relations: ['topics', 'users'] });
+        return this.repository.find({ relations: ['topics'] });
     }
 
     async findByName(name: string): Promise<Channel> {
@@ -39,8 +58,7 @@ export class ChannelRepository {
     async deleteById(id: string, manager?: EntityManager): Promise<void> {
         if (manager) {
             await manager.delete(Channel, id);
-        } else {
-            await this.repository.delete(id);
         }
+        await this.repository.delete(id);
     }
 }

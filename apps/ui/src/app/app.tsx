@@ -1,8 +1,10 @@
 import { CssBaseline, ThemeProvider, useMediaQuery } from '@mui/material';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, Route, Routes, useNavigate } from 'react-router-dom';
 import { useLazyGetUserByIdQuery } from './api/users-api';
+import ChannelComponent from './features/channels/components/ChannelComponent';
+import ChannelPage from './features/channels/pages/ChannelPage';
 import HomePage from './features/home/pages/HomePage';
 import SignInPage from './features/login/pages/SignInPage';
 import { setCredentials } from './features/login/slices/auth-slice';
@@ -44,7 +46,6 @@ export function App() {
     return (
         <ThemeProvider theme={prefersDarkMode ? darkTheme : lightTheme}>
             <CssBaseline />
-
             <Routes>
                 <Route
                     element={
@@ -58,6 +59,8 @@ export function App() {
                         path="/page-2"
                         element={<Link to="/">Click here to go back to root page.</Link>}
                     />
+                    <Route path="/create-channel" element={<ChannelPage />} />
+                    <Route path="/channels/:id" element={<ChannelComponent />} />
                 </Route>
                 <Route
                     path="/login"

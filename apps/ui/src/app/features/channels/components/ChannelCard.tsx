@@ -12,14 +12,24 @@ import {
     Stack,
     Typography
 } from '@mui/material';
-import { Channel } from '../../../types/channels/Channel';
 import { formatDate, shrinkToWords } from '../../../utils/utils';
 import { getColor } from '../../../lib/avatar-colors';
+import { Link } from 'react-router-dom';
+import { useJoinChannelMutation } from '../../../api/channelsApi';
+import { Channel } from '../../../types/channels/Channel';
+import React from 'react';
 
 interface ChannelCardProps {
     channel: Channel;
 }
+
 const ChannelCard = ({ channel }: ChannelCardProps) => {
+    const [joinChannel, { isLoading }] = useJoinChannelMutation();
+
+    const handleJoinChannel = () => {
+        joinChannel({ user: '123', channel: channel.id });
+    };
+
     return (
         <Card
             sx={{
@@ -75,23 +85,30 @@ const ChannelCard = ({ channel }: ChannelCardProps) => {
                 </CardContent>
 
                 <CardActions sx={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
-                    <Button size="small" sx={{ color: 'secondary.main', fontWeight: '600' }}>
-                        Join
-                    </Button>
                     <Button
                         size="small"
-                        variant="contained"
-                        endIcon={<SendIcon />}
-                        sx={{
-                            fontWeight: '600',
-                            bgcolor: 'secondary.main',
-                            '&:hover': {
-                                bgcolor: 'secondary.dark'
-                            }
-                        }}
+                        sx={{ color: 'secondary.main', fontWeight: '600' }}
+                        onClick={handleJoinChannel}
+                        disabled={isLoading}
                     >
-                        Message
+                        Join
                     </Button>
+                    <Link to={`/channels/${channel.id}`}>
+                        <Button
+                            size="small"
+                            variant="contained"
+                            endIcon={<SendIcon />}
+                            sx={{
+                                fontWeight: '600',
+                                bgcolor: 'secondary.main',
+                                '&:hover': {
+                                    bgcolor: 'secondary.dark'
+                                }
+                            }}
+                        >
+                            Message
+                        </Button>
+                    </Link>
                 </CardActions>
             </Stack>
         </Card>
