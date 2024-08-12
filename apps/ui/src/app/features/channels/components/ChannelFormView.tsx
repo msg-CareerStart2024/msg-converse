@@ -11,8 +11,13 @@ import {
 } from 'react-hook-form';
 import { Topic } from '../../../types/channel/Topic';
 import { ChannelFormValues } from '../../../types/channel/schemas/channel.schema';
-import { useCreateChannelMutation } from '../../../api/channelsApi';
+import {
+    useCreateChannelMutation,
+    useDeleteChannelMutation,
+    useUpdateChannelMutation
+} from '../../../api/channels-api';
 import { useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
 type ChannelFormProps = {
     handleSubmit: UseFormHandleSubmit<ChannelFormValues>;
@@ -55,14 +60,73 @@ export default function ChannelFormView({
 }: ChannelFormProps) {
     const [topics, setTopics] = useState<Topic[]>([topic1, topic2]);
 
-    const [createChannel] = useCreateChannelMutation();
+    const { id } = useParams<{ id?: string }>();
 
-    function onSubmit() {
+    const navigate = useNavigate();
+
+    const [createChannel] = useCreateChannelMutation();
+    const [deleteChannel] = useDeleteChannelMutation();
+    const [updateChannel] = useUpdateChannelMutation();
+
+    function onCreate() {
         createChannel({
             name: getValues('name'),
             description: getValues('description'),
-            topics: topics.map(topic => topic.name)
-        });
+            topics: topics.map(topic => {
+                return { name: topic.name };
+            })
+        })
+            .unwrap()
+            .then(newChannel => {
+                alert('Channel created successfully');
+                navigate('/');
+            })
+            .catch(error => {
+                console.error('Failed to create channel:', error);
+                alert('Failed to create channel');
+            });
+    }
+
+    function onDelete() {
+        const channelId = id;
+        if (channelId) {
+            deleteChannel(channelId)
+                .unwrap()
+                .then(() => {
+                    alert('Channel successfully deleted');
+                    navigate('/');
+                })
+                .catch(error => {
+                    alert('Failed to delete channel');
+                    console.error('Delete channel error:', error);
+                });
+        }
+    }
+
+    function onUpdate() {
+        const channelData = {
+            name: getValues('name'),
+            description: getValues('description'),
+            topics: topics.map(topic => ({
+                name: topic.name
+            }))
+        };
+
+        const channelId = id;
+        if (channelId) {
+            updateChannel({ id: channelId, partialChannel: channelData })
+                .unwrap()
+                .then(() => {
+                    alert('Channel updated successfully');
+                    navigate('/');
+                })
+                .catch(error => {
+                    alert('Failed to update channel');
+                    console.error('Update channel error:', error);
+                });
+        } else {
+            alert('Channel ID is missing');
+        }
     }
 
     return (
@@ -81,19 +145,19 @@ export default function ChannelFormView({
                             <>
                                 <ActionButtonView
                                     action={ACTION_TYPE.delete}
-                                    handleAction={handleSubmit(onSubmit)}
+                                    handleAction={handleSubmit(onDelete)}
                                     isSubmitting={isSubmitting}
                                 />
                                 <ActionButtonView
                                     action={ACTION_TYPE.update}
-                                    handleAction={handleSubmit(onSubmit)}
+                                    handleAction={handleSubmit(onUpdate)}
                                     isSubmitting={isSubmitting}
                                 />
                             </>
                         ) : (
                             <ActionButtonView
                                 action={ACTION_TYPE.create}
-                                handleAction={handleSubmit(onSubmit)}
+                                handleAction={handleSubmit(onCreate)}
                                 isSubmitting={isSubmitting}
                             />
                         )}

@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form';
 import ChannelFormView from '../components/ChannelFormView';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useParams } from 'react-router-dom';
-import { useLazyGetChannelByIdQuery } from '../../../api/channelsApi';
+import { useLazyGetChannelByIdQuery } from '../../../api/channels-api';
 import { Typography } from '@mui/material';
 import { ChannelFormValues, channelSchema } from '../../../types/channel/schemas/channel.schema';
 import { useEffect } from 'react';

@@ -1,6 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { API_CACHE_TAGS } from '../config/api-tags';
 import getFetchBaseQuery from './fetch-base-query';
+import { API_URLS } from '../config/api-config';
 
 export const usersApi = createApi({
     reducerPath: 'usersApi',
@@ -8,7 +9,7 @@ export const usersApi = createApi({
     baseQuery: getFetchBaseQuery(),
     endpoints: builder => ({
         getUserById: builder.query({
-            query: id => `${id}`,
+            query: id => `${API_URLS.USERS}/${id}`,
             providesTags: [API_CACHE_TAGS.USERS]
         })
     })

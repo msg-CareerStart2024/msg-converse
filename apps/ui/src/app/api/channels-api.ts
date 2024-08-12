@@ -40,7 +40,23 @@ export const channelsApi = createApi({
             query: channel => ({
                 url: `${API_URLS.CHANNELS}`,
                 method: 'POST',
-                body: { channel }
+                body: channel
+            }),
+            invalidatesTags: [API_CACHE_TAGS.CHANNELS]
+        }),
+        updateChannel: builder.mutation<Channel, { id: string; partialChannel: ChannelDTO }>({
+            query: ({ id, partialChannel }) => ({
+                url: `${API_URLS.CHANNELS}/${id}`,
+                method: 'PUT',
+                body: partialChannel
+            }),
+            invalidatesTags: [API_CACHE_TAGS.CHANNELS]
+        }),
+
+        deleteChannel: builder.mutation<void, string>({
+            query: id => ({
+                url: `${API_URLS.CHANNELS}/${id}`,
+                method: 'DELETE'
             }),
             invalidatesTags: [API_CACHE_TAGS.CHANNELS]
         })
@@ -52,5 +68,7 @@ export const {
     useGetChannelsQuery,
     useJoinChannelMutation,
     useLazyGetChannelByIdQuery,
-    useCreateChannelMutation
+    useCreateChannelMutation,
+    useDeleteChannelMutation,
+    useUpdateChannelMutation
 } = channelsApi;

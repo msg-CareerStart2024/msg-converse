@@ -10,6 +10,6 @@ export interface Channel {
 
 export interface ChannelDTO {
     name: string;
-    topics: string[];
+    topics: { name: string }[];
     description: string;
 }
