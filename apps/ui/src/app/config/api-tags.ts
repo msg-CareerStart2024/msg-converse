@@ -1,3 +1,5 @@
 export const API_CACHE_TAGS = {
-    CHANNELS: 'Channels'
+    CHANNELS: 'Channels',
+    AUTH: 'Auth',
+    USERS: 'Users'
 };

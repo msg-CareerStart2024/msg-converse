@@ -1,7 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
-import { UserFormValues, userSchema } from '../../../types/users/login.types';
+import { useNavigate } from 'react-router-dom';
+import { useLoginUserMutation } from '../../../api/auth-api';
+import { LoginFormValues, userSchema } from '../../../types/users/login.types';
 import SignInFormView from '../components/SignInFormView';
 import React from 'react';
 
@@ -10,20 +12,28 @@ export default function SignInPage() {
         register,
         handleSubmit,
         formState: { errors }
-    } = useForm<UserFormValues>({
+    } = useForm<LoginFormValues>({
         resolver: zodResolver(userSchema)
     });
+    const [loginUser, { error, isLoading }] = useLoginUserMutation();
+    const navigate = useNavigate();
 
-    const onSubmit: SubmitHandler<UserFormValues> = data => {
-        alert(`Login not yet implemented, ${data.email}, ${data.password}`);
+    const handleLogin: SubmitHandler<LoginFormValues> = async data => {
+        try {
+            await loginUser(data).unwrap();
+            navigate('/');
+        } catch (error) {
+            console.error('Login failed', error);
+        }
     };
 
     return (
         <SignInFormView
             register={register}
-            handleSubmit={handleSubmit}
-            onSubmit={onSubmit}
+            handleSubmit={handleSubmit(handleLogin)}
             errors={errors}
+            loginError={error}
+            isLoading={isLoading}
         />
     );
 }
