@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
-import { authApi } from '../api/auth-api';
+import { authApi } from '../api/auth/auth-api';
 import { channelsApi } from '../api/channelsApi';
 import { usersApi } from '../api/users-api';
 import channelsReducer from '../features/channels/slices/channels-slice';

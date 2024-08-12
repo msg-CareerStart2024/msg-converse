@@ -3,7 +3,6 @@ import { UseFormRegister } from 'react-hook-form';
 import { beforeEach, describe, vi } from 'vitest';
 import { LoginFormValues } from '../../../types/users/login.types';
 import SignInFormView from './SignInFormView';
-console.log('SignInFormView.test.tsx Loaded');
 
 const mockRegister: UseFormRegister<LoginFormValues> = vi.fn();
 

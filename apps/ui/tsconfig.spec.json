@@ -9,7 +9,8 @@
             "@nx/react/typings/cssmodule.d.ts",
             "@nx/react/typings/image.d.ts",
             "vitest/globals",
-            "@testing-library/jest-dom"
+            "@testing-library/jest-dom",
+            "msw"
         ]
     },
     "include": [
