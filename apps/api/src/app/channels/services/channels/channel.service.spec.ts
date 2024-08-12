@@ -23,7 +23,8 @@ export const createMockChannelRepository = (): jest.Mocked<ChannelRepository> =>
         searchChannels: jest.fn(),
         save: jest.fn(),
         remove: jest.fn(),
-        getRepo: jest.fn()
+        getRepo: jest.fn(),
+        getChannelsJoinedByUser: jest.fn()
     };
 
     return mock as unknown as jest.Mocked<ChannelRepository>;
