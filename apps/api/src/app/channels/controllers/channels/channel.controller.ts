@@ -7,12 +7,12 @@ import {
     ApiBearerAuth,
     ApiQuery
 } from '@nestjs/swagger';
-import { ChannelService } from '../services/channel.service';
-import { ChannelDto } from '../dto/channels/channel.dto';
-import { ChannelMapper } from '../mapper/channel.mapper';
-import { CreateChannelDto } from '../dto/channels/create-channel.dto';
-import { UpdateChannelDto } from '../dto/channels/update-channel.dto';
-import { CurrentUserId } from '../../auth/decorators/current-user-id.decorator';
+import { ChannelDto } from '../../dto/channels/channel.dto';
+import { CreateChannelDto } from '../../dto/channels/create-channel.dto';
+import { UpdateChannelDto } from '../../dto/channels/update-channel.dto';
+import { ChannelMapper } from '../../mapper/channel.mapper';
+import { ChannelService } from '../../services/channels/channel.service';
+import { CurrentUserId } from '../../../auth/decorators/current-user-id.decorator';
 
 @ApiTags('Channels')
 @ApiBearerAuth()
@@ -41,7 +41,8 @@ export class ChannelController {
         description: 'Unauthorized - Valid authentication credentials are required'
     })
     async searchChannels(@Query('searchKey') searchKey = ''): Promise<ChannelDto[]> {
-        return await this.channelService.searchChannels(searchKey);
+        const channels = await this.channelService.searchChannels(searchKey);
+        return channels.map(channel => ChannelMapper.toDto(channel));
     }
 
     @Get(':channelId')
@@ -88,7 +89,7 @@ export class ChannelController {
         @Body() createChannelDto: CreateChannelDto
     ): Promise<ChannelDto> {
         const newChannel = ChannelMapper.fromCreateDto(createChannelDto);
-        const createdChannel = await this.channelService.create(userId, newChannel);
+        const createdChannel = await this.channelService.create(newChannel, userId);
         return ChannelMapper.toDto(createdChannel);
     }
 
@@ -137,6 +138,6 @@ export class ChannelController {
     })
     @ApiResponse({ status: 404, description: 'Channel not found' })
     async deleteChannel(@Param('channelId') channelId: string): Promise<void> {
-        return await this.channelService.remove(channelId);
+        return await this.channelService.delete(channelId);
     }
 }
