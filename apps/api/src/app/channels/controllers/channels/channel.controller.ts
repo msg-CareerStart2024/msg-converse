@@ -45,6 +45,26 @@ export class ChannelController {
         return channels.map(channel => ChannelMapper.toDto(channel));
     }
 
+    @Get('joined')
+    @ApiOperation({
+        summary: 'Get channels joined by user',
+        description: 'Retrieve a list of channels joined by a specific user.'
+    })
+    @ApiResponse({
+        status: 200,
+        description: 'Successfully retrieved channels joined by user',
+        type: [ChannelDto]
+    })
+    @ApiResponse({
+        status: 401,
+        description: 'Unauthorized - Valid authentication credentials are required'
+    })
+    @ApiResponse({ status: 404, description: 'User not found' })
+    async getChannelsJoinedByUser(@CurrentUserId() userId: string): Promise<ChannelDto[]> {
+        const channels = await this.channelService.getChannelsJoinedByUser(userId);
+        return channels.map(channel => ChannelMapper.toDto(channel));
+    }
+
     @Get(':channelId')
     @ApiOperation({
         summary: 'Get channel by ID',
@@ -68,6 +88,8 @@ export class ChannelController {
         const channel = await this.channelService.getById(channelId);
         return ChannelMapper.toDto(channel);
     }
+
+
 
     @Post()
     @ApiOperation({

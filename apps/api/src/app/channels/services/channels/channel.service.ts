@@ -27,6 +27,10 @@ export class ChannelService {
         return this.channelRepository.getOneById(channelId);
     }
 
+    async getChannelsJoinedByUser(userId: string): Promise<Channel[]> {
+        return this.channelRepository.getChannelsJoinedByUser(userId);
+    }
+
     async create(channelData: Omit<Channel, 'id' | 'createdAt'>, userId: string): Promise<Channel> {
         return this.transactionManager.runInTransaction(async manager => {
             const users = [await this.userService.getById(userId)];
