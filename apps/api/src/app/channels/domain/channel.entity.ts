@@ -8,8 +8,8 @@ import {
     PrimaryGeneratedColumn
 } from 'typeorm';
 
-import { Topic } from './topic.entity';
 import { Message } from '../../messages/domain/message.domain';
+import { Topic } from './topic.entity';
 import { User } from '../../users/domain/user.domain';
 
 @Entity('channels')
@@ -26,7 +26,7 @@ export class Channel {
     @CreateDateColumn({ name: 'created_at' })
     createdAt: Date;
 
-    @ManyToMany(() => User)
+    @ManyToMany(() => User, { cascade: ['insert'] })
     @JoinTable({
         name: 'enrollments',
         joinColumn: { name: 'channel_id', referencedColumnName: 'id' },
