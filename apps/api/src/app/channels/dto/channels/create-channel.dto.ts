@@ -2,10 +2,12 @@ import { ArrayMaxSize, ArrayMinSize, IsArray, IsOptional, IsString } from 'class
 
 import { ApiProperty } from '@nestjs/swagger';
 import { CreateTopicDto } from '../topics/create-topic.dto';
+import { Transform } from 'class-transformer';
 
 export class CreateChannelDto {
     @ApiProperty({ example: 'msg Career Start 2024', description: 'The name of the channel' })
     @IsString()
+    @Transform(({ value }) => value?.trim())
     name: string;
 
     @ApiProperty({
@@ -14,6 +16,7 @@ export class CreateChannelDto {
     })
     @IsString()
     @IsOptional()
+    @Transform(({ value }) => value?.trim())
     description?: string;
 
     @ApiProperty({

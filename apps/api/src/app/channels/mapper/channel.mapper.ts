@@ -1,9 +1,9 @@
 import { Channel } from '../domain/channel.entity';
 import { ChannelDto } from '../dto/channels/channel.dto';
 import { CreateChannelDto } from '../dto/channels/create-channel.dto';
+import { MessageMapper } from '../../messages/mapper/message.mapper';
 import { TopicMapper } from './topic.mapper';
 import { UpdateChannelDto } from '../dto/channels/update-channel.dto';
-import { MessageMapper } from '../../messages/mapper/message.mapper';
 import { UserMapper } from '../../users/mapper/user.mapper';
 
 export class ChannelMapper {
@@ -14,9 +14,11 @@ export class ChannelMapper {
             name,
             description,
             createdAt,
-            users: users.map(user => UserMapper.toDTO(user)),
+            users: users ? users.map(user => UserMapper.toDTO(user)) : [],
             topics: topics.map(topicEntity => TopicMapper.toDto(topicEntity)),
-            messages: messages.map(messageEntity => MessageMapper.toDto(messageEntity))
+            messages: messages
+                ? messages.map(messageEntity => MessageMapper.toDto(messageEntity))
+                : []
         };
     }
 
