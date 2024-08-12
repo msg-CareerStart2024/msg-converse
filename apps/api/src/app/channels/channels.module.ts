@@ -6,12 +6,13 @@ import { Module } from '@nestjs/common';
 import { Topic } from './domain/topic.entity';
 import { TopicRepository } from './repository/topic.repository';
 import { TopicService } from './services/topic.service';
+import { UsersModule } from '../users/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Channel, Topic])],
+    imports: [TypeOrmModule.forFeature([Channel, Topic]), UsersModule],
     providers: [ChannelService, TopicService, ChannelRepository, TopicRepository],
-    exports: [ChannelService, TopicService, ChannelRepository, TopicRepository],
+    exports: [ChannelService],
     controllers: [ChannelController]
 })
 export class ChannelsModule {}

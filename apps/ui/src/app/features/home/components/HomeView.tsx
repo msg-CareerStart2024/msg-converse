@@ -1,7 +1,7 @@
-import { Box, Button, Container, Grid, TextField, Typography } from '@mui/material';
+import { Box, Button, Container, Grid, Typography } from '@mui/material';
 import ChannelCard from '../../channels/components/ChannelCard';
 import { Channel } from '../../../types/channel/Channel';
-import { Link } from 'react-router-dom';
+import SearchBar from '../../../components/SearchBar';
 
 type HomeViewProps = {
     channels: Channel[];
@@ -10,17 +10,20 @@ type HomeViewProps = {
 export default function HomeView({ channels }: HomeViewProps) {
     return (
         <Container>
-            <Typography variant="h4" component="h1" gutterBottom sx={{ my: 5 }}>
-                Msg. Converse
-            </Typography>
-
             <Box display="flex" justifyContent="space-between" mb={4}>
-                <TextField label="Filter..." variant="outlined" sx={{ width: '40%' }} />
-                <Link to="/channels/new">
-                    <Button variant="contained" color="primary">
-                        CREATE CHANNEL
-                    </Button>
-                </Link>
+                <Box
+                    sx={{
+                        width: {
+                            xs: '70%',
+                            md: '40%'
+                        }
+                    }}
+                >
+                    <SearchBar />
+                </Box>
+                <Button variant="contained" color="primary">
+                    CREATE CHANNEL
+                </Button>
             </Box>
 
             <Grid container spacing={3} alignItems="stretch">

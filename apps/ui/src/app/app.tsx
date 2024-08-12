@@ -1,14 +1,46 @@
 import { CssBaseline, ThemeProvider, useMediaQuery } from '@mui/material';
-import { Link, Route, Routes } from 'react-router-dom';
-import SignUpPage from './features/register/pages/SignUpPage';
-import { darkTheme, lightTheme } from './lib/themes';
-import SiderbarLayout from './layouts/SidebarLayout';
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { Link, Route, Routes, useNavigate } from 'react-router-dom';
+import { useLazyGetUserByIdQuery } from './api/users-api';
 import ChannelComponent from './features/channels/components/ChannelComponent';
 import HomePage from './features/home/pages/HomePage';
-import ChannelPage from './features/channel/pages/ChannelPage';
+import SignInPage from './features/login/pages/SignInPage';
+import { setCredentials } from './features/login/slices/auth-slice';
+import SignUpPage from './features/register/pages/SignUpPage';
+import SiderbarLayout from './layouts/SidebarLayout';
+import { darkTheme, lightTheme } from './lib/themes';
+import { RootState, store } from './store/store';
+import { DecodedPayload } from './types/login/DecodedPayload';
+import { decodeToken } from './utils/utils';
+import ChannelPage from './features/channels/pages/ChannelPage';
 
 export function App() {
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+
+    const navigate = useNavigate();
+
+    const [getUserById] = useLazyGetUserByIdQuery();
+    const user = useSelector((state: RootState) => state.auth.user);
+    useEffect(() => {
+        const token = localStorage.getItem('accessToken');
+        if (token && !user) {
+            const payload = decodeToken(token);
+            if (payload) {
+                const fetchUser = async () => {
+                    try {
+                        const user = await getUserById((payload as DecodedPayload).sub).unwrap();
+                        store.dispatch(setCredentials({ user, accessToken: token }));
+                    } catch (error) {
+                        console.error('Failed to fetch user:', error);
+                    }
+                };
+
+                fetchUser();
+            }
+        }
+    }, [getUserById, navigate, user]);
+
     return (
         <ThemeProvider theme={prefersDarkMode ? darkTheme : lightTheme}>
             <CssBaseline />
@@ -20,11 +52,12 @@ export function App() {
                         element={<Link to="/">Click here to go back to root page.</Link>}
                     />
                     <Route path="/channels">
-                        <Route path="new" element={<ChannelPage isEdit={false} />} />
+                        <Route path="new" element={<ChannelPage />} />
                         <Route path=":id" element={<ChannelComponent />} />
-                        <Route path=":id/edit" element={<ChannelPage isEdit={true} />} />
+                        <Route path=":id/edit" element={<ChannelPage />} />
                     </Route>
                 </Route>
+                <Route path="/signin" element={<SignInPage />} />
                 <Route path="/signup" element={<SignUpPage />} />
             </Routes>
         </ThemeProvider>

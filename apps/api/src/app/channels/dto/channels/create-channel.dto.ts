@@ -4,12 +4,12 @@ import { ApiProperty } from '@nestjs/swagger';
 import { CreateTopicDto } from '../topics/create-topic.dto';
 
 export class CreateChannelDto {
-    @ApiProperty({ example: 'general', description: 'The name of the channel' })
+    @ApiProperty({ example: 'msg Career Start 2024', description: 'The name of the channel' })
     @IsString()
     name: string;
 
     @ApiProperty({
-        example: 'msg Career Start 2024',
+        example: 'Fullstack developer factory',
         description: 'Description of the channel'
     })
     @IsString()
