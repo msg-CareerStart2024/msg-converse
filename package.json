@@ -10,7 +10,8 @@
         "lint": "nx run-many --target=lint --verbose",
         "dep-graph": "nx dep-graph",
         "prepare": "husky",
-        "pretty-quick": "pretty-quick --staged"
+        "pretty-quick": "pretty-quick --staged",
+        "format": "prettier --write \"apps/api/src/**/*.ts\" \"apps/ui/src/**/*.ts\""
     },
     "cpu": [
         "arm64",

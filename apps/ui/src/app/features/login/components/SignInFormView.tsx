@@ -17,6 +17,7 @@ import { SerializedError } from '@reduxjs/toolkit';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { FieldErrors, UseFormRegister } from 'react-hook-form';
 import { LoginFormValues } from '../../../types/users/login.types';
+import React from 'react';
 
 type SignInFormProps = {
     handleSubmit: (e?: React.BaseSyntheticEvent) => Promise<void>;
