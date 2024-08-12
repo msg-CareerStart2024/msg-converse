@@ -7,11 +7,11 @@ import {
     mockChannels,
     mockCreateChannelDto,
     mockUpdateChannelDto
-} from '../__mocks__/channel.mock';
+} from '../../__mocks__/channel.mock';
 
 import { ChannelController } from './channel.controller';
-import { ChannelMapper } from '../mapper/channel.mapper';
-import { ChannelService } from '../services/channels/channel.service';
+import { ChannelMapper } from '../../mapper/channel.mapper';
+import { ChannelService } from '../../services/channels/channel.service';
 
 describe('ChannelController', () => {
     let controller: ChannelController;
