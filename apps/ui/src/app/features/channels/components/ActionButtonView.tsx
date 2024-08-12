@@ -1,4 +1,3 @@
-import React from 'react';
 import { Button, Box } from '@mui/material';
 import { ACTION_TYPE } from '../../../types/channels/channel.types';
 

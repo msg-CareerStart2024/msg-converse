@@ -1,5 +1,5 @@
 import { CssBaseline, ThemeProvider, useMediaQuery } from '@mui/material';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, Route, Routes, useNavigate } from 'react-router-dom';
 import { useLazyGetUserByIdQuery } from './api/users-api';
@@ -9,8 +9,10 @@ import HomePage from './features/home/pages/HomePage';
 import SignInPage from './features/login/pages/SignInPage';
 import { setCredentials } from './features/login/slices/auth-slice';
 import SignUpPage from './features/register/pages/SignUpPage';
+import { ProtectedRoute } from './layouts/ProtectedRoute';
 import SiderbarLayout from './layouts/SidebarLayout';
 import { darkTheme, lightTheme } from './lib/themes';
+import NotFoundPage from './pages/NotFoundPage';
 import { RootState, store } from './store/store';
 import { DecodedPayload } from './types/login/DecodedPayload';
 import { decodeToken } from './utils/utils';
@@ -45,7 +47,13 @@ export function App() {
         <ThemeProvider theme={prefersDarkMode ? darkTheme : lightTheme}>
             <CssBaseline />
             <Routes>
-                <Route element={<SiderbarLayout />}>
+                <Route
+                    element={
+                        <ProtectedRoute>
+                            <SiderbarLayout />
+                        </ProtectedRoute>
+                    }
+                >
                     <Route path="/" element={<HomePage />} />
                     <Route
                         path="/page-2"
@@ -54,8 +62,23 @@ export function App() {
                     <Route path="/create-channel" element={<ChannelPage />} />
                     <Route path="/channels/:id" element={<ChannelComponent />} />
                 </Route>
-                <Route path="/login" element={<SignInPage />} />
-                <Route path="/signup" element={<SignUpPage />} />
+                <Route
+                    path="/login"
+                    element={
+                        <ProtectedRoute>
+                            <SignInPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/signup"
+                    element={
+                        <ProtectedRoute>
+                            <SignUpPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route path="*" element={<NotFoundPage />} />
             </Routes>
         </ThemeProvider>
     );

@@ -1,5 +1,5 @@
 import { Snackbar, TextField } from '@mui/material';
-import { useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useLazyGetChannelsQuery } from '../api/channelsApi';
 
 export default function SearchBar() {
