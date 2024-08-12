@@ -19,7 +19,7 @@ export class TopicRepository {
     }
 
     async getOrCreateTopics(topicNames: string[], manager?: EntityManager): Promise<Topic[]> {
-        const repo = this.getRepo(manager);
+        const repo = this.getRepository(manager);
 
         await repo
             .createQueryBuilder()
@@ -37,16 +37,16 @@ export class TopicRepository {
     }
 
     async save(topic: Topic, manager?: EntityManager): Promise<Topic> {
-        const repo = this.getRepo(manager);
+        const repo = this.getRepository(manager);
         return repo.save(topic);
     }
 
     async remove(id: string, manager?: EntityManager): Promise<void> {
-        const repo = this.getRepo(manager);
+        const repo = this.getRepository(manager);
         await repo.delete(id);
     }
 
-    private getRepo(manager?: EntityManager): Repository<Topic> {
+    private getRepository(manager?: EntityManager): Repository<Topic> {
         return manager?.getRepository(Topic) ?? this.repository;
     }
 }
