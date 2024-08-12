@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, EntityManager, Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { Channel } from '../domain/channel.entity';
 
 @Injectable()
@@ -10,10 +10,21 @@ export class ChannelRepository {
         private readonly repository: Repository<Channel>
     ) {}
 
-    async findOneById(id: string): Promise<Channel> {
+    async getOneById(id: string): Promise<Channel | null> {
         return this.repository.findOne({
             where: { id },
-            relations: ['topics']
+            relations: ['topics', 'users', 'messages']
+        });
+    }
+
+    async getAll(): Promise<Channel[]> {
+        return this.repository.find();
+    }
+
+    async getByName(name: string): Promise<Channel | null> {
+        return this.repository.findOne({
+            where: { name },
+            relations: ['topics', 'users']
         });
     }
 
@@ -23,42 +34,35 @@ export class ChannelRepository {
         return this.repository
             .createQueryBuilder('channel')
             .leftJoinAndSelect('channel.topics', 'topic')
-            .where(
-                new Brackets(qb => {
-                    qb.where('LOWER(channel.name) LIKE :searchPattern', { searchPattern })
-                        .orWhere('LOWER(topic.name) LIKE :searchPattern', { searchPattern })
-                        .orWhere('LOWER(LEFT(channel.description, 50)) LIKE :searchPattern', {
-                            searchPattern
-                        });
-                })
-            )
+            .where(qb => {
+                const subQuery = qb
+                    .subQuery()
+                    .select('c.id')
+                    .from(Channel, 'c')
+                    .leftJoin('c.topics', 't')
+                    .where('LOWER(c.name) LIKE :searchPattern', { searchPattern })
+                    .orWhere('LOWER(t.name) LIKE :searchPattern', { searchPattern })
+                    .orWhere('LOWER(c.description) LIKE :searchPattern', {
+                        searchPattern
+                    })
+                    .getQuery();
+                return 'channel.id IN ' + subQuery;
+            })
             .orderBy('channel.createdAt', 'DESC')
             .getMany();
     }
 
-    async findAll(): Promise<Channel[]> {
-        return this.repository.find({ relations: ['topics'] });
-    }
-
-    async findByName(name: string): Promise<Channel> {
-        return this.repository.findOne({
-            where: { name },
-            relations: ['topics', 'users']
-        });
-    }
-
     async save(channel: Channel, manager?: EntityManager): Promise<Channel> {
-        if (manager) {
-            return manager.save(channel);
-        } else {
-            return this.repository.save(channel);
-        }
+        const repo = this.getRepository(manager);
+        return repo.save(channel);
     }
 
-    async deleteById(id: string, manager?: EntityManager): Promise<void> {
-        if (manager) {
-            await manager.delete(Channel, id);
-        }
-        await this.repository.delete(id);
+    async remove(id: string, manager?: EntityManager): Promise<void> {
+        const repo = this.getRepository(manager);
+        await repo.delete(id);
+    }
+
+    private getRepository(manager?: EntityManager): Repository<Channel> {
+        return manager?.getRepository(Channel) ?? this.repository;
     }
 }

@@ -1,17 +1,26 @@
 import { Channel } from './domain/channel.entity';
-import { ChannelController } from './controllers/channel.controller';
+import { ChannelController } from './controllers/channels/channel.controller';
 import { ChannelRepository } from './repository/channel.repository';
-import { ChannelService } from './services/channel.service';
+import { ChannelService } from './services/channels/channel.service';
 import { Module } from '@nestjs/common';
 import { Topic } from './domain/topic.entity';
-import { TopicRepository } from './repository/topic.repository';
-import { TopicService } from './services/topic.service';
+import { TopicController } from './controllers/topics/topic.controller';
+import { TopicRepository } from './repository/topics/topic.repository';
+import { TopicService } from './services/topics/topic.service';
+import { TransactionManager } from '../shared/services/transaction.manager';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UsersModule } from '../users/user.module';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Channel, Topic])],
-    providers: [ChannelService, TopicService, ChannelRepository, TopicRepository],
+    imports: [TypeOrmModule.forFeature([Channel, Topic]), UsersModule],
+    providers: [
+        ChannelService,
+        TopicService,
+        ChannelRepository,
+        TopicRepository,
+        TransactionManager
+    ],
     exports: [ChannelService, TopicService, ChannelRepository, TopicRepository],
-    controllers: [ChannelController]
+    controllers: [ChannelController, TopicController]
 })
 export class ChannelsModule {}
