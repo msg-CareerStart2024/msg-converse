@@ -12,7 +12,6 @@
         "prepare": "husky",
         "pretty-quick": "pretty-quick --staged",
         "format": "prettier --write \"apps/api/src/**/*.ts\" \"apps/ui/src/**/*.ts\""
-
     },
     "cpu": [
         "arm64",
