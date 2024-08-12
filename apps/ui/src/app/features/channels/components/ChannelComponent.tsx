@@ -17,7 +17,6 @@ import SendIcon from '@mui/icons-material/Send';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { getColor } from '../../../lib/avatar-colors';
 import { Message } from '../../../types/messages/Message';
-import React from 'react';
 
 const currentUserId = '1';
 

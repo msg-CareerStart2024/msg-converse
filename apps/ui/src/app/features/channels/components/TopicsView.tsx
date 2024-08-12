@@ -2,7 +2,6 @@ import { AddCircle, Cancel } from '@mui/icons-material';
 import { Grid, TextField, IconButton, Box, Chip } from '@mui/material';
 import { FormValues } from '../../../types/channels/channel.types';
 import { UseFormRegister } from 'react-hook-form';
-import React from 'react';
 
 type TopicsViewProps = {
     register: UseFormRegister<FormValues>;

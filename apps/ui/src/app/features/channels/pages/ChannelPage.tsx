@@ -3,7 +3,6 @@ import ChannelFormView from '../components/ChannelFormView';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ChannelFormValues, channelSchema } from '../../../types/channels/schemas/channel.schema';
-import React from 'react';
 
 export default function ChannelPage() {
     const channelData = {

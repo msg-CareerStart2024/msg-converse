@@ -3,7 +3,6 @@ import ActionButtonView from './ActionButtonView';
 import { ACTION_TYPE, FormValues } from '../../../types/channels/channel.types';
 import TopicsView from './TopicsView';
 import { FieldErrors, UseFormHandleSubmit, UseFormRegister } from 'react-hook-form';
-import React from 'react';
 
 type ChannelFormProps = {
     handleSubmit: UseFormHandleSubmit<FormValues>;

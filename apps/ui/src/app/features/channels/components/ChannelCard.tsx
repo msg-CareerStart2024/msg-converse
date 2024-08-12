@@ -17,7 +17,6 @@ import { getColor } from '../../../lib/avatar-colors';
 import { Link } from 'react-router-dom';
 import { useJoinChannelMutation } from '../../../api/channelsApi';
 import { Channel } from '../../../types/channels/Channel';
-import React from 'react';
 
 interface ChannelCardProps {
     channel: Channel;
