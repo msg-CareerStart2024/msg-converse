@@ -76,4 +76,17 @@ describe('UserService', () => {
         expect(result).toEqual(users[0]);
         expect(userRepository.getById).toHaveBeenCalledWith(users[0].id);
     });
+
+    it('should update a user', async () => {
+        const updatedUser: User = {
+            ...users[0],
+            firstName: 'Updated'
+        };
+        userRepository.update.mockResolvedValue(updatedUser);
+
+        const result = await userService.update(users[0].id, updatedUser);
+
+        expect(result).toEqual(updatedUser);
+        expect(userRepository.update).toHaveBeenCalledWith(users[0].id, updatedUser);
+    });
 });
