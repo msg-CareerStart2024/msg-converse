@@ -1,17 +1,24 @@
 import { Channel } from '../domain/channel.entity';
 import { ChannelDto } from '../dto/channels/channel.dto';
 import { CreateChannelDto } from '../dto/channels/create-channel.dto';
+import { MessageMapper } from '../../messages/mapper/message.mapper';
 import { TopicMapper } from './topic.mapper';
 import { UpdateChannelDto } from '../dto/channels/update-channel.dto';
+import { UserMapper } from '../../users/mapper/user.mapper';
 
 export class ChannelMapper {
     static toDto(entity: Channel): ChannelDto {
+        const { id, name, description, createdAt, users, topics, messages } = entity;
         return {
-            id: entity.id,
-            name: entity.name,
-            description: entity.description,
-            createdAt: entity.createdAt,
-            topics: entity.topics.map(topicEntity => TopicMapper.toDto(topicEntity))
+            id,
+            name,
+            description,
+            createdAt,
+            users: users ? users.map(user => UserMapper.toDTO(user)) : [],
+            topics: topics.map(topicEntity => TopicMapper.toDto(topicEntity)),
+            messages: messages
+                ? messages.map(messageEntity => MessageMapper.toDto(messageEntity))
+                : []
         };
     }
 
@@ -19,7 +26,9 @@ export class ChannelMapper {
         return {
             name: dto.name,
             description: dto.description,
-            topics: dto.topics.map(topicDto => TopicMapper.fromCreateDto(topicDto))
+            topics: dto.topics.map(topicDto => TopicMapper.fromCreateDto(topicDto)),
+            messages: undefined,
+            users: undefined
         };
     }
 
