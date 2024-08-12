@@ -89,8 +89,6 @@ export class ChannelController {
         return ChannelMapper.toDto(channel);
     }
 
-
-
     @Post()
     @ApiOperation({
         summary: 'Create a new channel',
