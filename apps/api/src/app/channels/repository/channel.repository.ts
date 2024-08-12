@@ -10,10 +10,21 @@ export class ChannelRepository {
         private readonly repository: Repository<Channel>
     ) {}
 
-    async findOneById(id: string): Promise<Channel> {
+    async getOneById(id: string): Promise<Channel | null> {
         return this.repository.findOne({
             where: { id },
-            relations: ['topics']
+            relations: ['topics', 'users', 'messages']
+        });
+    }
+
+    async getAll(): Promise<Channel[]> {
+        return this.repository.find();
+    }
+
+    async getByName(name: string): Promise<Channel | null> {
+        return this.repository.findOne({
+            where: { name },
+            relations: ['topics', 'users']
         });
     }
 
@@ -31,7 +42,7 @@ export class ChannelRepository {
                     .leftJoin('c.topics', 't')
                     .where('LOWER(c.name) LIKE :searchPattern', { searchPattern })
                     .orWhere('LOWER(t.name) LIKE :searchPattern', { searchPattern })
-                    .orWhere('LOWER(LEFT(c.description, 50)) LIKE :searchPattern', {
+                    .orWhere('LOWER(c.description) LIKE :searchPattern', {
                         searchPattern
                     })
                     .getQuery();
@@ -42,14 +53,16 @@ export class ChannelRepository {
     }
 
     async save(channel: Channel, manager?: EntityManager): Promise<Channel> {
-        const repo = this.getRepo(manager);
+        const repo = this.getRepository(manager);
         return repo.save(channel);
     }
 
-    async deleteById(id: string, manager?: EntityManager): Promise<void> {
-        if (manager) {
-            await manager.delete(Channel, id);
-        }
-        await this.repository.delete(id);
+    async remove(id: string, manager?: EntityManager): Promise<void> {
+        const repo = this.getRepository(manager);
+        await repo.delete(id);
+    }
+
+    private getRepository(manager?: EntityManager): Repository<Channel> {
+        return manager?.getRepository(Channel) ?? this.repository;
     }
 }

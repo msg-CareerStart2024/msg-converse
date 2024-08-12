@@ -77,8 +77,13 @@ export class ChannelService {
     }
 
     private updateChannelProperties(channel: Channel, updateData: Partial<Channel>): void {
-        if (updateData.name) channel.name = updateData.name;
-        if (updateData.description) channel.description = updateData.description;
+        if (updateData.name) {
+            channel.name = updateData.name;
+        }
+
+        if (updateData.description) {
+            channel.description = updateData.description;
+        }
     }
 
     private async getTopics(
