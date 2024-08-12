@@ -1,8 +1,9 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { UseFormRegister } from 'react-hook-form';
-import { beforeEach, describe, test, vi } from 'vitest';
+import { beforeEach, describe, it, test, vi } from 'vitest';
 import { LoginFormValues } from '../../../types/users/login.types';
 import SignInFormView from './SignInFormView';
+console.log('SignInFormView.test.tsx Loaded');
 
 const mockRegister: UseFormRegister<LoginFormValues> = vi.fn();
 
@@ -24,28 +25,25 @@ describe('SignInFormView', () => {
         );
     });
 
-    test('renders the sign-in form correctly', () => {
-        // Check if the form fields are rendered
-        expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+    it('renders the sign-in form correctly', () => {
+        expect(screen.getByRole('textbox', { name: /email/i })).toBeInTheDocument();
         expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
 
-        // Check if the sign-in button is rendered
         expect(screen.getByRole('button', { name: /sign in/i })).toBeInTheDocument();
     });
 
     test('shows error message when email is invalid', async () => {
-        // Re-render the component with an error state for email
         render(
             <SignInFormView
                 handleSubmit={handleSubmit}
                 register={mockRegister}
-                errors={{ email: { message: 'Invalid email' } }}
+                errors={{ email: { type: 'email', message: 'You have to provide a valid email!' } }}
                 loginError={loginError}
                 isLoading={isLoading}
             />
         );
 
-        expect(screen.getByText('Invalid email')).toBeInTheDocument();
+        expect(screen.getByText('You have to provide a valid email!')).toBeInTheDocument();
     });
 
     test('calls handleSubmit when the form is submitted', async () => {
@@ -53,11 +51,9 @@ describe('SignInFormView', () => {
         const passwordInput = screen.getByLabelText(/password/i);
         const submitButton = screen.getByRole('button', { name: /sign in/i });
 
-        // Simulate user input
         fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
         fireEvent.change(passwordInput, { target: { value: 'password123' } });
 
-        // Simulate form submission
         fireEvent.click(submitButton);
 
         await waitFor(() => {
@@ -72,7 +68,7 @@ describe('SignInFormView', () => {
                 register={mockRegister}
                 errors={errors}
                 loginError={loginError}
-                isLoading={true} // Set loading state to true
+                isLoading={true}
             />
         );
 
