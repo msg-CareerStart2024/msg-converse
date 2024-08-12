@@ -84,7 +84,6 @@ describe('ChannelService - update Integration Test', () => {
             topicService.getOrCreateTopics.mockResolvedValue(updatedTopics);
             channelRepository.save.mockResolvedValue(updatedChannel);
 
-
             const result = await channelService.update(channelId, updateData);
 
             expect(result).toEqual(updatedChannel);
