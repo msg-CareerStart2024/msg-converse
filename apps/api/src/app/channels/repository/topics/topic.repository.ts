@@ -18,8 +18,8 @@ export class TopicRepository {
         return this.repository.find();
     }
 
-    async findOrCreateTopics(topicNames: string[], manager?: EntityManager): Promise<Topic[]> {
-        const repo = this.getRepo(manager);
+    async getOrCreateTopics(topicNames: string[], manager?: EntityManager): Promise<Topic[]> {
+        const repo = this.getRepository(manager);
 
         await repo
             .createQueryBuilder()
@@ -32,21 +32,21 @@ export class TopicRepository {
         return repo.find({ where: { name: In(topicNames) } });
     }
 
-    async findByName(name: string): Promise<Topic> {
+    async getByName(name: string): Promise<Topic> {
         return this.repository.findOneBy({ name });
     }
 
     async save(topic: Topic, manager?: EntityManager): Promise<Topic> {
-        const repo = this.getRepo(manager);
+        const repo = this.getRepository(manager);
         return repo.save(topic);
     }
 
-    async deleteById(id: string, manager?: EntityManager): Promise<void> {
-        const repo = this.getRepo(manager);
+    async remove(id: string, manager?: EntityManager): Promise<void> {
+        const repo = this.getRepository(manager);
         await repo.delete(id);
     }
 
-    private getRepo(manager?: EntityManager): Repository<Topic> {
+    private getRepository(manager?: EntityManager): Repository<Topic> {
         return manager?.getRepository(Topic) ?? this.repository;
     }
 }

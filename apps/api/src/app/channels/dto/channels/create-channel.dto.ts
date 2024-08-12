@@ -1,4 +1,11 @@
-import { ArrayMaxSize, ArrayMinSize, IsArray, IsOptional, IsString } from 'class-validator';
+import {
+    ArrayMaxSize,
+    ArrayMinSize,
+    IsArray,
+    IsOptional,
+    IsString,
+    MaxLength
+} from 'class-validator';
 
 import { ApiProperty } from '@nestjs/swagger';
 import { CreateTopicDto } from '../topics/create-topic.dto';
@@ -16,11 +23,12 @@ export class CreateChannelDto {
     })
     @IsString()
     @IsOptional()
+    @MaxLength(150)
     @Transform(({ value }) => value?.trim())
     description?: string;
 
     @ApiProperty({
-        example: ['NODEJS', 'AWS'],
+        example: [{ name: 'NODEJS' }, { name: 'AWS' }],
         description: 'Array of topic names associated with the channel'
     })
     @IsArray()

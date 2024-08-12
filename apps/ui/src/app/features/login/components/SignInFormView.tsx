@@ -1,21 +1,39 @@
-import { Avatar, Box, Button, Container, Grid, Link, TextField, Typography } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
-import { FieldErrors, SubmitHandler, UseFormHandleSubmit, UseFormRegister } from 'react-hook-form';
-import { UserFormValues } from '../../../types/users/login.types';
+import {
+    Alert,
+    alpha,
+    Avatar,
+    Box,
+    Button,
+    Container,
+    Grid,
+    LinearProgress,
+    Link,
+    TextField,
+    Typography,
+    useTheme
+} from '@mui/material';
+import { SerializedError } from '@reduxjs/toolkit';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
+import { FieldErrors, UseFormRegister } from 'react-hook-form';
+import { LoginFormValues } from '../../../types/users/login.types';
 
 type SignInFormProps = {
-    handleSubmit: UseFormHandleSubmit<UserFormValues>;
-    onSubmit: SubmitHandler<UserFormValues>;
-    register: UseFormRegister<UserFormValues>;
-    errors: FieldErrors<UserFormValues>;
+    handleSubmit: (e?: React.BaseSyntheticEvent) => Promise<void>;
+    register: UseFormRegister<LoginFormValues>;
+    errors: FieldErrors<LoginFormValues>;
+    loginError?: FetchBaseQueryError | SerializedError;
+    isLoading: boolean;
 };
 
 export default function SignInFormView({
     handleSubmit,
-    onSubmit,
     errors,
-    register
+    register,
+    loginError,
+    isLoading
 }: SignInFormProps) {
+    const theme = useTheme();
     return (
         <Container component="main" maxWidth="xs" sx={{ mt: 25 }}>
             <Box
@@ -32,7 +50,7 @@ export default function SignInFormView({
                 <Typography component="h1" variant="h5">
                     Sign in
                 </Typography>
-                <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate sx={{ mt: 1 }}>
+                <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
                     <TextField
                         margin="normal"
                         required
@@ -58,6 +76,22 @@ export default function SignInFormView({
                     <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
                         Sign In
                     </Button>
+                    {isLoading && (
+                        <LinearProgress
+                            sx={{
+                                mb: 2,
+                                bgcolor: alpha(theme.palette.secondary.main, 0.5),
+                                '& .MuiLinearProgress-bar': {
+                                    backgroundColor: 'secondary.main'
+                                }
+                            }}
+                        />
+                    )}
+                    {loginError && (
+                        <Alert severity="error" sx={{ mb: 2 }}>
+                            Invalid email or password.
+                        </Alert>
+                    )}
                     <Grid item xs={12} style={{ textAlign: 'left', width: '100%' }}>
                         <Typography variant="body2">
                             <Link href="/signup">Don't have an account? Sign Up</Link>

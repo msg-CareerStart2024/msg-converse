@@ -98,12 +98,12 @@ describe('TopicService', () => {
         const topicNames = mockTopics.map(topic => topic.name);
 
         it('should get or create topics', async () => {
-            topicRepository.findOrCreateTopics.mockResolvedValue(mockTopics);
+            topicRepository.getOrCreateTopics.mockResolvedValue(mockTopics);
 
             const result = await topicService.getOrCreateTopics(topicNames, mockEntityManager);
 
             expect(result).toEqual(mockTopics);
-            expect(topicRepository.findOrCreateTopics).toHaveBeenCalledWith(
+            expect(topicRepository.getOrCreateTopics).toHaveBeenCalledWith(
                 topicNames,
                 mockEntityManager
             );
@@ -111,7 +111,7 @@ describe('TopicService', () => {
 
         it('should handle duplicate topic names', async () => {
             const duplicateTopicNames = [...topicNames, topicNames[0]];
-            topicRepository.findOrCreateTopics.mockResolvedValue(mockTopics);
+            topicRepository.getOrCreateTopics.mockResolvedValue(mockTopics);
 
             const result = await topicService.getOrCreateTopics(
                 duplicateTopicNames,
@@ -119,7 +119,7 @@ describe('TopicService', () => {
             );
 
             expect(result).toEqual(mockTopics);
-            expect(topicRepository.findOrCreateTopics).toHaveBeenCalledWith(
+            expect(topicRepository.getOrCreateTopics).toHaveBeenCalledWith(
                 topicNames,
                 mockEntityManager
             );
@@ -128,12 +128,12 @@ describe('TopicService', () => {
 
     describe('getByName', () => {
         it('should return a topic by name', async () => {
-            topicRepository.findByName.mockResolvedValue(mockTopic);
+            topicRepository.getByName.mockResolvedValue(mockTopic);
 
             const result = await topicService.getByName(mockTopic.name);
 
             expect(result).toEqual(mockTopic);
-            expect(topicRepository.findByName).toHaveBeenCalledWith(mockTopic.name);
+            expect(topicRepository.getByName).toHaveBeenCalledWith(mockTopic.name);
         });
     });
 
@@ -152,16 +152,13 @@ describe('TopicService', () => {
         it('should delete a topic without entity manager', async () => {
             await topicService.delete(mockTopic.id);
 
-            expect(topicRepository.deleteById).toHaveBeenCalledWith(mockTopic.id, undefined);
+            expect(topicRepository.remove).toHaveBeenCalledWith(mockTopic.id, undefined);
         });
 
         it('should delete a topic with entity manager', async () => {
             await topicService.delete(mockTopic.id, mockEntityManager);
 
-            expect(topicRepository.deleteById).toHaveBeenCalledWith(
-                mockTopic.id,
-                mockEntityManager
-            );
+            expect(topicRepository.remove).toHaveBeenCalledWith(mockTopic.id, mockEntityManager);
         });
     });
 });
