@@ -8,8 +8,10 @@ import HomePage from './features/home/pages/HomePage';
 import SignInPage from './features/login/pages/SignInPage';
 import { setCredentials } from './features/login/slices/auth-slice';
 import SignUpPage from './features/register/pages/SignUpPage';
+import { ProtectedRoute } from './layouts/ProtectedRoute';
 import SiderbarLayout from './layouts/SidebarLayout';
 import { darkTheme, lightTheme } from './lib/themes';
+import NotFoundPage from './pages/NotFoundPage';
 import { RootState, store } from './store/store';
 import { DecodedPayload } from './types/login/DecodedPayload';
 import { decodeToken } from './utils/utils';
@@ -57,8 +59,23 @@ export function App() {
                         <Route path=":id" element={<ChannelComponent />} />
                     </Route>
                 </Route>
-                <Route path="/signin" element={<SignInPage />} />
-                <Route path="/signup" element={<SignUpPage />} />
+                <Route
+                    path="/login"
+                    element={
+                        <ProtectedRoute>
+                            <SignInPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/signup"
+                    element={
+                        <ProtectedRoute>
+                            <SignUpPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route path="*" element={<NotFoundPage />} />
             </Routes>
         </ThemeProvider>
     );
