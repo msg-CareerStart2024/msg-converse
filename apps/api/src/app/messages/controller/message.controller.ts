@@ -7,7 +7,7 @@ import { CreateMessageDTO } from '../dto/create-message.dto';
 import { CurrentUserId } from '../../auth/decorators/current-user-id.decorator';
 import { UpdateMessageDTO } from '../dto/update-message.dto';
 
-@ApiTags('messages')
+@ApiTags('Messages')
 @ApiBearerAuth()
 @Controller('messages')
 export class MessagesController {

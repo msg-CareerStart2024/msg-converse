@@ -17,7 +17,9 @@ export const mockChannelFactory = (
     name,
     description,
     createdAt,
-    topics
+    topics,
+    users: [],
+    messages: []
 });
 
 export const mockChannelDtoFactory = (
@@ -31,13 +33,17 @@ export const mockChannelDtoFactory = (
     name,
     description,
     createdAt,
-    topics
+    topics,
+    users: [],
+    messages: []
 });
 
 export const mockNewChannelData: Omit<Channel, 'id' | 'createdAt'> = {
     name: 'New Channel',
     description: 'New Description',
-    topics: [{ id: undefined, name: 'NEW_TOPIC', channels: [] }]
+    topics: [{ id: undefined, name: 'NEW_TOPIC', channels: [] }],
+    users: [],
+    messages: []
 };
 
 export const mockChannelDto: ChannelDto = mockChannelDtoFactory();

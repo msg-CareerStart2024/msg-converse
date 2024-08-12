@@ -1,13 +1,20 @@
 import { Controller, Get, Param } from '@nestjs/common';
-import { ApiNotFoundResponse, ApiOkResponse, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import {
+    ApiBearerAuth,
+    ApiNotFoundResponse,
+    ApiOkResponse,
+    ApiTags,
+    ApiUnauthorizedResponse
+} from '@nestjs/swagger';
 import { UserDTO } from '../dto/user.dto';
 import { UserMapper } from '../mapper/user.mapper';
 import { UserService } from '../service/user.service';
 
+@ApiTags('Users')
+@ApiBearerAuth()
 @Controller('users')
 export class UsersController {
     constructor(private readonly userService: UserService) {}
-
     @ApiOkResponse({ description: 'Get user by id' })
     @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
     @ApiNotFoundResponse({ description: 'User not found' })

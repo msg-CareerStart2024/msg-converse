@@ -11,7 +11,10 @@ export class ChannelRepository {
     ) {}
 
     async getOneById(id: string): Promise<Channel | null> {
-        return this.repository.findOneBy({ id });
+        return this.repository.findOne({
+            where: { id },
+            relations: ['topics', 'users', 'messages']
+        });
     }
 
     async getAll(): Promise<Channel[]> {

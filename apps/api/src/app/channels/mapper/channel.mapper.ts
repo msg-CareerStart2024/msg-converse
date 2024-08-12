@@ -14,9 +14,11 @@ export class ChannelMapper {
             name,
             description,
             createdAt,
-            users: users.map(user => UserMapper.toDTO(user)),
+            users: users ? users.map(user => UserMapper.toDTO(user)) : [],
             topics: topics.map(topicEntity => TopicMapper.toDto(topicEntity)),
-            messages: messages.map(messageEntity => MessageMapper.toDto(messageEntity))
+            messages: messages
+                ? messages.map(messageEntity => MessageMapper.toDto(messageEntity))
+                : []
         };
     }
 

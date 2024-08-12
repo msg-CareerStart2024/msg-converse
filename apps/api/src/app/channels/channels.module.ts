@@ -9,9 +9,10 @@ import { TopicRepository } from './repository/topics/topic.repository';
 import { TopicService } from './services/topics/topic.service';
 import { TransactionManager } from '../shared/services/transaction.manager';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UsersModule } from '../users/user.module';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Channel, Topic])],
+    imports: [TypeOrmModule.forFeature([Channel, Topic]), UsersModule],
     providers: [
         ChannelService,
         TopicService,
