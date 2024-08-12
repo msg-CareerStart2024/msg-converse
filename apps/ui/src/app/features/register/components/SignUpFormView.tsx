@@ -1,21 +1,39 @@
-import { SignupFormValues } from '../../../types/users/signup.types';
-import { FieldErrors, SubmitHandler, UseFormHandleSubmit, UseFormRegister } from 'react-hook-form';
-import { Avatar, Box, Button, Container, Grid, Link, TextField, Typography } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
+import {
+    Alert,
+    alpha,
+    Avatar,
+    Box,
+    Button,
+    Container,
+    Grid,
+    LinearProgress,
+    Link,
+    TextField,
+    Typography,
+    useTheme
+} from '@mui/material';
+import { SerializedError } from '@reduxjs/toolkit';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
+import { FieldErrors, UseFormRegister } from 'react-hook-form';
+import { SignupFormValues } from '../../../types/users/signup.types';
 
 type SignUpFormProps = {
-    handleSubmit: UseFormHandleSubmit<SignupFormValues>;
-    onSubmit: SubmitHandler<SignupFormValues>;
+    handleSubmit: (e?: React.BaseSyntheticEvent) => Promise<void>;
     register: UseFormRegister<SignupFormValues>;
     errors: FieldErrors<SignupFormValues>;
+    registerError?: FetchBaseQueryError | SerializedError;
+    isLoading: boolean;
 };
 
 export default function SignUpFormView({
     handleSubmit,
-    onSubmit,
     errors,
-    register
+    register,
+    registerError,
+    isLoading
 }: SignUpFormProps) {
+    const theme = useTheme();
     return (
         <Container component="main" maxWidth="xs" sx={{ mt: 25 }}>
             <Box
@@ -36,7 +54,7 @@ export default function SignUpFormView({
                         </Typography>
                     </Box>
                 </Grid>
-                <Grid item xs={12} component="form" onSubmit={handleSubmit(onSubmit)}>
+                <Grid item xs={12} component="form" onSubmit={handleSubmit}>
                     <Grid container spacing={2}>
                         <Grid item xs={6}>
                             <TextField
@@ -85,10 +103,27 @@ export default function SignUpFormView({
                         helperText={errors.password?.message}
                         {...register('password')}
                     />
+                    <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+                        Sign Up
+                    </Button>
                 </Grid>
-                <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-                    Sign Up
-                </Button>
+
+                {isLoading && (
+                    <LinearProgress
+                        sx={{
+                            mb: 2,
+                            bgcolor: alpha(theme.palette.secondary.main, 0.5),
+                            '& .MuiLinearProgress-bar': {
+                                backgroundColor: 'secondary.main'
+                            }
+                        }}
+                    />
+                )}
+                {registerError && (
+                    <Alert severity="error" sx={{ mb: 2 }}>
+                        An error occured, please try again.
+                    </Alert>
+                )}
                 <Grid item xs={12} style={{ textAlign: 'right', width: '100%' }}>
                     <Typography variant="body2">
                         <Link href="/login">Already have an account? Sign in</Link>

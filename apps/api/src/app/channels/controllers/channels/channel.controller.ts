@@ -12,6 +12,7 @@ import { CreateChannelDto } from '../../dto/channels/create-channel.dto';
 import { UpdateChannelDto } from '../../dto/channels/update-channel.dto';
 import { ChannelMapper } from '../../mapper/channel.mapper';
 import { ChannelService } from '../../services/channels/channel.service';
+import { CurrentUserId } from '../../../auth/decorators/current-user-id.decorator';
 
 @ApiTags('Channels')
 @ApiBearerAuth()
@@ -83,9 +84,12 @@ export class ChannelController {
         status: 401,
         description: 'Unauthorized - Valid authentication credentials are required'
     })
-    async createChannel(@Body() createChannelDto: CreateChannelDto): Promise<ChannelDto> {
+    async createChannel(
+        @CurrentUserId() userId: string,
+        @Body() createChannelDto: CreateChannelDto
+    ): Promise<ChannelDto> {
         const newChannel = ChannelMapper.fromCreateDto(createChannelDto);
-        const createdChannel = await this.channelService.create(newChannel);
+        const createdChannel = await this.channelService.create(newChannel, userId);
         return ChannelMapper.toDto(createdChannel);
     }
 
