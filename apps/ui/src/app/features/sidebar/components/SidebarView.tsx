@@ -21,7 +21,7 @@ import MsgLogo from '../../../../assets/msg_logo.png';
 import { RootState } from '../../../store/store';
 import { generateUserName } from '../../../utils/utils';
 import SidebarItem from './SidebarItem';
-import { Channel } from '../../../types/channel/Channel.types';
+import { Channel } from '../../../types/channel/channel.types';
 
 type SidebarViewProps = {
     menuOpen: boolean;

@@ -8,8 +8,12 @@ export interface Channel {
     createdAt: Date;
 }
 
-export interface ChannelDTO {
-    name: string;
+// export interface ChannelDTO {
+//     name: string;
+//     topics: { name: string }[];
+//     description: string;
+// }
+
+export type ChannelDTO = Omit<Channel, 'id' | 'createdAt' | 'topics'> & {
     topics: { name: string }[];
-    description: string;
-}
+};

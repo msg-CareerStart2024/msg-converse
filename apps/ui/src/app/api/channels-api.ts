@@ -1,7 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { API_URLS } from '../config/api-config';
 import { setChannels } from '../features/channels/slices/channels-slice';
-import { Channel, ChannelDTO } from '../types/channel/Channel.types';
+import { Channel, ChannelDTO } from '../types/channel/channel.types';
 import { API_CACHE_TAGS } from '../config/api-tags';
 import getFetchBaseQuery from './fetch-base-query';
 

@@ -1,4 +1,4 @@
-import { Channel } from '../../types/channel/Channel.types';
+import { Channel } from '../../types/channel/channel.types';
 import { Topic } from '../../types/channel/Topic.types';
 
 const topics: Topic[] = [

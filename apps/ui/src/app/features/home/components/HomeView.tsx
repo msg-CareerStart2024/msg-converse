@@ -1,6 +1,6 @@
 import { Box, Button, Container, Grid, Typography } from '@mui/material';
 import ChannelCard from '../../channels/components/ChannelCard';
-import { Channel } from '../../../types/channel/Channel.types';
+import { Channel } from '../../../types/channel/channel.types';
 import SearchBar from '../../../components/SearchBar';
 import { Link } from 'react-router-dom';
 
