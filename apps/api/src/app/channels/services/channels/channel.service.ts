@@ -17,10 +17,8 @@ export class ChannelService {
     ) {}
 
     async searchChannels(searchTerm: string): Promise<Channel[]> {
-        const trimmedSearchTerm = searchTerm?.trim();
-        return trimmedSearchTerm
-            ? this.channelRepository.searchChannels(this.escapeSpecialCharacters(trimmedSearchTerm))
-            : this.channelRepository.getAll();
+        const escapedSearchTerm = this.escapeSpecialCharacters(searchTerm?.trim());
+        return this.channelRepository.searchChannels(escapedSearchTerm);
     }
 
     async getById(channelId: string): Promise<Channel> {
