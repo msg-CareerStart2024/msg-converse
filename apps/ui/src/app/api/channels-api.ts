@@ -7,35 +7,37 @@ import getFetchBaseQuery from './fetch-base-query';
 export const channelsApi = createApi({
     reducerPath: 'channelsApi',
     tagTypes: [API_CACHE_TAGS.CHANNELS],
-    baseQuery: getFetchBaseQuery(),
+    baseQuery: getFetchBaseQuery(API_URLS.CHANNELS),
     endpoints: builder => ({
         getChannels: builder.query<Channel[], string>({
-            query: keyword => `${API_URLS.CHANNELS}/?searchKey=${encodeURIComponent(keyword)}`,
+            query: keyword => `?searchKey=${encodeURIComponent(keyword)}`,
             providesTags: [API_CACHE_TAGS.CHANNELS]
         }),
 
         getJoinedChannels: builder.query<Channel[], void>({
-            query: () => `${API_URLS.CHANNELS}/joined`,
+            query: () => 'joined',
             providesTags: [API_CACHE_TAGS.JOINED_CHANNELS]
         }),
 
         getChannelById: builder.query<Channel, string>({
-            query: id => `${API_URLS.CHANNELS}/${id}`
+            query: id => `${id}`
         }),
 
         joinChannel: builder.mutation<void, { user: string; channel: string }>({
             query: data => ({
-                url: `${API_URLS.CHANNELS}/join`,
+                url: 'join',
                 method: 'POST',
                 body: { user: data.user, channel: data.channel }
             }),
-            invalidatesTags: [API_CACHE_TAGS.CHANNELS, API_CACHE_TAGS.JOINED_CHANNELS]
+            invalidatesTags: (_, error) =>
+                error ? [] : [API_CACHE_TAGS.CHANNELS, API_CACHE_TAGS.JOINED_CHANNELS]
         })
     })
 });
 
 export const {
     useLazyGetChannelsQuery,
+    useGetChannelsQuery,
     useGetJoinedChannelsQuery,
     useJoinChannelMutation,
     useGetChannelByIdQuery
