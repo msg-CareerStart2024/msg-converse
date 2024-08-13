@@ -18,8 +18,8 @@ import { RootState } from '../../../store/store';
 import { User } from '../../../types/login/User';
 import { useParams } from 'react-router-dom';
 import { useCreateMessageMutation, useGetMessageByChannelQuery } from '../../../api/messages-api';
-import { useGetChannelByIdQuery } from '../../../api/channelsApi';
 import MessageComponent from './MessageComponent';
+import { useGetChannelByIdQuery } from '../../../api/channels-api';
 
 export default function ChannelComponent() {
     const { id: channelId } = useParams<string>();
