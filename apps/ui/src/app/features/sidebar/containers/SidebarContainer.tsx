@@ -1,9 +1,10 @@
-import { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { RootState, store } from '../../../store/store';
-import { clearCredentials } from '../../login/slices/auth-slice';
 import SidebarView from '../components/SidebarView';
+import { Typography } from '@mui/material';
+import { clearCredentials } from '../../login/slices/auth-slice';
+import { store } from '../../../store/store';
+import { useGetJoinedChannelsQuery } from '../../../api/channels-api';
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 type SidebarContainerProps = {
     toggleSidebar: () => void;
@@ -25,7 +26,12 @@ export default function SidebarContainer({ toggleSidebar, sidebarOpen }: Sidebar
         store.dispatch(clearCredentials());
         navigate('/login');
     };
-    const channels = useSelector((state: RootState) => state.channels);
+
+    const { data: joinedChannels, isLoading } = useGetJoinedChannelsQuery();
+
+    if (isLoading) {
+        return <Typography>My channels are loading..</Typography>;
+    }
 
     return (
         <SidebarView
@@ -34,7 +40,7 @@ export default function SidebarContainer({ toggleSidebar, sidebarOpen }: Sidebar
             handleClick={handleClick}
             handleClose={handleClose}
             handleLogout={handleLogout}
-            channels={channels}
+            channels={joinedChannels}
             toggleSidebar={toggleSidebar}
             sidebarOpen={sidebarOpen}
         />

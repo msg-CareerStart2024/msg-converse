@@ -1,4 +1,3 @@
-import { ChevronLeft, Logout } from '@mui/icons-material';
 import {
     Avatar,
     Box,
@@ -15,13 +14,15 @@ import {
     Stack,
     Typography
 } from '@mui/material';
-import { useSelector } from 'react-redux';
+import { ChevronLeft, Logout } from '@mui/icons-material';
+
+import { Channel } from '../../../types/channels/Channel';
 import { Link } from 'react-router-dom';
 import MsgLogo from '../../../../assets/msg_logo.png';
 import { RootState } from '../../../store/store';
-import { Channel } from '../../../types/channels/Channel';
-import { generateUserName } from '../../../utils/utils';
 import SidebarItem from './SidebarItem';
+import { generateUserName } from '../../../utils/utils';
+import { useSelector } from 'react-redux';
 
 type SidebarViewProps = {
     menuOpen: boolean;
@@ -29,7 +30,7 @@ type SidebarViewProps = {
     handleClick: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
     handleLogout: () => void;
     handleClose: () => void;
-    channels: Channel[];
+    channels: Channel[] | undefined;
     toggleSidebar: () => void;
     sidebarOpen: boolean;
 };
@@ -46,6 +47,8 @@ export default function SidebarView({
 }: SidebarViewProps) {
     const user = useSelector((state: RootState) => state.auth.user);
     if (!user) return null;
+
+    console.log(channels);
     return (
         <Drawer
             variant="persistent"
@@ -81,11 +84,11 @@ export default function SidebarView({
                     My Channels
                 </Typography>
                 <List>
-                    {channels.map(channel => (
+                    {channels?.map(channel => (
                         <SidebarItem key={channel.id} channel={channel} />
                     ))}
                 </List>
-                {channels.length === 0 && (
+                {channels?.length === 0 && (
                     <Typography variant="h6">You haven't joined any channels yet!</Typography>
                 )}
             </Box>
