@@ -1,20 +1,44 @@
 import { Avatar, Box, Container, Grid, TextField } from '@mui/material';
 import ActionButtonView from './ActionButtonView';
-import { ACTION_TYPE, FormValues } from '../../../types/channels/channel.types';
 import TopicsView from './TopicsView';
-import { FieldErrors, UseFormHandleSubmit, UseFormRegister } from 'react-hook-form';
+import {
+    FieldErrors,
+    UseFormGetValues,
+    UseFormHandleSubmit,
+    UseFormRegister,
+    UseFormSetValue
+} from 'react-hook-form';
+import { Topic } from '../../../types/channel/Topic.types';
+import { ChannelFormValues } from '../schemas/ChannelFormValues.schema';
+
+import { User } from '../../../types/login/User';
+import { CHANNEL_FORM_ACTION_TYPE } from '../../../types/channel/ChannelFormActionType.enums';
 
 type ChannelFormProps = {
-    handleSubmit: UseFormHandleSubmit<FormValues>;
-    register: UseFormRegister<FormValues>;
-    errors: FieldErrors<FormValues>;
+    handleSubmit: UseFormHandleSubmit<ChannelFormValues>;
+    register: UseFormRegister<ChannelFormValues>;
+    errors: FieldErrors<ChannelFormValues>;
     isSubmitting: boolean;
     isEditForm: boolean;
-    initialValues?: FormValues;
+    getValues: UseFormGetValues<{
+        name: string;
+        topics: string;
+        description: string;
+    }>;
+    setValue: UseFormSetValue<{
+        name: string;
+        description: string;
+        topics: string;
+    }>;
+    onCreate: () => void;
+    onDelete: () => void;
+    onUpdate: () => void;
+    topics: Topic[];
+    setTopics: React.Dispatch<React.SetStateAction<Topic[]>>;
+    currentUser: User;
+    handleAddTopic: () => void;
+    handleDeleteTopic: (name: string) => void;
 };
-
-const topics = ['Topic 1', 'Topic 2', 'Topic 3'];
-const userInitial = 'M';
 
 export default function ChannelFormView({
     handleSubmit,
@@ -22,18 +46,32 @@ export default function ChannelFormView({
     errors,
     isSubmitting,
     isEditForm,
-    initialValues
+    getValues,
+    setValue,
+    onCreate,
+    onDelete,
+    onUpdate,
+    topics,
+    setTopics,
+    currentUser,
+    handleAddTopic,
+    handleDeleteTopic
 }: ChannelFormProps) {
-    function onSubmit() {
-        return;
-    }
-
+    const channelName = getValues('name');
     return (
-        <Container component="main" maxWidth="lg" sx={{ mt: 16, bgcolor: 'background.paper' }}>
-            <Box sx={{ marginTop: 4, display: 'flex', flexDirection: 'column' }}>
+        <Container
+            component="main"
+            maxWidth="lg"
+            sx={{
+                padding: 0.1
+            }}
+        >
+            <Box sx={{ fontSize: '20px' }}>{isEditForm ? channelName : 'Create Channel'}</Box>
+            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                 <form>
                     <Box
                         sx={{
+                            marginTop: 5,
                             display: 'flex',
                             flexDirection: 'row',
                             justifyContent: 'end',
@@ -43,48 +81,46 @@ export default function ChannelFormView({
                         {isEditForm ? (
                             <>
                                 <ActionButtonView
-                                    action={ACTION_TYPE.delete}
-                                    handleAction={handleSubmit(onSubmit)}
+                                    action={CHANNEL_FORM_ACTION_TYPE.DELETE_CHANNEL}
+                                    handleAction={handleSubmit(onDelete)}
                                     isSubmitting={isSubmitting}
                                 />
                                 <ActionButtonView
-                                    action={ACTION_TYPE.update}
-                                    handleAction={handleSubmit(onSubmit)}
+                                    action={CHANNEL_FORM_ACTION_TYPE.UPDATE_CHANNEL}
+                                    handleAction={handleSubmit(onUpdate)}
                                     isSubmitting={isSubmitting}
                                 />
                             </>
                         ) : (
                             <ActionButtonView
-                                action={ACTION_TYPE.create}
-                                handleAction={handleSubmit(onSubmit)}
+                                action={CHANNEL_FORM_ACTION_TYPE.CREATE_CHANNEL}
+                                handleAction={handleSubmit(onCreate)}
                                 isSubmitting={isSubmitting}
                             />
                         )}
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 4, mb: 4 }}>
                         <Avatar sx={{ bgcolor: 'gray', width: 64, height: 64 }}>
-                            {userInitial}
+                            {currentUser.firstName[0].toUpperCase()}
                         </Avatar>
                     </Box>
                     <Grid container spacing={8} sx={{ marginBottom: 4 }}>
                         <Grid item xs={12} sm={6}>
                             <TextField
                                 fullWidth
-                                defaultValue={isEditForm ? initialValues?.channelName : ''}
                                 focused
                                 label="Channel Name"
                                 variant="outlined"
-                                {...register('channelName', {
+                                {...register('name', {
                                     required: 'Channel name is required'
                                 })}
-                                error={!!errors.channelName}
-                                helperText={errors.channelName?.message}
+                                error={!!errors.name}
+                                helperText={errors.name?.message}
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <TextField
                                 fullWidth
-                                defaultValue={isEditForm ? initialValues?.description : ''}
                                 focused
                                 label="Description"
                                 variant="outlined"
@@ -93,7 +129,15 @@ export default function ChannelFormView({
                                 helperText={errors.description?.message}
                             />
                         </Grid>
-                        <TopicsView register={register} topics={topics} />
+                        <TopicsView
+                            register={register}
+                            topics={topics}
+                            getValues={getValues}
+                            setTopics={setTopics}
+                            setValue={setValue}
+                            handleAddTopic={handleAddTopic}
+                            handleDeleteTopic={handleDeleteTopic}
+                        />
                     </Grid>
                 </form>
             </Box>

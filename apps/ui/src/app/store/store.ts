@@ -4,6 +4,7 @@ import { channelsApi } from '../api/channels-api';
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { usersApi } from '../api/users-api';
+import { messagesApi } from '../api/messages-api';
 
 export const store = configureStore({
     reducer: {

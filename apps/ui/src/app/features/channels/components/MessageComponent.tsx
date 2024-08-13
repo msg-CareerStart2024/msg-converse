@@ -1,12 +1,6 @@
 import { Avatar, Box, ListItemText, useTheme } from '@mui/material';
+import { MessageComponentProps } from '../../../types/messages/Message';
 import { getColor } from '../../../lib/avatar-colors';
-
-// This file was taken from Darius, because he hasn't got to merge his branch to main and I needed this for my task
-
-export interface MessageComponentProps {
-    message: string;
-    firstNameInitial: string;
-}
 
 type UnifiedMessageProps = MessageComponentProps & {
     isSent: boolean;
