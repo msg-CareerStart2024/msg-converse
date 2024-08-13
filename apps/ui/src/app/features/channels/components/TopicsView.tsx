@@ -1,22 +1,33 @@
 import { AddCircle, Cancel } from '@mui/icons-material';
 import { Grid, TextField, IconButton, Box, Chip } from '@mui/material';
-import { FormValues } from '../../../types/channels/channel.types';
-import { UseFormRegister } from 'react-hook-form';
+import { UseFormGetValues, UseFormRegister, UseFormSetValue } from 'react-hook-form';
+import { Topic } from '../../../types/channel/Topic.types';
+import { ChannelFormValues } from '../schemas/ChannelFormValues.schema';
 
 type TopicsViewProps = {
-    register: UseFormRegister<FormValues>;
-    topics: string[];
+    register: UseFormRegister<ChannelFormValues>;
+    topics: Topic[];
+    getValues: UseFormGetValues<{
+        name: string;
+        topics: string;
+        description: string;
+    }>;
+    setValue: UseFormSetValue<{
+        name: string;
+        description: string;
+        topics: string;
+    }>;
+    setTopics: React.Dispatch<React.SetStateAction<Topic[]>>;
+    handleAddTopic: () => void;
+    handleDeleteTopic: (name: string) => void;
 };
 
-export default function TopicsView({ register, topics }: TopicsViewProps) {
-    const handleAddTopic = () => {
-        return;
-    };
-
-    const handleDeleteTopic = () => {
-        return;
-    };
-
+export default function TopicsView({
+    register,
+    topics,
+    handleAddTopic,
+    handleDeleteTopic
+}: TopicsViewProps) {
     return (
         <>
             <Grid item xs={12} sm={6}>
@@ -38,9 +49,9 @@ export default function TopicsView({ register, topics }: TopicsViewProps) {
                     {topics.map((topic, index) => (
                         <Chip
                             key={index}
-                            label={topic}
+                            label={topic.name}
                             color="primary"
-                            onDelete={handleDeleteTopic}
+                            onDelete={() => handleDeleteTopic(topic.name)}
                             deleteIcon={<Cancel />}
                         />
                     ))}

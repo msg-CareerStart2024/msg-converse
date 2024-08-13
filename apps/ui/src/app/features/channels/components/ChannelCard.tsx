@@ -16,7 +16,7 @@ import { formatDate, shrinkToWords } from '../../../utils/utils';
 import { getColor } from '../../../lib/avatar-colors';
 import { Link } from 'react-router-dom';
 import { useJoinChannelMutation } from '../../../api/channels-api';
-import { Channel } from '../../../types/channels/Channel';
+import { Channel } from '../../../types/channel/channel.types';
 
 interface ChannelCardProps {
     channel: Channel;
@@ -64,9 +64,11 @@ const ChannelCard = ({ channel }: ChannelCardProps) => {
                                 </Typography>
                             </Box>
                         </Stack>
-                        <IconButton aria-label="edit">
-                            <EditIcon sx={{ color: 'text.secondary' }} />
-                        </IconButton>
+                        <Link to={`/channels/edit/${channel.id}`}>
+                            <IconButton aria-label="edit">
+                                <EditIcon sx={{ color: 'text.secondary' }} />
+                            </IconButton>
+                        </Link>
                     </Stack>
                     <Stack direction="row" spacing={1} mb={2}>
                         {channel.topics.map(topic => (

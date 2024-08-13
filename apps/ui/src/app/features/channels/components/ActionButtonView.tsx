@@ -1,14 +1,14 @@
 import { Button, Box } from '@mui/material';
-import { ACTION_TYPE } from '../../../types/channels/channel.types';
+import { CHANNEL_FORM_ACTION_TYPE } from '../../../types/channel/ChannelFormActionType.enums';
 
 type ActionButtonProps = {
-    action: ACTION_TYPE;
+    action: CHANNEL_FORM_ACTION_TYPE;
     handleAction: () => void;
     isSubmitting: boolean;
 };
 
 const ActionButtonView: React.FC<ActionButtonProps> = ({ action, handleAction, isSubmitting }) => {
-    const actionType = ACTION_TYPE[action];
+    const actionType = CHANNEL_FORM_ACTION_TYPE[action];
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 8 }}>
@@ -24,7 +24,7 @@ const ActionButtonView: React.FC<ActionButtonProps> = ({ action, handleAction, i
                 }}
                 disabled={isSubmitting}
             >
-                {actionType.charAt(0).toUpperCase() + actionType.slice(1)}{' '}
+                {actionType.replace('_', ' ')}
             </Button>
         </Box>
     );

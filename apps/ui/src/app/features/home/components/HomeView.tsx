@@ -1,8 +1,9 @@
 import { Box, Button, Container, Grid, Typography } from '@mui/material';
-
-import { Channel } from '../../../types/channels/Channel';
 import ChannelCard from '../../channels/components/ChannelCard';
+import { Channel } from '../../../types/channel/channel.types';
+
 import SearchBar from '../../../components/SearchBar';
+import { Link } from 'react-router-dom';
 
 type HomeViewProps = {
     channels: Channel[] | undefined;
@@ -23,9 +24,11 @@ export default function HomeView({ channels, onSearch }: HomeViewProps) {
                 >
                     <SearchBar onSearch={onSearch} />
                 </Box>
-                <Button variant="contained" color="primary">
-                    CREATE CHANNEL
-                </Button>
+                <Link to="/channels/new">
+                    <Button variant="contained" color="primary">
+                        CREATE CHANNEL
+                    </Button>
+                </Link>
             </Box>
 
             <Grid container spacing={3} alignItems="stretch">

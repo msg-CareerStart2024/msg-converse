@@ -1,6 +1,7 @@
+import { Channel, ChannelDTO } from '../types/channel/channel.types';
+
 import { API_CACHE_TAGS } from '../config/api-tags';
 import { API_URLS } from '../config/api-config';
-import { Channel } from '../types/channels/Channel';
 import { createApi } from '@reduxjs/toolkit/query/react';
 import getFetchBaseQuery from './fetch-base-query';
 
@@ -31,6 +32,32 @@ export const channelsApi = createApi({
             }),
             invalidatesTags: (_, error) =>
                 error ? [] : [API_CACHE_TAGS.CHANNELS, API_CACHE_TAGS.JOINED_CHANNELS]
+        }),
+
+        createChannel: builder.mutation<Channel, ChannelDTO>({
+            query: channel => ({
+                url: '',
+                method: 'POST',
+                body: channel
+            }),
+            invalidatesTags: (_, error) => (error ? [] : [API_CACHE_TAGS.CHANNELS])
+        }),
+        updateChannel: builder.mutation<Channel, { id: string; partialChannel: ChannelDTO }>({
+            query: ({ id, partialChannel }) => ({
+                url: `${id}`,
+                method: 'PUT',
+                body: partialChannel
+            }),
+            invalidatesTags: (_, error) => (error ? [] : [API_CACHE_TAGS.CHANNELS])
+        }),
+
+        deleteChannel: builder.mutation<void, string>({
+            query: id => ({
+                url: `${API_URLS.CHANNELS}/${id}`,
+                method: 'DELETE'
+            }),
+            invalidatesTags: (_, error) =>
+                error ? [] : [API_CACHE_TAGS.CHANNELS, API_CACHE_TAGS.JOINED_CHANNELS]
         })
     })
 });
@@ -40,5 +67,9 @@ export const {
     useGetChannelsQuery,
     useGetJoinedChannelsQuery,
     useJoinChannelMutation,
+    useLazyGetChannelByIdQuery,
+    useCreateChannelMutation,
+    useDeleteChannelMutation,
+    useUpdateChannelMutation,
     useGetChannelByIdQuery
 } = channelsApi;
