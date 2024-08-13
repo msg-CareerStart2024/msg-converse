@@ -1,6 +1,5 @@
 import {
     Alert,
-    Avatar,
     Box,
     Container,
     FormControl,
@@ -8,21 +7,19 @@ import {
     IconButton,
     List,
     ListItem,
-    ListItemText,
     Paper,
     TextField,
-    Typography,
-    useTheme
+    Typography
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
-import { getColor } from '../../../lib/avatar-colors';
+import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../store/store';
 import { User } from '../../../types/login/User';
 import { useParams } from 'react-router-dom';
 import { useCreateMessageMutation, useGetMessageByChannelQuery } from '../../../api/messages-api';
 import { useGetChannelByIdQuery } from '../../../api/channelsApi';
+import MessageComponent from './MessageComponent';
 
 export default function ChannelComponent() {
     const { id: channelId } = useParams<string>();
@@ -44,13 +41,16 @@ export default function ChannelComponent() {
 
     const [writtenMessage, setWrittenMessage] = useState<string>('');
     const messagesEndRef = useRef<HTMLDivElement>(null);
-    const theme = useTheme();
 
     const handleMessageChange = (event: ChangeEvent<HTMLInputElement>) => {
         setWrittenMessage(event.target.value);
     };
 
-    const sendMessage = async () => {
+    const sendMessage = async (event?: FormEvent<HTMLFormElement>) => {
+        if (event) {
+            event.preventDefault();
+        }
+
         if (writtenMessage) {
             await createMessage({
                 channelId: channelId as string,
@@ -95,104 +95,52 @@ export default function ChannelComponent() {
                         <Grid container spacing={4} alignItems="center">
                             <Grid item xs={12}>
                                 <List sx={{ height: '65dvh', overflow: 'auto' }}>
-                                    {messages.map(message => (
-                                        <ListItem
-                                            key={message.id}
-                                            sx={{
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                padding: 1,
-                                                justifyContent:
-                                                    message.user.id === currentUser.id
-                                                        ? 'flex-end'
-                                                        : 'flex-start'
-                                            }}
-                                        >
-                                            {message.user.id !== currentUser.id ? (
-                                                <>
-                                                    <Avatar
-                                                        variant="circular"
-                                                        sx={{
-                                                            marginInline: 2,
-                                                            backgroundColor: getColor(
-                                                                message.user.firstName[0].toUpperCase()
-                                                            )
-                                                        }}
-                                                    >
-                                                        {message.user.firstName[0].toUpperCase()}
-                                                    </Avatar>
-                                                    <Box
-                                                        sx={{
-                                                            width: 'fit-content',
-                                                            maxWidth: '75%'
-                                                        }}
-                                                    >
-                                                        <ListItemText
-                                                            primary={message.content}
-                                                            sx={{
-                                                                backgroundColor:
-                                                                    theme.palette.primary.main,
-                                                                borderRadius: '20px',
-                                                                padding: 1,
-                                                                paddingX: 2
-                                                            }}
-                                                        />
-                                                    </Box>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <Box
-                                                        sx={{
-                                                            width: 'fit-content',
-                                                            maxWidth: '75%'
-                                                        }}
-                                                    >
-                                                        <ListItemText
-                                                            primary={message.content}
-                                                            sx={{
-                                                                textAlign: 'left',
-                                                                backgroundColor:
-                                                                    theme.palette.secondary.main,
-                                                                borderRadius: '20px',
-                                                                padding: 1,
-                                                                paddingX: 2
-                                                            }}
-                                                            color="primary"
-                                                        />
-                                                    </Box>
-                                                    <Avatar
-                                                        variant="circular"
-                                                        sx={{
-                                                            marginInline: 2,
-                                                            backgroundColor: getColor(
-                                                                message.user.firstName[0].toUpperCase()
-                                                            )
-                                                        }}
-                                                    >
-                                                        {message.user.firstName[0].toUpperCase()}
-                                                    </Avatar>
-                                                </>
-                                            )}
-                                        </ListItem>
-                                    ))}
+                                    {[...messages]
+                                        .sort(
+                                            (m1, m2) =>
+                                                new Date(m1.createdAt).getTime() -
+                                                new Date(m2.createdAt).getTime()
+                                        )
+                                        .map(message => (
+                                            <ListItem
+                                                key={message.id}
+                                                sx={{
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    padding: 1,
+                                                    justifyContent:
+                                                        message.user.id === currentUser.id
+                                                            ? 'flex-end'
+                                                            : 'flex-start'
+                                                }}
+                                            >
+                                                <MessageComponent
+                                                    message={message.content}
+                                                    firstNameInitial={message.user.firstName[0].toUpperCase()}
+                                                    isSent={message.user.id === currentUser.id}
+                                                />
+                                            </ListItem>
+                                        ))}
                                     <div ref={messagesEndRef} />
                                 </List>
                             </Grid>
                             <Grid item xs={11}>
-                                <FormControl fullWidth>
-                                    <TextField
-                                        label="Type your message"
-                                        variant="outlined"
-                                        value={writtenMessage}
-                                        onChange={handleMessageChange}
-                                    />
-                                </FormControl>
+                                <form onSubmit={sendMessage} style={{ display: 'flex' }}>
+                                    <FormControl fullWidth>
+                                        <TextField
+                                            label="Type your message"
+                                            variant="outlined"
+                                            value={writtenMessage}
+                                            onChange={handleMessageChange}
+                                        />
+                                    </FormControl>
+                                </form>
                             </Grid>
                             <Grid item xs={1}>
                                 <IconButton
                                     aria-label="send"
                                     color="primary"
-                                    onClick={sendMessage}
+                                    onClick={() => sendMessage()}
                                     disabled={isLoadingMessages}
                                 >
                                     <SendIcon />
