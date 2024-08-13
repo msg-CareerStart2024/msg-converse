@@ -1,16 +1,17 @@
 import { ConfigModule, ConfigService } from '@nestjs/config';
+
 import { APP_FILTER } from '@nestjs/core';
 import { AppConfigPaths } from './shared/config/app.config';
 import { AuthModule } from './auth/auth.module';
 import { ChannelsModule } from './channels/channels.module';
+import { HealthModule } from './health/health.module';
 import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
+import Joi from 'joi';
+import { MessagesModule } from './messages/messages.module';
 import { Module } from '@nestjs/common';
 import { TransactionManager } from './shared/services/transaction.manager';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import Joi from 'joi';
-import { HealthModule } from './health/health.module';
 import { UsersModule } from './users/user.module';
-import { MessagesModule } from './messages/messages.module';
 
 @Module({
     imports: [

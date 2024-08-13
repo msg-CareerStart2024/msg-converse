@@ -70,5 +70,6 @@ export const {
     useLazyGetChannelByIdQuery,
     useCreateChannelMutation,
     useDeleteChannelMutation,
-    useUpdateChannelMutation
+    useUpdateChannelMutation,
+    useGetChannelByIdQuery
 } = channelsApi;

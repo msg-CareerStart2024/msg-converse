@@ -1,8 +1,11 @@
+import { User } from '../login/User';
+
 export interface Message {
     id: string;
-    text: string;
-    firstNameInitial: string;
-    userId: string;
+    content: string;
+    isPinned: boolean;
+    createdAt: Date;
+    user: User;
 }
 
 export interface MessageComponentProps {
