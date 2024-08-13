@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { UseFormRegister } from 'react-hook-form';
 import { vi } from 'vitest';
-import { SignupFormValues } from '../../../types/users/signup.types';
+import { SignupFormValues } from '../../../types/users/SignUpFormValues.types';
 import SignUpFormView from './SignUpFormView';
 
 const mockRegister: UseFormRegister<SignupFormValues> = vi.fn();

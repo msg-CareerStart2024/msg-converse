@@ -101,7 +101,10 @@ export default function SidebarView({
                         <ListItemIcon>
                             <Avatar>{user.firstName.charAt(0)}</Avatar>
                         </ListItemIcon>
-                        <ListItemText primary={generateUserName(user.firstName, user.lastName)} />
+                        <ListItemText
+                            data-testid="logged-in-user"
+                            primary={generateUserName(user.firstName, user.lastName)}
+                        />
                     </ListItemButton>
                 </ListItem>
                 <Menu

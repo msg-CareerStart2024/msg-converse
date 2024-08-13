@@ -1,12 +1,13 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { clearCredentials } from '../../features/login/slices/auth-slice';
-import { store } from '../../store/store';
-import { SignupFormValues, signUpSchema } from '../../types/users/signup.types';
+import { setupStore } from '../../store/store';
+import { SignupFormValues, signUpSchema } from '../../types/users/SignUpFormValues.types';
 import { useLoginUserMutation, useRegisterUserMutation } from './auth-api';
 
 describe('authApi', () => {
     it('should login successfully and set credentials', async () => {
+        const store = setupStore();
         const { result } = renderHook(() => useLoginUserMutation(), {
             wrapper: ({ children }) => <Provider store={store}>{children}</Provider>
         });
@@ -20,6 +21,7 @@ describe('authApi', () => {
     });
 
     it('should handle login failure', async () => {
+        const store = setupStore();
         const { result } = renderHook(() => useLoginUserMutation(), {
             wrapper: ({ children }) => <Provider store={store}>{children}</Provider>
         });
@@ -36,6 +38,7 @@ describe('authApi', () => {
     });
 
     it('should register a new user', async () => {
+        const store = setupStore();
         const { result } = renderHook(() => useRegisterUserMutation(), {
             wrapper: ({ children }) => <Provider store={store}>{children}</Provider>
         });
@@ -53,10 +56,11 @@ describe('authApi', () => {
 
         expect(validationResult.success).toBe(true);
 
-        await waitFor(() => expect(result.current[1].isSuccess).toBe(true));
+        waitFor(() => expect(result.current[1].isSuccess).toBe(true));
     });
 
     it('should handle registration failure', async () => {
+        const store = setupStore();
         const { result } = renderHook(() => useRegisterUserMutation(), {
             wrapper: ({ children }) => <Provider store={store}>{children}</Provider>
         });
@@ -74,6 +78,6 @@ describe('authApi', () => {
 
         expect(validationResult.success).toBe(false);
 
-        await waitFor(() => expect(result.current[1].isError).toBe(true));
+        waitFor(() => expect(result.current[1].isError).toBe(true));
     });
 });

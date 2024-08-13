@@ -1,3 +1,4 @@
+import SendIcon from '@mui/icons-material/Send';
 import {
     Avatar,
     Box,
@@ -13,10 +14,9 @@ import {
     Typography,
     useTheme
 } from '@mui/material';
-import SendIcon from '@mui/icons-material/Send';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { getColor } from '../../../lib/avatar-colors';
-import { Message } from '../../../types/messages/Message';
+import { Message } from '../../../types/messages/Message.types';
 
 const currentUserId = '1';
 

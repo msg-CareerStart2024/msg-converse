@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
+import { useGetChannelsQuery } from '../../../api/channels-api/channelsApi';
 import { RootState } from '../../../store/store';
 import HomeView from '../components/HomeView';
-import { useGetChannelsQuery } from '../../../api/channelsApi';
 
 export default function HomePage() {
     useGetChannelsQuery('');

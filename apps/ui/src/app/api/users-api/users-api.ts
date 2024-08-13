@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { API_URLS, BASE_URL } from '../config/api-config';
-import { API_CACHE_TAGS } from '../config/api-tags';
-import { addBearerAuthHeader } from '../utils/utils';
+import { API_URLS, BASE_URL } from '../../config/api-config';
+import { API_CACHE_TAGS } from '../../config/api-tags';
+import { addBearerAuthHeader } from '../../utils/utils';
 
 export const usersApi = createApi({
     reducerPath: 'usersApi',

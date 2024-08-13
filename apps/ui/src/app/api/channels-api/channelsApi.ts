@@ -1,8 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { API_URLS, BASE_URL } from '../config/api-config';
-import { setChannels } from '../features/channels/slices/channels-slice';
-import { Channel } from '../types/channels/Channel';
-import { API_CACHE_TAGS } from '../config/api-tags';
+import { API_URLS, BASE_URL } from '../../config/api-config';
+import { API_CACHE_TAGS } from '../../config/api-tags';
+import { setChannels } from '../../features/channels/slices/channels-slice';
+import { Channel } from '../../types/channels/Channel';
 
 export const channelsApi = createApi({
     reducerPath: 'channelsApi',
@@ -19,7 +19,7 @@ export const channelsApi = createApi({
                     const { data } = await queryFulfilled;
                     dispatch(setChannels(data));
                 } catch (error) {
-                    alert('Searching channels failed');
+                    console.error('Searching channels failed');
                 }
             }
         }),

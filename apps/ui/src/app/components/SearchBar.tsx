@@ -1,6 +1,6 @@
 import { Snackbar, TextField } from '@mui/material';
 import React, { useRef, useState } from 'react';
-import { useLazyGetChannelsQuery } from '../api/channelsApi';
+import { useLazyGetChannelsQuery } from '../api/channels-api/channelsApi';
 
 export default function SearchBar() {
     const [inputValue, setInputValue] = useState('');

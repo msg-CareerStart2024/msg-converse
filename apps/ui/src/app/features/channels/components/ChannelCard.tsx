@@ -12,11 +12,11 @@ import {
     Stack,
     Typography
 } from '@mui/material';
-import { formatDate, shrinkToWords } from '../../../utils/utils';
-import { getColor } from '../../../lib/avatar-colors';
 import { Link } from 'react-router-dom';
-import { useJoinChannelMutation } from '../../../api/channelsApi';
+import { useJoinChannelMutation } from '../../../api/channels-api/channelsApi';
+import { getColor } from '../../../lib/avatar-colors';
 import { Channel } from '../../../types/channels/Channel';
+import { formatDate, shrinkToWords } from '../../../utils/utils';
 
 interface ChannelCardProps {
     channel: Channel;

@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "jsx": "react-jsx",
+        "allowJs": false,
+        "esModuleInterop": false,
+        "allowSyntheticDefaultImports": true,
+        "strict": true,
+        "types": ["vite/client", "vitest/globals", "@testing-library/jest-dom", "msw"]
+    },
+    "files": [],
+    "include": ["src/**/*.ts", "src/**/*.tsx", "cypress/**/*.ts", "cypress/**/*.tsx"],
+    "exclude": ["node_modules", "build"],
+    "extends": "./tsconfig.base.json"
+}
