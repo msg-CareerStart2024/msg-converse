@@ -53,7 +53,7 @@ export const channelsApi = createApi({
 
         deleteChannel: builder.mutation<void, string>({
             query: id => ({
-                url: `${API_URLS.CHANNELS}/${id}`,
+                url: `${id}`,
                 method: 'DELETE'
             }),
             invalidatesTags: (_, error) =>
