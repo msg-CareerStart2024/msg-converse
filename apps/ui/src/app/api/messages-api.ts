@@ -1,16 +1,12 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi } from '@reduxjs/toolkit/query/react';
 import { API_CACHE_TAGS } from '../config/api-tags';
-import { API_URLS, BASE_URL } from '../config/api-config';
 import { CreateMessageDTO, Message, UpdateMessageDTO } from '../types/messages/Message';
-import { addBearerAuthHeader } from '../utils/utils';
+import getFetchBaseQuery from './fetch-base-query';
 
 export const messagesApi = createApi({
     reducerPath: 'messagesApi',
     tagTypes: [API_CACHE_TAGS.MESSAGES],
-    baseQuery: fetchBaseQuery({
-        baseUrl: BASE_URL + API_URLS.MESSAGES,
-        prepareHeaders: addBearerAuthHeader
-    }),
+    baseQuery: getFetchBaseQuery(),
     endpoints: builder => ({
         getMessageByChannel: builder.query<Message[], string>({
             query: channelId => ({
@@ -45,7 +41,7 @@ export const messagesApi = createApi({
                 url: `/${id}`,
                 method: 'DELETE'
             }),
-            invalidatesTags: [API_CACHE_TAGS.MESSAGES]
+            invalidatesTags: (_, error) => (error ? [] : [API_CACHE_TAGS.MESSAGES])
         })
     })
 });
