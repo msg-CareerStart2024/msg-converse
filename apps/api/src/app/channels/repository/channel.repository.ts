@@ -42,7 +42,7 @@ export class ChannelRepository {
                     .leftJoin('c.topics', 't')
                     .where('LOWER(c.name) LIKE :searchPattern', { searchPattern })
                     .orWhere('LOWER(t.name) LIKE :searchPattern', { searchPattern })
-                    .orWhere('LOWER(LEFT(c.description, 50)) LIKE :searchPattern', {
+                    .orWhere('LOWER(c.description) LIKE :searchPattern', {
                         searchPattern
                     })
                     .getQuery();
@@ -52,17 +52,34 @@ export class ChannelRepository {
             .getMany();
     }
 
+    async getChannelsJoinedByUser(userId: string): Promise<Channel[]> {
+        return this.repository
+            .createQueryBuilder('channel')
+            .innerJoin('channel.users', 'user')
+            .leftJoinAndSelect('channel.topics', 'topic')
+            .where('user.id = :userId', { userId })
+            .select([
+                'channel.id',
+                'channel.name',
+                'channel.description',
+                'channel.createdAt',
+                'topic'
+            ])
+            .orderBy('channel.createdAt', 'DESC')
+            .getMany();
+    }
+
     async save(channel: Channel, manager?: EntityManager): Promise<Channel> {
-        const repo = this.getRepo(manager);
+        const repo = this.getRepository(manager);
         return repo.save(channel);
     }
 
     async remove(id: string, manager?: EntityManager): Promise<void> {
-        const repo = this.getRepo(manager);
+        const repo = this.getRepository(manager);
         await repo.delete(id);
     }
 
-    private getRepo(manager?: EntityManager): Repository<Channel> {
+    private getRepository(manager?: EntityManager): Repository<Channel> {
         return manager?.getRepository(Channel) ?? this.repository;
     }
 }

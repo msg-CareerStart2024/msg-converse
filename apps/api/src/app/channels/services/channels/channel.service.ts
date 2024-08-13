@@ -17,14 +17,16 @@ export class ChannelService {
     ) {}
 
     async searchChannels(searchTerm: string): Promise<Channel[]> {
-        const trimmedSearchTerm = searchTerm?.trim();
-        return trimmedSearchTerm
-            ? this.channelRepository.searchChannels(this.escapeSpecialCharacters(trimmedSearchTerm))
-            : this.channelRepository.getAll();
+        const escapedSearchTerm = this.escapeSpecialCharacters(searchTerm?.trim());
+        return this.channelRepository.searchChannels(escapedSearchTerm);
     }
 
     async getById(channelId: string): Promise<Channel> {
         return this.channelRepository.getOneById(channelId);
+    }
+
+    async getChannelsJoinedByUser(userId: string): Promise<Channel[]> {
+        return this.channelRepository.getChannelsJoinedByUser(userId);
     }
 
     async create(channelData: Omit<Channel, 'id' | 'createdAt'>, userId: string): Promise<Channel> {
@@ -77,8 +79,13 @@ export class ChannelService {
     }
 
     private updateChannelProperties(channel: Channel, updateData: Partial<Channel>): void {
-        if (updateData.name) channel.name = updateData.name;
-        if (updateData.description) channel.description = updateData.description;
+        if (updateData.name) {
+            channel.name = updateData.name;
+        }
+
+        if (updateData.description) {
+            channel.description = updateData.description;
+        }
     }
 
     private async getTopics(

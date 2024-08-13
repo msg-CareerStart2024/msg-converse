@@ -21,7 +21,7 @@ export class Channel {
     name: string;
 
     @Column({ type: 'text', nullable: true })
-    description: string;
+    description?: string;
 
     @CreateDateColumn({ name: 'created_at' })
     createdAt: Date;

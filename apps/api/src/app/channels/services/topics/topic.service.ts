@@ -30,7 +30,7 @@ export class TopicService {
         return await this.topicRepository.getById(id);
     }
 
-    async delete(id: string, manager?: EntityManager): Promise<void> {
+    async remove(id: string, manager?: EntityManager): Promise<void> {
         await this.topicRepository.remove(id, manager);
     }
 }

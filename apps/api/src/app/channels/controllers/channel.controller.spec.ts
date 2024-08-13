@@ -7,11 +7,11 @@ import {
     mockChannels,
     mockCreateChannelDto,
     mockUpdateChannelDto
-} from '../../__mocks__/channel.mock';
+} from '../__mocks__/channel.mock';
 
 import { ChannelController } from './channel.controller';
-import { ChannelMapper } from '../../mapper/channel.mapper';
-import { ChannelService } from '../../services/channels/channel.service';
+import { ChannelMapper } from '../mapper/channel.mapper';
+import { ChannelService } from '../services/channels/channel.service';
 
 describe('ChannelController', () => {
     let controller: ChannelController;
@@ -23,8 +23,7 @@ describe('ChannelController', () => {
             getById: jest.fn(),
             create: jest.fn(),
             update: jest.fn(),
-            delete: jest.fn(),
-            getChannelsJoinedByUser: jest.fn()
+            delete: jest.fn()
         };
 
         const module: TestingModule = await Test.createTestingModule({
@@ -109,83 +108,14 @@ describe('ChannelController', () => {
         });
     });
 
-    describe('getChannelsJoinedByUser', () => {
-        const userId = 'mock-user-id';
-
-        it('should return an array of ChannelDto for channels joined by the user', async () => {
-            const joinedChannels = [mockChannels[0], mockChannels[1]];
-            channelService.getChannelsJoinedByUser.mockResolvedValue(joinedChannels);
-
-            const result = await controller.getChannelsJoinedByUser(userId);
-
-            expect(result).toEqual(joinedChannels.map(channel => ChannelMapper.toDto(channel)));
-            expect(channelService.getChannelsJoinedByUser).toHaveBeenCalledWith(userId);
-        });
-
-        it('should return an empty array when the user has not joined any channels', async () => {
-            channelService.getChannelsJoinedByUser.mockResolvedValue([]);
-
-            const result = await controller.getChannelsJoinedByUser(userId);
-
-            expect(result).toEqual([]);
-            expect(channelService.getChannelsJoinedByUser).toHaveBeenCalledWith(userId);
-        });
-
-        it('should throw BadRequestException when given an invalid user ID', async () => {
-            const invalidUserId = '';
-            channelService.getChannelsJoinedByUser.mockRejectedValue(
-                new BadRequestException('Invalid user ID')
-            );
-
-            await expect(controller.getChannelsJoinedByUser(invalidUserId)).rejects.toThrow(
-                BadRequestException
-            );
-            expect(channelService.getChannelsJoinedByUser).toHaveBeenCalledWith(invalidUserId);
-        });
-
-        it('should throw NotFoundException when user is not found', async () => {
-            const nonExistentUserId = 'non-existent-user-id';
-            channelService.getChannelsJoinedByUser.mockRejectedValue(
-                new NotFoundException('User not found')
-            );
-
-            await expect(controller.getChannelsJoinedByUser(nonExistentUserId)).rejects.toThrow(
-                NotFoundException
-            );
-            expect(channelService.getChannelsJoinedByUser).toHaveBeenCalledWith(nonExistentUserId);
-        });
-
-        it('should return channels with their associated topics', async () => {
-            const joinedChannels = [mockChannelWithTopics];
-            channelService.getChannelsJoinedByUser.mockResolvedValue(joinedChannels);
-
-            const result = await controller.getChannelsJoinedByUser(userId);
-
-            expect(result).toEqual(joinedChannels.map(channel => ChannelMapper.toDto(channel)));
-            expect(result[0].topics).toBeDefined();
-            expect(result[0].topics.length).toBeGreaterThan(0);
-        });
-
-        it('should not include user data in the returned channels', async () => {
-            const joinedChannels = [
-                mockChannelFactory('1', 'Channel 1', 'Description 1', new Date(), [])
-            ];
-            channelService.getChannelsJoinedByUser.mockResolvedValue(joinedChannels);
-
-            const result = await controller.getChannelsJoinedByUser(userId);
-
-            expect(result[0].users).toEqual([]);
-        });
-    });
-
     describe('createChannel', () => {
         it('should create a new channel and return a ChannelDto', async () => {
             channelService.create.mockResolvedValue(mockChannelWithTopics);
 
-            const result = await controller.createChannel('user-id', mockCreateChannelDto);
+            const result = await controller.createChannel(mockCreateChannelDto);
 
             expect(result).toEqual(mockChannelDtoWithTopics);
-            expect(channelService.create).toHaveBeenCalledWith(expect.any(Object), 'user-id');
+            expect(channelService.create).toHaveBeenCalledWith(expect.any(Object));
             expect(ChannelMapper.fromCreateDto).toHaveBeenCalledWith(mockCreateChannelDto);
         });
 
@@ -195,7 +125,7 @@ describe('ChannelController', () => {
             );
 
             await expect(
-                controller.createChannel('user-id', { ...mockCreateChannelDto, name: '' })
+                controller.createChannel({ ...mockCreateChannelDto, name: '' })
             ).rejects.toThrow(BadRequestException);
         });
 
@@ -209,7 +139,7 @@ describe('ChannelController', () => {
             );
             channelService.create.mockResolvedValue(maxTopicsChannel);
 
-            const result = await controller.createChannel('user-id', {
+            const result = await controller.createChannel({
                 ...mockCreateChannelDto,
                 topics: Array(5).fill({ name: 'TOPIC' })
             });

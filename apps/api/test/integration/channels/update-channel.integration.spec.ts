@@ -1,5 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import {
+    createMockChannelRepository,
+    createMockTopicService,
+    createMockUserService
+} from '../../../src/app/channels/services/channels/channel.service.spec';
+import {
     mockChannels,
     mockUpdateChannelData
 } from '../../../src/app/channels/__mocks__/channel.mock';
@@ -9,6 +14,7 @@ import { ChannelService } from '../../../src/app/channels/services/channels/chan
 import { EntityManager } from 'typeorm';
 import { TopicService } from '../../../src/app/channels/services/topics/topic.service';
 import { TransactionManager } from '../../../src/app/shared/services/transaction.manager';
+import { UserService } from '../../../src/app/users/service/user.service';
 
 describe('ChannelService - update Integration Test', () => {
     let channelService: ChannelService;
@@ -22,16 +28,15 @@ describe('ChannelService - update Integration Test', () => {
                 ChannelService,
                 {
                     provide: ChannelRepository,
-                    useFactory: () => ({
-                        getOneById: jest.fn(),
-                        save: jest.fn()
-                    })
+                    useFactory: createMockChannelRepository
                 },
                 {
                     provide: TopicService,
-                    useFactory: () => ({
-                        getOrCreateTopics: jest.fn()
-                    })
+                    useFactory: createMockTopicService
+                },
+                {
+                    provide: UserService,
+                    useFactory: createMockUserService
                 },
                 {
                     provide: TransactionManager,
@@ -56,8 +61,8 @@ describe('ChannelService - update Integration Test', () => {
         it('should update channel with new topics', async () => {
             const channelId = mockChannels[0].id;
             const newTopics = [
-                { name: 'New Topic 1', id: undefined, channels: [] },
-                { name: 'New Topic 2', id: undefined, channels: [] }
+                { name: 'New Topic 1', id: '1', channels: [] },
+                { name: 'New Topic 2', id: '2', channels: [] }
             ];
             const updateData = {
                 name: 'Updated Channel',
@@ -79,7 +84,6 @@ describe('ChannelService - update Integration Test', () => {
             topicService.getOrCreateTopics.mockResolvedValue(updatedTopics);
             channelRepository.save.mockResolvedValue(updatedChannel);
 
-            // @ts-expect-error - TS doesnt recognize the description field as optional
             const result = await channelService.update(channelId, updateData);
 
             expect(result).toEqual(updatedChannel);
@@ -146,19 +150,17 @@ describe('ChannelService - update Integration Test', () => {
             expect(result.description).toBe('Trimmed Description');
         });
 
-        it('should handle update with null description', async () => {
+        it('should handle update with no description', async () => {
             const channelId = mockChannels[0].id;
-            const updateData = { description: null };
+            const updateData = { description: undefined };
             const existingChannel = mockChannels[0];
-            const updatedChannel = { ...existingChannel, description: null };
+            const updatedChannel = { ...existingChannel, description: undefined };
 
             channelRepository.getOneById.mockResolvedValue(existingChannel);
-            // @ts-expect-error - TS doesnt recognize the description field as optional
             channelRepository.save.mockResolvedValue(updatedChannel);
-            // @ts-expect-error - TS doesnt recognize the description field as optional
             const result = await channelService.update(channelId, updateData);
 
-            expect(result.description).toBeNull();
+            expect(result.description).toBeUndefined();
         });
 
         it('should handle database errors during update', async () => {
@@ -194,9 +196,9 @@ describe('ChannelService - update Integration Test', () => {
             const channelId = mockChannels[0].id;
             const updateData = {
                 topics: [
-                    { name: 'Topic1', id: undefined, channels: [] },
-                    { name: 'Topic1', id: undefined, channels: [] },
-                    { name: 'Topic2', id: undefined, channels: [] }
+                    { name: 'Topic1', id: '1', channels: [] },
+                    { name: 'Topic1', id: '2', channels: [] },
+                    { name: 'Topic2', id: '3', channels: [] }
                 ]
             };
             const existingChannel = mockChannels[0];
@@ -209,7 +211,6 @@ describe('ChannelService - update Integration Test', () => {
             channelRepository.getOneById.mockResolvedValue(existingChannel);
             topicService.getOrCreateTopics.mockResolvedValue(uniqueTopics);
             channelRepository.save.mockResolvedValue(updatedChannel);
-            // @ts-expect-error - TS doesnt recognize the description field as optional
             const result = await channelService.update(channelId, updateData);
 
             expect(result.topics).toHaveLength(2);
