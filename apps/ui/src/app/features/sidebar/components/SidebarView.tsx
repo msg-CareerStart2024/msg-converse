@@ -48,7 +48,6 @@ export default function SidebarView({
     const user = useSelector((state: RootState) => state.auth.user);
     if (!user) return null;
 
-    console.log(channels);
     return (
         <Drawer
             variant="persistent"
