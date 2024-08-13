@@ -84,9 +84,7 @@ export default function SidebarView({
                     My Channels
                 </Typography>
                 <List>
-                    {channels?.map(channel => (
-                        <SidebarItem key={channel.id} channel={channel} />
-                    ))}
+                    {channels?.map(channel => <SidebarItem key={channel.id} channel={channel} />)}
                 </List>
                 {channels?.length === 0 && (
                     <Typography variant="h6">You haven't joined any channels yet!</Typography>
