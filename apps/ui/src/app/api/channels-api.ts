@@ -19,6 +19,10 @@ export const channelsApi = createApi({
             providesTags: [API_CACHE_TAGS.JOINED_CHANNELS]
         }),
 
+        getChannelById: builder.query<Channel, string>({
+            query: id => `${API_URLS.CHANNELS}/${id}`
+        }),
+
         joinChannel: builder.mutation<void, { user: string; channel: string }>({
             query: data => ({
                 url: `${API_URLS.CHANNELS}/join`,
@@ -32,7 +36,7 @@ export const channelsApi = createApi({
 
 export const {
     useLazyGetChannelsQuery,
-    useGetChannelsQuery,
     useGetJoinedChannelsQuery,
-    useJoinChannelMutation
+    useJoinChannelMutation,
+    useGetChannelByIdQuery
 } = channelsApi;
