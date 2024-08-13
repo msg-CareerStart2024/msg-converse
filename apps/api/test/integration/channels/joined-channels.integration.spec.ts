@@ -11,23 +11,14 @@ import { ChannelService } from '../../../src/app/channels/services/channels/chan
 import { Role } from '../../../src/app/users/enums/role.enum';
 import { TopicService } from '../../../src/app/channels/services/topics/topic.service';
 import { TransactionManager } from '../../../src/app/shared/services/transaction.manager';
-import { User } from '../../../src/app/users/domain/user.domain';
 import { UserService } from '../../../src/app/users/service/user.service';
 import { mockChannels } from '../../../src/app/channels/__mocks__/channel.mock';
 import { mockTopics } from '../../../src/app/channels/__mocks__/topic.mock';
+import { mockUser } from './create-channel.integration.spec';
 
 describe('ChannelService - getChannelsJoinedByUser Integration Test', () => {
     let channelService: ChannelService;
     let channelRepository: jest.Mocked<ChannelRepository>;
-
-    const mockUser: User = {
-        id: 'mock-user-id',
-        email: 'test@example.com',
-        firstName: 'Test',
-        lastName: 'User',
-        password: 'password123',
-        role: Role.USER
-    };
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
