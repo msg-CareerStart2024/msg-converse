@@ -1,13 +1,15 @@
-import { Topic } from './Topic';
+import { Topic } from './Topic.types';
 
-export type FormValues = {
-    channelName: string;
-    description?: string;
+export interface Channel {
+    id: string;
+    name: string;
     topics: Topic[];
-};
+    description: string;
+    createdAt: Date;
+}
 
-export enum ACTION_TYPE {
-    create,
-    update,
-    delete
+export interface ChannelDTO {
+    name: string;
+    topics: { name: string }[];
+    description: string;
 }

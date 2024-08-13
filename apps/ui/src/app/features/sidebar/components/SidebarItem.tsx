@@ -1,7 +1,7 @@
 import { Avatar, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { getColor } from '../../../lib/avatar-colors';
-import { Channel } from '../../../types/channel/Channel';
+import { Channel } from '../../../types/channel/Channel.types';
 
 type SidebarItemProps = {
     channel: Channel;

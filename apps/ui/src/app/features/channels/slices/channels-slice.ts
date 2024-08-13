@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Channel } from '../../../types/channel/Channel';
+import { Channel } from '../../../types/channel/Channel.types';
 
 const initialState = [] as Channel[];
 const channelsSlice = createSlice({

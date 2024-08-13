@@ -1,6 +1,5 @@
 import { Avatar, Box, Container, Grid, TextField } from '@mui/material';
 import ActionButtonView from './ActionButtonView';
-import { ACTION_TYPE, FormValues } from '../../../types/channel/channel.types';
 import TopicsView from './TopicsView';
 import {
     FieldErrors,
@@ -9,8 +8,7 @@ import {
     UseFormRegister,
     UseFormSetValue
 } from 'react-hook-form';
-import { Topic } from '../../../types/channel/Topic';
-import { ChannelFormValues } from '../../../types/channel/schemas/channel.schema';
+import { Topic } from '../../../types/channel/Topic.types';
 import {
     useCreateChannelMutation,
     useDeleteChannelMutation,
@@ -18,11 +16,13 @@ import {
 } from '../../../api/channels-api';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { ChannelFormValues } from '../schemas/ChannelFormValues.schema';
+import { CHANNEL_FORM_ACTION_TYPE } from '../../../types/channel/ChannelFormActionType';
 
 type ChannelFormProps = {
     handleSubmit: UseFormHandleSubmit<ChannelFormValues>;
     register: UseFormRegister<ChannelFormValues>;
-    errors: FieldErrors<FormValues>;
+    errors: FieldErrors<ChannelFormValues>;
     isSubmitting: boolean;
     isEditForm: boolean;
     getValues: UseFormGetValues<{
@@ -144,19 +144,19 @@ export default function ChannelFormView({
                         {isEditForm ? (
                             <>
                                 <ActionButtonView
-                                    action={ACTION_TYPE.delete}
+                                    action={CHANNEL_FORM_ACTION_TYPE.DELETE_CHANNEL}
                                     handleAction={handleSubmit(onDelete)}
                                     isSubmitting={isSubmitting}
                                 />
                                 <ActionButtonView
-                                    action={ACTION_TYPE.update}
+                                    action={CHANNEL_FORM_ACTION_TYPE.UPDATE_CHANNEL}
                                     handleAction={handleSubmit(onUpdate)}
                                     isSubmitting={isSubmitting}
                                 />
                             </>
                         ) : (
                             <ActionButtonView
-                                action={ACTION_TYPE.create}
+                                action={CHANNEL_FORM_ACTION_TYPE.CREATE_CHANNEL}
                                 handleAction={handleSubmit(onCreate)}
                                 isSubmitting={isSubmitting}
                             />
@@ -177,8 +177,8 @@ export default function ChannelFormView({
                                 {...register('name', {
                                     required: 'Channel name is required'
                                 })}
-                                error={!!errors.channelName}
-                                helperText={errors.channelName?.message}
+                                error={!!errors.name}
+                                helperText={errors.name?.message}
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>

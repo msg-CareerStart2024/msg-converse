@@ -1,5 +1,5 @@
 import { Button, Box } from '@mui/material';
-import { ACTION_TYPE } from '../../../types/channel/channel.types';
+import { ACTION_TYPE } from '../../../types/channel/Channel.types';
 
 type ActionButtonProps = {
     action: ACTION_TYPE;
