@@ -17,7 +17,10 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../../store/store';
 import { User } from '../../../types/login/User';
 import { useParams } from 'react-router-dom';
-import { useCreateMessageMutation, useGetMessageByChannelQuery } from '../../../api/messages-api';
+import {
+    useCreateMessageMutation,
+    useGetMessagesByChannelIdQuery
+} from '../../../api/messages-api';
 import MessageComponent from './MessageComponent';
 import { useGetChannelByIdQuery } from '../../../api/channels-api';
 
@@ -28,7 +31,7 @@ export default function ChannelComponent() {
         data: messages,
         isLoading: isLoadingMessages,
         error: errorMessages
-    } = useGetMessageByChannelQuery(channelId as string);
+    } = useGetMessagesByChannelIdQuery(channelId as string);
     const [createMessage] = useCreateMessageMutation();
 
     const {

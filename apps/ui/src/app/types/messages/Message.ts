@@ -7,12 +7,3 @@ export interface Message {
     createdAt: Date;
     user: User;
 }
-
-export interface CreateMessageDTO {
-    content: string;
-}
-
-export interface UpdateMessageDTO {
-    content: string;
-    isPinned: boolean;
-}
