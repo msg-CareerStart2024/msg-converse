@@ -19,9 +19,9 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import MsgLogo from '../../../../assets/msg_logo.png';
 import { RootState } from '../../../store/store';
-import { Channel } from '../../../types/channels/Channel';
 import { generateUserName } from '../../../utils/utils';
 import SidebarItem from './SidebarItem';
+import { Channel } from '../../../types/channel/Channel.types';
 
 type SidebarViewProps = {
     menuOpen: boolean;
