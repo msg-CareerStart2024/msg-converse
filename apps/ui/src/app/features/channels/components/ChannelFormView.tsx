@@ -9,15 +9,10 @@ import {
     UseFormSetValue
 } from 'react-hook-form';
 import { Topic } from '../../../types/channel/Topic.types';
-import {
-    useCreateChannelMutation,
-    useDeleteChannelMutation,
-    useUpdateChannelMutation
-} from '../../../api/channels-api';
-import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
 import { ChannelFormValues } from '../schemas/ChannelFormValues.schema';
-import { CHANNEL_FORM_ACTION_TYPE } from '../../../types/channel/ChannelFormActionType';
+
+import { User } from '../../../types/login/User';
+import { CHANNEL_FORM_ACTION_TYPE } from '../../../types/channel/ChannelFormActionType.enums';
 
 type ChannelFormProps = {
     handleSubmit: UseFormHandleSubmit<ChannelFormValues>;
@@ -35,19 +30,15 @@ type ChannelFormProps = {
         description: string;
         topics: string;
     }>;
+    onCreate: () => void;
+    onDelete: () => void;
+    onUpdate: () => void;
+    topics: Topic[];
+    setTopics: React.Dispatch<React.SetStateAction<Topic[]>>;
+    currentUser: User;
+    handleAddTopic: () => void;
+    handleDeleteTopic: (name: string) => void;
 };
-
-const topic1: Topic = {
-    id: 'id1',
-    name: 'name1'
-};
-
-const topic2: Topic = {
-    id: 'id2',
-    name: 'name2'
-};
-
-const userInitial = 'M';
 
 export default function ChannelFormView({
     handleSubmit,
@@ -56,85 +47,31 @@ export default function ChannelFormView({
     isSubmitting,
     isEditForm,
     getValues,
-    setValue
+    setValue,
+    onCreate,
+    onDelete,
+    onUpdate,
+    topics,
+    setTopics,
+    currentUser,
+    handleAddTopic,
+    handleDeleteTopic
 }: ChannelFormProps) {
-    const [topics, setTopics] = useState<Topic[]>([topic1, topic2]);
-
-    const { id } = useParams<{ id?: string }>();
-
-    const navigate = useNavigate();
-
-    const [createChannel] = useCreateChannelMutation();
-    const [deleteChannel] = useDeleteChannelMutation();
-    const [updateChannel] = useUpdateChannelMutation();
-
-    function onCreate() {
-        createChannel({
-            name: getValues('name'),
-            description: getValues('description'),
-            topics: topics.map(topic => {
-                return { name: topic.name };
-            })
-        })
-            .unwrap()
-            .then(newChannel => {
-                alert('Channel created successfully');
-                navigate('/');
-            })
-            .catch(error => {
-                console.error('Failed to create channel:', error);
-                alert('Failed to create channel');
-            });
-    }
-
-    function onDelete() {
-        const channelId = id;
-        if (channelId) {
-            deleteChannel(channelId)
-                .unwrap()
-                .then(() => {
-                    alert('Channel successfully deleted');
-                    navigate('/');
-                })
-                .catch(error => {
-                    alert('Failed to delete channel');
-                    console.error('Delete channel error:', error);
-                });
-        }
-    }
-
-    function onUpdate() {
-        const channelData = {
-            name: getValues('name'),
-            description: getValues('description'),
-            topics: topics.map(topic => ({
-                name: topic.name
-            }))
-        };
-
-        const channelId = id;
-        if (channelId) {
-            updateChannel({ id: channelId, partialChannel: channelData })
-                .unwrap()
-                .then(() => {
-                    alert('Channel updated successfully');
-                    navigate('/');
-                })
-                .catch(error => {
-                    alert('Failed to update channel');
-                    console.error('Update channel error:', error);
-                });
-        } else {
-            alert('Channel ID is missing');
-        }
-    }
-
+    const channelName = getValues('name');
     return (
-        <Container component="main" maxWidth="lg" sx={{ mt: 16, bgcolor: 'background.paper' }}>
-            <Box sx={{ marginTop: 4, display: 'flex', flexDirection: 'column' }}>
+        <Container
+            component="main"
+            maxWidth="lg"
+            sx={{
+                padding: 0.1
+            }}
+        >
+            <Box sx={{ fontSize: '20px' }}>{isEditForm ? channelName : 'Create Channel'}</Box>
+            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                 <form>
                     <Box
                         sx={{
+                            marginTop: 5,
                             display: 'flex',
                             flexDirection: 'row',
                             justifyContent: 'end',
@@ -164,7 +101,7 @@ export default function ChannelFormView({
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 4, mb: 4 }}>
                         <Avatar sx={{ bgcolor: 'gray', width: 64, height: 64 }}>
-                            {userInitial}
+                            {currentUser.firstName[0].toUpperCase()}
                         </Avatar>
                     </Box>
                     <Grid container spacing={8} sx={{ marginBottom: 4 }}>
@@ -198,6 +135,8 @@ export default function ChannelFormView({
                             getValues={getValues}
                             setTopics={setTopics}
                             setValue={setValue}
+                            handleAddTopic={handleAddTopic}
+                            handleDeleteTopic={handleDeleteTopic}
                         />
                     </Grid>
                 </form>

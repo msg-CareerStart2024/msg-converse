@@ -2,7 +2,7 @@ import { AddCircle, Cancel } from '@mui/icons-material';
 import { Grid, TextField, IconButton, Box, Chip } from '@mui/material';
 import { UseFormGetValues, UseFormRegister, UseFormSetValue } from 'react-hook-form';
 import { Topic } from '../../../types/channel/Topic.types';
-import { ChannelFormValues } from '../../../types/channel/schemas/channel.schema';
+import { ChannelFormValues } from '../schemas/ChannelFormValues.schema';
 
 type TopicsViewProps = {
     register: UseFormRegister<ChannelFormValues>;
@@ -18,36 +18,16 @@ type TopicsViewProps = {
         topics: string;
     }>;
     setTopics: React.Dispatch<React.SetStateAction<Topic[]>>;
+    handleAddTopic: () => void;
+    handleDeleteTopic: (name: string) => void;
 };
 
 export default function TopicsView({
     register,
     topics,
-    getValues,
-    setTopics,
-    setValue
+    handleAddTopic,
+    handleDeleteTopic
 }: TopicsViewProps) {
-    const handleAddTopic = () => {
-        const tempTopics = [...topics];
-        if (!tempTopics.find(topic => topic.name === getValues('topics'))) {
-            tempTopics.push({
-                id: '',
-                name: getValues('topics')
-            });
-            setTopics(tempTopics);
-        }
-        setValue('topics', '');
-    };
-
-    const handleDeleteTopic = (name: string) => {
-        const tempTopics = [...topics];
-        const topic = tempTopics.find(topic => topic.name === name);
-        if (topic) {
-            tempTopics.splice(tempTopics.indexOf(topic), 1);
-            setTopics(tempTopics);
-        }
-    };
-
     return (
         <>
             <Grid item xs={12} sm={6}>
