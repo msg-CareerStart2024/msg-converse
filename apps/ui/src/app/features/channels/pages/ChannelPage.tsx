@@ -11,10 +11,10 @@ import { Typography } from '@mui/material';
 
 import { useEffect, useState } from 'react';
 import { ChannelFormValues } from '../schemas/ChannelFormValues.schema';
+import { Topic } from '../../../types/channel/Topic.types';
 import { RootState } from '../../../store/store';
 import { useSelector } from 'react-redux';
 import { User } from '../../../types/login/User';
-import { Topic } from '../../../types/channel/Topic.types';
 
 export default function ChannelPage() {
     const { id } = useParams<{ id?: string }>();
@@ -24,47 +24,44 @@ export default function ChannelPage() {
     const currentUser = useSelector((state: RootState) => state.auth.user) as User;
 
     const [createChannel] = useCreateChannelMutation();
-    const onCreate = async () => {
-        try {
-            const name = getValues('name');
-            const description = getValues('description');
-            const topicsTransformed = topics.map(topic => ({ name: topic.name }));
-
-            await createChannel({
-                name: name,
-                description: description,
-                topics: topicsTransformed
+    function onCreate() {
+        createChannel({
+            name: getValues('name'),
+            description: getValues('description'),
+            topics: topics.map(topic => {
+                return { name: topic.name };
+            })
+        })
+            .unwrap()
+            .then(newChannel => {
+                alert('Channel created successfully');
+                navigate('/');
+            })
+            .catch(error => {
+                console.error('Failed to create channel:', error);
+                alert('Failed to create channel');
             });
-
-            alert('Channel created successfully');
-            navigate('/');
-        } catch (error) {
-            console.error('Failed to create channel:', error);
-            alert('Failed to create channel');
-        }
-    };
+    }
 
     const [deleteChannel] = useDeleteChannelMutation();
-    const onDelete = async () => {
+    function onDelete() {
         const channelId = id;
-        if (!channelId) {
-            alert('Channel ID is missing');
-            return;
+        if (channelId) {
+            deleteChannel(channelId)
+                .unwrap()
+                .then(() => {
+                    alert('Channel successfully deleted');
+                    navigate('/');
+                })
+                .catch(error => {
+                    alert('Failed to delete channel');
+                    console.error('Delete channel error:', error);
+                });
         }
-
-        try {
-            await deleteChannel(channelId);
-
-            alert('Channel successfully deleted');
-            navigate('/');
-        } catch (error) {
-            console.error('Failed to delete channel:', error);
-            alert('Failed to delete channel');
-        }
-    };
+    }
 
     const [updateChannel] = useUpdateChannelMutation();
-    const onUpdate = async () => {
+    function onUpdate() {
         const channelData = {
             name: getValues('name'),
             description: getValues('description'),
@@ -75,18 +72,20 @@ export default function ChannelPage() {
 
         const channelId = id;
         if (channelId) {
-            try {
-                await updateChannel({ id: channelId, partialChannel: channelData });
-                alert('Channel updated successfully');
-                navigate('/');
-            } catch (error) {
-                alert('Failed to update channel');
-                console.error('Update channel error:', error);
-            }
+            updateChannel({ id: channelId, partialChannel: channelData })
+                .unwrap()
+                .then(() => {
+                    alert('Channel updated successfully');
+                    navigate('/');
+                })
+                .catch(error => {
+                    alert('Failed to update channel');
+                    console.error('Update channel error:', error);
+                });
         } else {
             alert('Channel ID is missing');
         }
-    };
+    }
 
     const navigate = useNavigate();
 

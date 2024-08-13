@@ -61,6 +61,7 @@ export const channelsApi = createApi({
 
 export const {
     useLazyGetChannelsQuery,
+    useGetChannelsQuery,
     useGetJoinedChannelsQuery,
     useJoinChannelMutation,
     useLazyGetChannelByIdQuery,

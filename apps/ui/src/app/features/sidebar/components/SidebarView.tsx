@@ -20,9 +20,9 @@ import { Link } from 'react-router-dom';
 import MsgLogo from '../../../../assets/msg_logo.png';
 import { RootState } from '../../../store/store';
 import SidebarItem from './SidebarItem';
-import { generateUserName } from '../../../utils/utils';
+import { Channel } from '../../../types/channel/channel.types';
 import { useSelector } from 'react-redux';
-import { Channel } from 'diagnostics_channel';
+import { generateUserName } from '../../../utils/utils';
 
 type SidebarViewProps = {
     menuOpen: boolean;

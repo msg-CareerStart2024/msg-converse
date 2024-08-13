@@ -8,11 +8,11 @@ import {
     UseFormRegister,
     UseFormSetValue
 } from 'react-hook-form';
+import { Topic } from '../../../types/channel/Topic.types';
 import { ChannelFormValues } from '../schemas/ChannelFormValues.schema';
 
 import { User } from '../../../types/login/User';
 import { CHANNEL_FORM_ACTION_TYPE } from '../../../types/channel/ChannelFormActionType.enums';
-import { Topic } from '../../../types/channel/Topic.types';
 
 type ChannelFormProps = {
     handleSubmit: UseFormHandleSubmit<ChannelFormValues>;

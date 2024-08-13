@@ -1,10 +1,6 @@
 import { Avatar, Box, ListItemText, useTheme } from '@mui/material';
+import { MessageComponentProps } from '../../../types/messages/Message';
 import { getColor } from '../../../lib/avatar-colors';
-
-export interface MessageComponentProps {
-    message: string;
-    firstNameInitial: string;
-}
 
 type UnifiedMessageProps = MessageComponentProps & {
     isSent: boolean;
