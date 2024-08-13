@@ -2,16 +2,16 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { authApi } from '../api/auth/auth-api';
 import { channelsApi } from '../api/channels-api/channelsApi';
+import { messagesApi } from '../api/messages-api';
 import { usersApi } from '../api/users-api/users-api';
-import channelsReducer from '../features/channels/slices/channels-slice';
 import authReducer from '../features/login/slices/auth-slice';
 
 const rootReducer = combineReducers({
-    channels: channelsReducer,
     auth: authReducer,
     [authApi.reducerPath]: authApi.reducer,
     [usersApi.reducerPath]: usersApi.reducer,
-    [channelsApi.reducerPath]: channelsApi.reducer
+    [channelsApi.reducerPath]: channelsApi.reducer,
+    [messagesApi.reducerPath]: messagesApi.reducer
 });
 export const store = configureStore({
     reducer: rootReducer,
@@ -19,7 +19,8 @@ export const store = configureStore({
         getDefaultMiddleware().concat(
             authApi.middleware,
             usersApi.middleware,
-            channelsApi.middleware
+            channelsApi.middleware,
+            messagesApi.middleware
         )
 });
 
@@ -30,7 +31,8 @@ export const setupStore = (preloadedState?: Partial<RootState>) => {
             getDefaultMiddleware().concat(
                 authApi.middleware,
                 usersApi.middleware,
-                channelsApi.middleware
+                channelsApi.middleware,
+                messagesApi.middleware
             ),
         preloadedState
     });

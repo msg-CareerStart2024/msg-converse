@@ -1,8 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { MessageRepository } from '../repository/message.repository';
+
+import { ChannelService } from '../../channels/services/channels/channel.service';
 import { Message } from '../domain/message.domain';
+import { MessageRepository } from '../repository/message.repository';
 import { UserService } from '../../users/service/user.service';
-import { ChannelService } from '../../channels/services/channel.service';
 
 @Injectable()
 export class MessageService {

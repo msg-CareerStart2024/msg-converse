@@ -15,7 +15,6 @@ import { UserService } from '../service/user.service';
 @Controller('users')
 export class UsersController {
     constructor(private readonly userService: UserService) {}
-
     @ApiOkResponse({ description: 'Get user by id' })
     @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
     @ApiNotFoundResponse({ description: 'User not found' })

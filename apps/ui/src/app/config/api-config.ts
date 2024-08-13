@@ -23,5 +23,6 @@ export const BASE_URL = getBaseUrl();
 export const API_URLS = {
     CHANNELS: '/channels',
     AUTH: '/auth',
-    USERS: '/users'
+    USERS: '/users',
+    MESSAGES: '/messages'
 };

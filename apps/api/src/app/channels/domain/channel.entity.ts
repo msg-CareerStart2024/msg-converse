@@ -8,8 +8,8 @@ import {
     PrimaryGeneratedColumn
 } from 'typeorm';
 
-import { Topic } from './topic.entity';
 import { Message } from '../../messages/domain/message.domain';
+import { Topic } from './topic.entity';
 import { User } from '../../users/domain/user.domain';
 
 @Entity('channels')
@@ -21,12 +21,12 @@ export class Channel {
     name: string;
 
     @Column({ type: 'text', nullable: true })
-    description: string;
+    description?: string;
 
     @CreateDateColumn({ name: 'created_at' })
     createdAt: Date;
 
-    @ManyToMany(() => User)
+    @ManyToMany(() => User, { cascade: ['insert'] })
     @JoinTable({
         name: 'enrollments',
         joinColumn: { name: 'channel_id', referencedColumnName: 'id' },
@@ -34,7 +34,7 @@ export class Channel {
     })
     users: User[];
 
-    @ManyToMany(() => Topic, topic => topic.channels)
+    @ManyToMany(() => Topic, topic => topic.channels, { eager: true })
     @JoinTable({
         name: 'channel_topics',
         joinColumn: { name: 'channel_id', referencedColumnName: 'id' },
