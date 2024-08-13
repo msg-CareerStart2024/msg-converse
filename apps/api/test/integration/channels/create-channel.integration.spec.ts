@@ -18,6 +18,15 @@ import { UserService } from '../../../src/app/users/service/user.service';
 import { mockNewChannelData } from '../../../src/app/channels/__mocks__/channel.mock';
 import { mockTopics } from '../../../src/app/channels/__mocks__/topic.mock';
 
+export const mockUser: User = {
+    id: 'mock-user-id',
+    email: 'david.nan@mail.com',
+    firstName: 'david',
+    lastName: 'nan',
+    password: '123',
+    role: Role.USER
+};
+
 describe('ChannelService - create Integration Test', () => {
     let channelService: ChannelService;
     let channelRepository: jest.Mocked<ChannelRepository>;
@@ -25,15 +34,6 @@ describe('ChannelService - create Integration Test', () => {
     let userService: jest.Mocked<UserService>;
     let transactionManager: jest.Mocked<TransactionManager>;
     let mockEntityManager: jest.Mocked<EntityManager>;
-
-    const mockUser: User = {
-        id: 'mock-user-id',
-        email: 'david.nan@mail.com',
-        firstName: 'david',
-        lastName: 'nan',
-        password: '123',
-        role: Role.USER
-    };
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({

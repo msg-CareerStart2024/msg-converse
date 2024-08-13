@@ -23,7 +23,8 @@ export const createMockChannelRepository = (): jest.Mocked<ChannelRepository> =>
         searchChannels: jest.fn(),
         save: jest.fn(),
         remove: jest.fn(),
-        getRepo: jest.fn()
+        getRepo: jest.fn(),
+        getChannelsJoinedByUser: jest.fn()
     };
 
     return mock as unknown as jest.Mocked<ChannelRepository>;
@@ -174,6 +175,63 @@ describe('ChannelService', () => {
 
             expect(result).toBeNull();
             expect(channelRepository.getOneById).toHaveBeenCalledWith(nonExistentId);
+        });
+    });
+
+    describe('getChannelsJoinedByUser', () => {
+        const userId = 'test-user-id';
+
+        beforeEach(() => {
+            channelRepository.getChannelsJoinedByUser = jest.fn();
+        });
+
+        it('should return channels joined by the user', async () => {
+            channelRepository.getChannelsJoinedByUser.mockResolvedValue(mockChannels);
+
+            const result = await channelService.getChannelsJoinedByUser(userId);
+
+            expect(result).toEqual(mockChannels);
+            expect(channelRepository.getChannelsJoinedByUser).toHaveBeenCalledWith(userId);
+        });
+
+        it('should return an empty array when the user has not joined any channels', async () => {
+            channelRepository.getChannelsJoinedByUser.mockResolvedValue([]);
+
+            const result = await channelService.getChannelsJoinedByUser(userId);
+
+            expect(result).toEqual([]);
+            expect(channelRepository.getChannelsJoinedByUser).toHaveBeenCalledWith(userId);
+        });
+
+        it('should throw an error if the repository method fails', async () => {
+            const error = new Error('Database error');
+            channelRepository.getChannelsJoinedByUser.mockRejectedValue(error);
+
+            await expect(channelService.getChannelsJoinedByUser(userId)).rejects.toThrow(error);
+            expect(channelRepository.getChannelsJoinedByUser).toHaveBeenCalledWith(userId);
+        });
+
+        it('should not include user data in the returned channels', async () => {
+            channelRepository.getChannelsJoinedByUser.mockResolvedValue(mockChannels);
+
+            const result = await channelService.getChannelsJoinedByUser(userId);
+
+            expect(result).toEqual(mockChannels);
+            result.forEach(channel => {
+                expect(channel.users).toEqual([]);
+            });
+        });
+
+        it('should return channels with their associated topics', async () => {
+            channelRepository.getChannelsJoinedByUser.mockResolvedValue(mockChannels);
+
+            const result = await channelService.getChannelsJoinedByUser(userId);
+
+            expect(result).toEqual(mockChannels);
+            result.forEach(channel => {
+                expect(Array.isArray(channel.topics)).toBeTruthy();
+                expect(channel.topics.length).toBeGreaterThan(0);
+            });
         });
     });
 
