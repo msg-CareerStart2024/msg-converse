@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { useLoginUserMutation } from '../../../api/auth/auth-api';
+import { useLoginUserMutation } from '../../../api/auth-api/auth-api';
 import { LoginFormValues, userSchema } from '../../../types/users/LoginFormValues.types';
 import SignInFormView from '../components/SignInFormView';
 

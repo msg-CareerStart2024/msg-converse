@@ -15,11 +15,11 @@ import {
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { useGetChannelByIdQuery } from '../../../api/channels-api';
+import { useGetChannelByIdQuery } from '../../../api/channels-api/channels-api';
 import {
     useCreateMessageMutation,
     useGetMessagesByChannelIdQuery
-} from '../../../api/messages-api';
+} from '../../../api/messages-api/messages-api';
 import { RootState } from '../../../store/store';
 import { User } from '../../../types/login/User.types';
 import MessageComponent from './MessageComponent';

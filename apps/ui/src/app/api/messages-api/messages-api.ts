@@ -1,8 +1,8 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { API_CACHE_TAGS } from '../config/api-tags';
-import { Message } from '../types/messages/Message';
-import getFetchBaseQuery from './fetch-base-query';
-import { API_URLS } from '../config/api-config';
+import { API_URLS } from '../../config/api-config';
+import { API_CACHE_TAGS } from '../../config/api-tags';
+import { Message } from '../../types/messages/Message.types';
+import getFetchBaseQuery from '../fetch-base-query';
 
 export const messagesApi = createApi({
     reducerPath: 'messagesApi',

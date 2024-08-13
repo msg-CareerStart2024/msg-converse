@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { RootState, store } from '../../../store/store';
+import { store } from '../../../store/store';
+import { CHANNEL } from '../../channels/static';
 import { clearCredentials } from '../../login/slices/auth-slice';
 import SidebarView from '../components/SidebarView';
 
@@ -25,7 +25,7 @@ export default function SidebarContainer({ toggleSidebar, sidebarOpen }: Sidebar
         store.dispatch(clearCredentials());
         navigate('/login');
     };
-    const channels = useSelector((state: RootState) => state.channels);
+    // const channels = useSelector((state: RootState) => state.channels);
 
     return (
         <SidebarView
@@ -34,7 +34,7 @@ export default function SidebarContainer({ toggleSidebar, sidebarOpen }: Sidebar
             handleClick={handleClick}
             handleClose={handleClose}
             handleLogout={handleLogout}
-            channels={channels}
+            channels={[CHANNEL]}
             toggleSidebar={toggleSidebar}
             sidebarOpen={sidebarOpen}
         />

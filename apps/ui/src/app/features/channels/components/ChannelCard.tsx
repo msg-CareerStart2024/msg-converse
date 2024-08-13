@@ -13,7 +13,7 @@ import {
     Typography
 } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { useJoinChannelMutation } from '../../../api/channels-api/channelsApi';
+import { useJoinChannelMutation } from '../../../api/channels-api/channels-api';
 import { getColor } from '../../../lib/avatar-colors';
 import { Channel } from '../../../types/channels/Channel';
 import { formatDate, shrinkToWords } from '../../../utils/utils';
