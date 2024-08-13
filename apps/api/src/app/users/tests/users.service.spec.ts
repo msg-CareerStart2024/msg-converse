@@ -2,30 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserRepository } from '../repository/user.repository';
 import { UserService } from '../service/user.service';
 import { User } from '../domain/user.domain';
-import { Role } from '../enums/role.enum';
+import { mockUsers } from '../__mocks__/user.mock';
 
 describe('UserService', () => {
     let userService: UserService;
     let userRepository: jest.Mocked<UserRepository>;
-
-    const users: User[] = [
-        {
-            id: '73ec7a0d-a499-4304-9629-670e5eebdc9d',
-            email: 'User.Name@msg.group',
-            firstName: 'User',
-            lastName: 'Name',
-            password: 'password',
-            role: Role.ADMIN
-        },
-        {
-            id: '97803cd1-c6ca-49f6-be11-5650b251c8a1',
-            email: 'Second.User@msg.group',
-            firstName: 'Second',
-            lastName: 'User',
-            password: 'password',
-            role: Role.USER
-        }
-    ];
 
     beforeEach(async () => {
         userRepository = {
@@ -42,51 +23,55 @@ describe('UserService', () => {
         userService = module.get<UserService>(UserService);
     });
 
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
     it('should be defined', () => {
         expect(userService).toBeDefined();
     });
 
     it('should create a user', async () => {
-        userRepository.create.mockResolvedValue(users[0]);
+        userRepository.create.mockResolvedValue(mockUsers[0]);
 
-        const result = await userService.create(users[0]);
+        const result = await userService.create(mockUsers[0]);
 
-        expect(result).toEqual(users[0]);
-        expect(userRepository.create).toHaveBeenCalledWith(users[0]);
+        expect(result).toEqual(mockUsers[0]);
+        expect(userRepository.create).toHaveBeenCalledWith(mockUsers[0]);
     });
 
     it('should find a user by email address', async () => {
         userRepository.getByEmail.mockImplementation(async (email: string): Promise<User> => {
-            return users.find(user => user.email === email);
+            return mockUsers.find(user => user.email === email);
         });
 
-        const result = await userService.getByEmail(users[0].email);
+        const result = await userService.getByEmail(mockUsers[0].email);
 
-        expect(result).toEqual(users[0]);
-        expect(userRepository.getByEmail).toHaveBeenCalledWith(users[0].email);
+        expect(result).toEqual(mockUsers[0]);
+        expect(userRepository.getByEmail).toHaveBeenCalledWith(mockUsers[0].email);
     });
 
     it('should find a user by id', async () => {
         userRepository.getById.mockImplementation(async (id: string): Promise<User> => {
-            return users.find(user => user.id === id);
+            return mockUsers.find(user => user.id === id);
         });
 
-        const result = await userService.getById(users[0].id);
+        const result = await userService.getById(mockUsers[0].id);
 
-        expect(result).toEqual(users[0]);
-        expect(userRepository.getById).toHaveBeenCalledWith(users[0].id);
+        expect(result).toEqual(mockUsers[0]);
+        expect(userRepository.getById).toHaveBeenCalledWith(mockUsers[0].id);
     });
 
     it('should update a user', async () => {
         const updatedUser: User = {
-            ...users[0],
+            ...mockUsers[0],
             firstName: 'Updated'
         };
         userRepository.update.mockResolvedValue(updatedUser);
 
-        const result = await userService.update(users[0].id, updatedUser);
+        const result = await userService.update(mockUsers[0].id, updatedUser);
 
         expect(result).toEqual(updatedUser);
-        expect(userRepository.update).toHaveBeenCalledWith(users[0].id, updatedUser);
+        expect(userRepository.update).toHaveBeenCalledWith(mockUsers[0].id, updatedUser);
     });
 });
