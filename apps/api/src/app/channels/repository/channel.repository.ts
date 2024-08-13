@@ -52,23 +52,6 @@ export class ChannelRepository {
             .getMany();
     }
 
-    async getChannelsJoinedByUser(userId: string): Promise<Channel[]> {
-        return this.repository
-            .createQueryBuilder('channel')
-            .innerJoin('channel.users', 'user')
-            .leftJoinAndSelect('channel.topics', 'topic')
-            .where('user.id = :userId', { userId })
-            .select([
-                'channel.id',
-                'channel.name',
-                'channel.description',
-                'channel.createdAt',
-                'topic'
-            ])
-            .orderBy('channel.createdAt', 'DESC')
-            .getMany();
-    }
-
     async save(channel: Channel, manager?: EntityManager): Promise<Channel> {
         const repo = this.getRepository(manager);
         return repo.save(channel);

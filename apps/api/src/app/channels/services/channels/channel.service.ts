@@ -17,16 +17,14 @@ export class ChannelService {
     ) {}
 
     async searchChannels(searchTerm: string): Promise<Channel[]> {
-        const escapedSearchTerm = this.escapeSpecialCharacters(searchTerm?.trim());
-        return this.channelRepository.searchChannels(escapedSearchTerm);
+        const trimmedSearchTerm = searchTerm?.trim();
+        return trimmedSearchTerm
+            ? this.channelRepository.searchChannels(this.escapeSpecialCharacters(trimmedSearchTerm))
+            : this.channelRepository.getAll();
     }
 
     async getById(channelId: string): Promise<Channel> {
         return this.channelRepository.getOneById(channelId);
-    }
-
-    async getChannelsJoinedByUser(userId: string): Promise<Channel[]> {
-        return this.channelRepository.getChannelsJoinedByUser(userId);
     }
 
     async create(channelData: Omit<Channel, 'id' | 'createdAt'>, userId: string): Promise<Channel> {
