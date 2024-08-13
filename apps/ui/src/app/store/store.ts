@@ -5,6 +5,7 @@ import { channelsApi } from '../api/channelsApi';
 import { usersApi } from '../api/users-api';
 import channelsReducer from '../features/channels/slices/channels-slice';
 import authReducer from '../features/login/slices/auth-slice';
+import { messagesApi } from '../api/messages-api';
 
 export const store = configureStore({
     reducer: {
@@ -12,13 +13,15 @@ export const store = configureStore({
         auth: authReducer,
         [authApi.reducerPath]: authApi.reducer,
         [usersApi.reducerPath]: usersApi.reducer,
-        [channelsApi.reducerPath]: channelsApi.reducer
+        [channelsApi.reducerPath]: channelsApi.reducer,
+        [messagesApi.reducerPath]: messagesApi.reducer
     },
     middleware: getDefaultMiddleware =>
         getDefaultMiddleware().concat(
             authApi.middleware,
             usersApi.middleware,
-            channelsApi.middleware
+            channelsApi.middleware,
+            messagesApi.middleware
         )
 });
 

@@ -1,6 +1,18 @@
+import { User } from '../login/User';
+
 export interface Message {
     id: string;
-    text: string;
-    avatar: string;
-    userId: string;
+    content: string;
+    isPinned: boolean;
+    createdAt: Date;
+    user: User;
+}
+
+export interface CreateMessageDTO {
+    content: string;
+}
+
+export interface UpdateMessageDTO {
+    content: string;
+    isPinned: boolean;
 }

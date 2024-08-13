@@ -3,12 +3,14 @@ import { API_URLS, BASE_URL } from '../config/api-config';
 import { setChannels } from '../features/channels/slices/channels-slice';
 import { Channel } from '../types/channels/Channel';
 import { API_CACHE_TAGS } from '../config/api-tags';
+import { addBearerAuthHeader } from '../utils/utils';
 
 export const channelsApi = createApi({
     reducerPath: 'channelsApi',
     tagTypes: [API_CACHE_TAGS.CHANNELS],
     baseQuery: fetchBaseQuery({
-        baseUrl: BASE_URL
+        baseUrl: BASE_URL,
+        prepareHeaders: addBearerAuthHeader
     }),
     endpoints: builder => ({
         getChannels: builder.query<Channel[], string>({
@@ -24,6 +26,10 @@ export const channelsApi = createApi({
             }
         }),
 
+        getChannelById: builder.query<Channel, string>({
+            query: id => `${API_URLS.CHANNELS}/${id}`
+        }),
+
         joinChannel: builder.mutation<void, { user: string; channel: string }>({
             query: data => ({
                 url: `${API_URLS.CHANNELS}/join`,
@@ -35,4 +41,9 @@ export const channelsApi = createApi({
     })
 });
 
-export const { useLazyGetChannelsQuery, useGetChannelsQuery, useJoinChannelMutation } = channelsApi;
+export const {
+    useLazyGetChannelsQuery,
+    useGetChannelsQuery,
+    useJoinChannelMutation,
+    useGetChannelByIdQuery
+} = channelsApi;
