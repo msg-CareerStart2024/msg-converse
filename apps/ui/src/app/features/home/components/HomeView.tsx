@@ -3,14 +3,23 @@ import ChannelCard from '../../channels/components/ChannelCard';
 import { Channel } from '../../../types/channel/channel.types';
 
 import SearchBar from '../../../components/SearchBar';
-import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../store/store';
+import { UserRole } from '../../../types/login/UserRole';
 
 type HomeViewProps = {
     channels: Channel[] | undefined;
     onSearch: (query: string) => void;
+    handleNavigateToCreateChannel: () => void;
 };
 
-export default function HomeView({ channels, onSearch }: HomeViewProps) {
+export default function HomeView({
+    channels,
+    onSearch,
+    handleNavigateToCreateChannel
+}: HomeViewProps) {
+    const user = useSelector((state: RootState) => state.auth.user);
+
     return (
         <Container>
             <Box display="flex" justifyContent="space-between" mb={4}>
@@ -24,11 +33,14 @@ export default function HomeView({ channels, onSearch }: HomeViewProps) {
                 >
                     <SearchBar onSearch={onSearch} />
                 </Box>
-                <Link to="/channels/new">
-                    <Button variant="contained" color="primary">
-                        CREATE CHANNEL
-                    </Button>
-                </Link>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleNavigateToCreateChannel}
+                    disabled={user?.role !== UserRole.ADMIN}
+                >
+                    CREATE CHANNEL
+                </Button>
             </Box>
 
             <Grid container spacing={3} alignItems="stretch">

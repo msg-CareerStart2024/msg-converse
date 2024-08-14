@@ -16,7 +16,10 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
         }
         const newValue = event.target.value;
         setInputValue(newValue);
-        timeoutRef.current = setTimeout(() => onSearch(newValue), 200);
+
+        if (newValue.length >= 3 || newValue.length === 0) {
+            timeoutRef.current = setTimeout(() => onSearch(newValue), 200);
+        }
     };
 
     return (
