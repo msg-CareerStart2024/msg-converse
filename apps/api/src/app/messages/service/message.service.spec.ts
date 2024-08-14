@@ -7,6 +7,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { User } from '../../users/domain/user.domain';
 import { Channel } from '../../channels/domain/channel.entity';
 import { ChannelService } from '../../channels/services/channels/channel.service';
+import { mockMessages } from '../__mocks__/message.mock';
 
 describe('MessageService', () => {
     let messageService: MessageService;
@@ -61,10 +62,9 @@ describe('MessageService', () => {
 
     describe('getByChannel', () => {
         it('should return an array of messages', async () => {
-            const result: Message[] = [];
-            messageRepository.getByChannel.mockResolvedValue(result);
+            messageRepository.getByChannel.mockResolvedValue(mockMessages);
 
-            expect(await messageService.getByChannel('channelId')).toBe(result);
+            expect(await messageService.getByChannel('channelId')).toBe(mockMessages);
         });
     });
 
