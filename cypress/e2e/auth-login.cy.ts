@@ -27,7 +27,7 @@ describe('User Login', () => {
 
         cy.wait('@loginRequest').its('response.statusCode').should('eq', 201);
 
-        cy.url().should('eq', '/');
+        cy.url().should('eq', `${Cypress.config().baseUrl}`);
 
         cy.window().then(win => {
             cy.wrap(win.localStorage).its('accessToken').should('exist');
@@ -48,7 +48,7 @@ describe('User Login', () => {
 
         cy.wait('@loginRequest').its('response.statusCode').should('eq', 401);
 
-        cy.url().should('eq', '/login');
+        cy.url().should('contain', '/login');
 
         cy.window().then(win => {
             cy.wrap(win.localStorage).its('accessToken').should('not.exist');

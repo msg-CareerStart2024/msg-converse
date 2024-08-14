@@ -5,7 +5,7 @@ describe('User Register', () => {
         cy.visit('/');
 
         cy.get('[href="/signup"]').click();
-        cy.url().should('eq', '/signup');
+        cy.url().should('contain', '/signup');
 
         cy.intercept('POST', `${baseBackendUrl}api/auth/register`).as('registerRequest');
 
@@ -25,14 +25,14 @@ describe('User Register', () => {
             expect(requestBody).to.have.property('password', 'testPass1@3');
         });
 
-        cy.url().should('eq', '/login');
+        cy.url().should('contain', '/login');
     });
 
     it('should fail to register a new user', () => {
         cy.visit('/');
 
         cy.get('[href="/signup"]').click();
-        cy.url().should('eq', '/signup');
+        cy.url().should('contain', '/signup');
 
         cy.intercept('POST', `${baseBackendUrl}api/auth/register`).as('registerRequest');
 
@@ -44,7 +44,7 @@ describe('User Register', () => {
 
         cy.wait('@registerRequest').its('response.statusCode').should('eq', 400);
 
-        cy.url().should('eq', '/signup');
+        cy.url().should('contain', '/signup');
     });
 
     after(() => {

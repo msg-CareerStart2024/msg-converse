@@ -7,7 +7,7 @@ import ChannelComponent from './features/channels/components/ChannelComponent';
 import ChannelPage from './features/channels/pages/ChannelPage';
 import HomePage from './features/home/pages/HomePage';
 import SignInPage from './features/login/pages/SignInPage';
-import { setCredentials } from './features/login/slices/auth-slice';
+import { clearCredentials, setCredentials } from './features/login/slices/auth-slice';
 import SignUpPage from './features/register/pages/SignUpPage';
 import SiderbarLayout from './layouts/SidebarLayout';
 import { darkTheme, lightTheme } from './lib/themes';
@@ -38,6 +38,8 @@ export function App() {
                 };
 
                 fetchUser();
+            } else {
+                store.dispatch(clearCredentials());
             }
         }
     }, [getUserById, navigate, user]);
