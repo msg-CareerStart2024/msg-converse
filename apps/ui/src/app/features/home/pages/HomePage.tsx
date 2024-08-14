@@ -1,7 +1,7 @@
-import HomeView from '../components/HomeView';
-import { useGetChannelsQuery } from '../../../api/channels-api';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useGetChannelsQuery } from '../../../api/channels-api/channels-api';
+import HomeView from '../components/HomeView';
 
 export default function HomePage() {
     const navigate = useNavigate();

@@ -12,14 +12,14 @@ import {
     Stack,
     Typography
 } from '@mui/material';
-import { formatDate, shrinkToWords } from '../../../utils/utils';
-import { getColor } from '../../../lib/avatar-colors';
-import { Link, useNavigate } from 'react-router-dom';
-import { useJoinChannelMutation } from '../../../api/channels-api';
-import { Channel } from '../../../types/channel/channel.types';
 import { useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { useJoinChannelMutation } from '../../../api/channels-api/channels-api';
+import { getColor } from '../../../lib/avatar-colors';
 import { RootState } from '../../../store/store';
-import { UserRole } from '../../../types/login/UserRole';
+import { Channel } from '../../../types/channel/channel.types';
+import { UserRole } from '../../../types/login/UserRole.enum';
+import { formatDate, shrinkToWords } from '../../../utils/utils';
 
 interface ChannelCardProps {
     channel: Channel;

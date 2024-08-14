@@ -1,6 +1,4 @@
 import { Avatar, Box, Container, Grid, TextField } from '@mui/material';
-import ActionButtonView from './ActionButtonView';
-import TopicsView from './TopicsView';
 import {
     FieldErrors,
     UseFormGetValues,
@@ -10,10 +8,12 @@ import {
 } from 'react-hook-form';
 import { Topic } from '../../../types/channel/Topic.types';
 import { ChannelFormValues } from '../schemas/ChannelFormValues.schema';
+import ActionButtonView from './ActionButtonView';
+import TopicsView from './TopicsView';
 
-import { User } from '../../../types/login/User';
 import { CHANNEL_FORM_ACTION_TYPE } from '../../../types/channel/ChannelFormActionType.enums';
-import { UserRole } from '../../../types/login/UserRole';
+import { User } from '../../../types/login/User.types';
+import { UserRole } from '../../../types/login/UserRole.enum';
 
 type ChannelFormProps = {
     handleSubmit: UseFormHandleSubmit<ChannelFormValues>;

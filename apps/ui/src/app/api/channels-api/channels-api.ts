@@ -1,9 +1,8 @@
-import { Channel, ChannelDTO } from '../types/channel/channel.types';
-
-import { API_CACHE_TAGS } from '../config/api-tags';
-import { API_URLS } from '../config/api-config';
 import { createApi } from '@reduxjs/toolkit/query/react';
-import getFetchBaseQuery from './fetch-base-query';
+import { API_URLS } from '../../config/api-config';
+import { API_CACHE_TAGS } from '../../config/api-tags';
+import { Channel, ChannelDTO } from '../../types/channel/channel.types';
+import getFetchBaseQuery from '../fetch-base-query';
 
 export const channelsApi = createApi({
     reducerPath: 'channelsApi',

@@ -1,11 +1,11 @@
 import { Box, Button, Container, Grid, Typography } from '@mui/material';
-import ChannelCard from '../../channels/components/ChannelCard';
 import { Channel } from '../../../types/channel/channel.types';
+import ChannelCard from '../../channels/components/ChannelCard';
 
-import SearchBar from '../../../components/SearchBar';
 import { useSelector } from 'react-redux';
+import SearchBar from '../../../components/SearchBar';
 import { RootState } from '../../../store/store';
-import { UserRole } from '../../../types/login/UserRole';
+import { UserRole } from '../../../types/login/UserRole.enum';
 
 type HomeViewProps = {
     channels: Channel[] | undefined;

@@ -1,21 +1,22 @@
 import { useForm } from 'react-hook-form';
-import ChannelFormView from '../components/ChannelFormView';
 import { useNavigate, useParams } from 'react-router-dom';
+import ChannelFormView from '../components/ChannelFormView';
+
+import { Typography } from '@mui/material';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
     useCreateChannelMutation,
     useDeleteChannelMutation,
     useLazyGetChannelByIdQuery,
     useUpdateChannelMutation
-} from '../../../api/channels-api';
-import { Typography } from '@mui/material';
-
-import { useEffect, useState } from 'react';
-import { ChannelFormSchema, ChannelFormValues } from '../schemas/ChannelFormValues.schema';
-import { Topic } from '../../../types/channel/Topic.types';
+} from '../../../api/channels-api/channels-api';
 import { RootState } from '../../../store/store';
-import { useSelector } from 'react-redux';
-import { User } from '../../../types/login/User';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { Topic } from '../../../types/channel/Topic.types';
+import { User } from '../../../types/login/User.types';
+import { ChannelFormSchema, ChannelFormValues } from '../schemas/ChannelFormValues.schema';
 
 export default function ChannelPage() {
     const { id } = useParams<{ id?: string }>();

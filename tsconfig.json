@@ -8,14 +8,7 @@
         "types": ["vite/client", "vitest/globals", "@testing-library/jest-dom", "msw"]
     },
     "files": [],
-    "include": [],
-    "references": [
-        {
-            "path": "./tsconfig.app.json"
-        },
-        {
-            "path": "./tsconfig.spec.json"
-        }
-    ],
-    "extends": "../../tsconfig.base.json"
+    "include": ["src/**/*.ts", "src/**/*.tsx", "cypress/**/*.ts", "cypress/**/*.tsx"],
+    "exclude": ["node_modules", "build"],
+    "extends": "./tsconfig.base.json"
 }

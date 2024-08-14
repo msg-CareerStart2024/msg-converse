@@ -1,10 +1,10 @@
-import SidebarView from '../components/SidebarView';
 import { Typography } from '@mui/material';
-import { clearCredentials } from '../../login/slices/auth-slice';
-import { store } from '../../../store/store';
-import { useGetJoinedChannelsQuery } from '../../../api/channels-api';
-import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useGetJoinedChannelsQuery } from '../../../api/channels-api/channels-api';
+import { store } from '../../../store/store';
+import { clearCredentials } from '../../login/slices/auth-slice';
+import SidebarView from '../components/SidebarView';
 
 type SidebarContainerProps = {
     toggleSidebar: () => void;

@@ -16,7 +16,7 @@ import {
 import { SerializedError } from '@reduxjs/toolkit';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { FieldErrors, UseFormRegister } from 'react-hook-form';
-import { LoginFormValues } from '../../../types/users/login.types';
+import { LoginFormValues } from '../../../types/users/LoginFormValues.types';
 
 type SignInFormProps = {
     handleSubmit: (e?: React.BaseSyntheticEvent) => Promise<void>;
@@ -88,7 +88,7 @@ export default function SignInFormView({
                         />
                     )}
                     {loginError && (
-                        <Alert severity="error" sx={{ mb: 2 }}>
+                        <Alert data-testid="login-error" severity="error" sx={{ mb: 2 }}>
                             Invalid email or password.
                         </Alert>
                     )}
