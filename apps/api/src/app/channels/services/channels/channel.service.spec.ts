@@ -110,15 +110,16 @@ describe('ChannelService', () => {
 
     describe('searchChannels', () => {
         it('should return all channels when search term is empty or whitespace', async () => {
-            channelRepository.getAll.mockResolvedValue(mockChannels);
+            channelRepository.searchChannels.mockResolvedValue(mockChannels);
 
             const result1: Channel[] = await channelService.searchChannels('');
             const result2: Channel[] = await channelService.searchChannels('   ');
 
             expect(result1).toEqual(mockChannels);
             expect(result2).toEqual(mockChannels);
-            expect(channelRepository.getAll).toHaveBeenCalledTimes(2);
-            expect(channelRepository.searchChannels).not.toHaveBeenCalled();
+            expect(channelRepository.searchChannels).toHaveBeenCalledTimes(2);
+            expect(channelRepository.searchChannels).toHaveBeenCalledWith('');
+            expect(channelRepository.getAll).not.toHaveBeenCalled();
         });
 
         it('should search channels when search term is provided', async () => {
