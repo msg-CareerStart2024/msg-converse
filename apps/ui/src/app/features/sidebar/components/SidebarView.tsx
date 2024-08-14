@@ -15,11 +15,13 @@ import {
     Stack,
     Typography
 } from '@mui/material';
+
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import MsgLogo from '../../../../assets/msg_logo.png';
+import { getColor } from '../../../lib/avatar-colors';
 import { RootState } from '../../../store/store';
-import { Channel } from '../../../types/channels/Channel';
+import { Channel } from '../../../types/channel/channel.types';
 import { generateUserName } from '../../../utils/utils';
 import SidebarItem from './SidebarItem';
 
@@ -29,7 +31,7 @@ type SidebarViewProps = {
     handleClick: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
     handleLogout: () => void;
     handleClose: () => void;
-    channels: Channel[];
+    channels: Channel[] | undefined;
     toggleSidebar: () => void;
     sidebarOpen: boolean;
 };
@@ -46,6 +48,7 @@ export default function SidebarView({
 }: SidebarViewProps) {
     const user = useSelector((state: RootState) => state.auth.user);
     if (!user) return null;
+
     return (
         <Drawer
             variant="persistent"
@@ -81,11 +84,9 @@ export default function SidebarView({
                     My Channels
                 </Typography>
                 <List>
-                    {channels.map(channel => (
-                        <SidebarItem key={channel.id} channel={channel} />
-                    ))}
+                    {channels?.map(channel => <SidebarItem key={channel.id} channel={channel} />)}
                 </List>
-                {channels.length === 0 && (
+                {channels?.length === 0 && (
                     <Typography variant="h6">You haven't joined any channels yet!</Typography>
                 )}
             </Box>
@@ -99,11 +100,20 @@ export default function SidebarView({
                         onClick={handleClick}
                     >
                         <ListItemIcon>
-                            <Avatar>{user.firstName.charAt(0)}</Avatar>
+                            <Avatar
+                                style={{
+                                    backgroundColor: getColor(
+                                        user.firstName.charAt(0).toUpperCase()
+                                    )
+                                }}
+                            >
+                                {user.firstName.charAt(0)}
+                            </Avatar>
                         </ListItemIcon>
                         <ListItemText
                             data-testid="logged-in-user"
                             primary={generateUserName(user.firstName, user.lastName)}
+                            secondary={user.email}
                         />
                     </ListItemButton>
                 </ListItem>

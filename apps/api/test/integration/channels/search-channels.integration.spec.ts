@@ -49,14 +49,17 @@ describe('ChannelService - searchChannels Integration Test', () => {
     });
 
     describe('searchChannels', () => {
-        it('should return all channels when search term is empty', async () => {
-            channelRepository.getAll.mockResolvedValue(mockChannels);
+        it('should return all channels when search term is empty or whitespace', async () => {
+            channelRepository.searchChannels.mockResolvedValue(mockChannels);
 
-            const result = await channelService.searchChannels('');
+            const result1 = await channelService.searchChannels('');
+            const result2 = await channelService.searchChannels('   ');
 
-            expect(result).toEqual(mockChannels);
-            expect(channelRepository.getAll).toHaveBeenCalledTimes(1);
-            expect(channelRepository.searchChannels).not.toHaveBeenCalled();
+            expect(result1).toEqual(mockChannels);
+            expect(result2).toEqual(mockChannels);
+            expect(channelRepository.searchChannels).toHaveBeenCalledTimes(2);
+            expect(channelRepository.searchChannels).toHaveBeenCalledWith('');
+            expect(channelRepository.getAll).not.toHaveBeenCalled();
         });
 
         it('should return filtered channels when search term is provided', async () => {

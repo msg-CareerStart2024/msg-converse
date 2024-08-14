@@ -1,7 +1,7 @@
 import { CssBaseline, ThemeProvider, useMediaQuery } from '@mui/material';
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { Link, Route, Routes, useNavigate } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import { useLazyGetUserByIdQuery } from './api/users-api/users-api';
 import ChannelComponent from './features/channels/components/ChannelComponent';
 import ChannelPage from './features/channels/pages/ChannelPage';
@@ -48,15 +48,17 @@ export function App() {
         <ThemeProvider theme={prefersDarkMode ? darkTheme : lightTheme}>
             <CssBaseline />
             <Routes>
+                <Route element={<SiderbarLayout />} />
                 <Route element={<SiderbarLayout />}>
                     <Route path="/" element={<HomePage />} />
-                    <Route
-                        path="/page-2"
-                        element={<Link to="/">Click here to go back to root page.</Link>}
-                    />
-                    <Route path="/create-channel" element={<ChannelPage />} />
-                    <Route path="/channels/:id" element={<ChannelComponent />} />
+                    <Route path="/channels">
+                        <Route path="new" element={<ChannelPage />} />
+                        <Route path="edit/:id" element={<ChannelPage />} />
+                        <Route path=":id" element={<ChannelComponent />} />
+                    </Route>
                 </Route>
+                <Route path="/login" element={<SignInPage />} />
+                <Route path="/signup" element={<SignUpPage />} />
                 <Route path="/login" element={<SignInPage />} />
                 <Route path="/signup" element={<SignUpPage />} />
                 <Route path="*" element={<NotFoundPage />} />

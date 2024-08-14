@@ -1,5 +1,3 @@
-/// also remember to add this to app.module in the modules section
-
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Message } from './domain/message.domain';

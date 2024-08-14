@@ -6,6 +6,8 @@ import { MessageMapper } from '../mapper/message.mapper';
 import { CreateMessageDTO } from '../dto/create-message.dto';
 import { CurrentUserId } from '../../auth/decorators/current-user-id.decorator';
 import { UpdateMessageDTO } from '../dto/update-message.dto';
+import { Roles } from '../../auth/decorators/roles.decorator';
+import { Role } from '../../users/enums/role.enum';
 
 @ApiTags('Messages')
 @ApiBearerAuth()
@@ -75,6 +77,7 @@ export class MessagesController {
     }
 
     @Delete(':id')
+    @Roles([Role.ADMIN])
     @ApiOperation({
         summary: 'Delete a message'
     })

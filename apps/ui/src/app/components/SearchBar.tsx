@@ -1,15 +1,14 @@
-import { Snackbar, TextField } from '@mui/material';
 import { useRef, useState } from 'react';
-import { useLazyGetChannelsQuery } from '../api/channels-api/channels-api';
 
-export default function SearchBar() {
+import { TextField } from '@mui/material';
+
+type SearchBarProps = {
+    onSearch: (query: string) => void;
+};
+
+export default function SearchBar({ onSearch }: SearchBarProps) {
     const [inputValue, setInputValue] = useState('');
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-    const [getChannels, { isFetching }] = useLazyGetChannelsQuery();
-
-    const search = (query: string) => {
-        getChannels(query);
-    };
 
     const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (timeoutRef.current) {
@@ -17,20 +16,20 @@ export default function SearchBar() {
         }
         const newValue = event.target.value;
         setInputValue(newValue);
-        timeoutRef.current = setTimeout(() => search(newValue), 1000);
+
+        if (newValue.length >= 3 || newValue.length === 0) {
+            timeoutRef.current = setTimeout(() => onSearch(newValue), 200);
+        }
     };
 
     return (
-        <>
-            <TextField
-                label="Search"
-                variant="outlined"
-                sx={{ width: '100%' }}
-                value={inputValue}
-                onChange={handleInput}
-                disabled={isFetching}
-            />
-            <Snackbar />
-        </>
+        <TextField
+            label="Search"
+            variant="outlined"
+            sx={{ width: '100%' }}
+            value={inputValue}
+            onChange={handleInput}
+            autoComplete="off"
+        />
     );
 }

@@ -1,15 +1,12 @@
 import { fetchBaseQuery } from '@reduxjs/toolkit/query';
 import { BASE_URL } from '../config/api-config';
+import { addBearerAuthHeader } from '../utils/utils';
 
-export default function getFetchBaseQuery() {
+export default function getFetchBaseQuery(urlPrefix = '') {
+    const baseUrl = urlPrefix ? `${BASE_URL}${urlPrefix}`.replace(/\/+$/, '') : BASE_URL;
+
     return fetchBaseQuery({
-        baseUrl: BASE_URL,
-        prepareHeaders: headers => {
-            const token = localStorage.getItem('accessToken');
-            if (token) {
-                headers.set('Authorization', `Bearer ${token}`);
-            }
-            return headers;
-        }
+        baseUrl,
+        prepareHeaders: addBearerAuthHeader
     });
 }
