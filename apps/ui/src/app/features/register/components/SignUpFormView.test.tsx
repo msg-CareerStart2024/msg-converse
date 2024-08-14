@@ -22,6 +22,7 @@ describe('SignUpFormView', () => {
                 isLoading={isLoading}
             />
         );
+        screen.debug();
     });
 
     it('renders the sign-up form correctly', () => {

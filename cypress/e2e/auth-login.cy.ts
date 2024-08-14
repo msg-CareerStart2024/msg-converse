@@ -1,6 +1,5 @@
 describe('User Login', () => {
-    const baseFrontendUrl = 'http://localhost:4200/';
-    const baseBackendUrl = 'http://localhost:3000/';
+    const baseBackendUrl = Cypress.env().apiBaseUrl;
     let userId: string;
     let token: string;
 
@@ -18,7 +17,7 @@ describe('User Login', () => {
     });
 
     it('should log in and receive a valid token', () => {
-        cy.visit(baseFrontendUrl);
+        cy.visit('/');
 
         cy.intercept('POST', `${baseBackendUrl}api/auth/login`).as('loginRequest');
 
@@ -28,7 +27,7 @@ describe('User Login', () => {
 
         cy.wait('@loginRequest').its('response.statusCode').should('eq', 201);
 
-        cy.url().should('eq', baseFrontendUrl);
+        cy.url().should('eq', '/');
 
         cy.window().then(win => {
             cy.wrap(win.localStorage).its('accessToken').should('exist');
@@ -39,7 +38,7 @@ describe('User Login', () => {
     });
 
     it('should fail log in and display an error', () => {
-        cy.visit(baseFrontendUrl);
+        cy.visit('/');
 
         cy.intercept('POST', `${baseBackendUrl}api/auth/login`).as('loginRequest');
 
@@ -49,7 +48,7 @@ describe('User Login', () => {
 
         cy.wait('@loginRequest').its('response.statusCode').should('eq', 401);
 
-        cy.url().should('eq', `${baseFrontendUrl}login`);
+        cy.url().should('eq', '/login');
 
         cy.window().then(win => {
             cy.wrap(win.localStorage).its('accessToken').should('not.exist');

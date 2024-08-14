@@ -44,3 +44,7 @@ Thumbs.db
 # Environment Variables
 .env
 !/docker/.env
+
+# Cypress
+/cypress/screenshots
+cypress/screenshots

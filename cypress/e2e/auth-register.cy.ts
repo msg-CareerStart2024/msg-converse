@@ -1,12 +1,11 @@
 describe('User Register', () => {
-    const baseFrontendUrl = 'http://localhost:4200/';
-    const baseBackendUrl = 'http://localhost:3000/';
+    const baseBackendUrl = Cypress.env().apiBaseUrl;
 
     it('should register a new user successfully and redirect to login', () => {
-        cy.visit(baseFrontendUrl);
+        cy.visit('/');
 
         cy.get('[href="/signup"]').click();
-        cy.url().should('eq', `${baseFrontendUrl}signup`);
+        cy.url().should('eq', '/signup');
 
         cy.intercept('POST', `${baseBackendUrl}api/auth/register`).as('registerRequest');
 
@@ -26,14 +25,14 @@ describe('User Register', () => {
             expect(requestBody).to.have.property('password', 'testPass1@3');
         });
 
-        cy.url().should('eq', `${baseFrontendUrl}login`);
+        cy.url().should('eq', '/login');
     });
 
     it('should fail to register a new user', () => {
-        cy.visit(baseFrontendUrl);
+        cy.visit('/');
 
         cy.get('[href="/signup"]').click();
-        cy.url().should('eq', `${baseFrontendUrl}signup`);
+        cy.url().should('eq', '/signup');
 
         cy.intercept('POST', `${baseBackendUrl}api/auth/register`).as('registerRequest');
 
@@ -45,7 +44,7 @@ describe('User Register', () => {
 
         cy.wait('@registerRequest').its('response.statusCode').should('eq', 400);
 
-        cy.url().should('eq', `${baseFrontendUrl}signup`);
+        cy.url().should('eq', '/signup');
     });
 
     after(() => {
