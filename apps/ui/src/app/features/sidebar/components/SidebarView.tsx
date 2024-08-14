@@ -23,6 +23,7 @@ import SidebarItem from './SidebarItem';
 import { Channel } from '../../../types/channel/channel.types';
 import { useSelector } from 'react-redux';
 import { generateUserName } from '../../../utils/utils';
+import { getColor } from '../../../lib/avatar-colors';
 
 type SidebarViewProps = {
     menuOpen: boolean;
@@ -99,9 +100,20 @@ export default function SidebarView({
                         onClick={handleClick}
                     >
                         <ListItemIcon>
-                            <Avatar>{user.firstName.charAt(0)}</Avatar>
+                            <Avatar
+                                style={{
+                                    backgroundColor: getColor(
+                                        user.firstName.charAt(0).toUpperCase()
+                                    )
+                                }}
+                            >
+                                {user.firstName.charAt(0)}
+                            </Avatar>
                         </ListItemIcon>
-                        <ListItemText primary={generateUserName(user.firstName, user.lastName)} />
+                        <ListItemText
+                            primary={generateUserName(user.firstName, user.lastName)}
+                            secondary={user.email}
+                        />
                     </ListItemButton>
                 </ListItem>
                 <Menu

@@ -13,6 +13,7 @@ import { ChannelFormValues } from '../schemas/ChannelFormValues.schema';
 
 import { User } from '../../../types/login/User';
 import { CHANNEL_FORM_ACTION_TYPE } from '../../../types/channel/ChannelFormActionType.enums';
+import { UserRole } from '../../../types/login/UserRole';
 
 type ChannelFormProps = {
     handleSubmit: UseFormHandleSubmit<ChannelFormValues>;
@@ -83,19 +84,19 @@ export default function ChannelFormView({
                                 <ActionButtonView
                                     action={CHANNEL_FORM_ACTION_TYPE.DELETE_CHANNEL}
                                     handleAction={handleSubmit(onDelete)}
-                                    isSubmitting={isSubmitting}
+                                    disabled={isSubmitting || currentUser.role !== UserRole.ADMIN}
                                 />
                                 <ActionButtonView
                                     action={CHANNEL_FORM_ACTION_TYPE.UPDATE_CHANNEL}
                                     handleAction={handleSubmit(onUpdate)}
-                                    isSubmitting={isSubmitting}
+                                    disabled={isSubmitting || currentUser.role !== UserRole.ADMIN}
                                 />
                             </>
                         ) : (
                             <ActionButtonView
                                 action={CHANNEL_FORM_ACTION_TYPE.CREATE_CHANNEL}
                                 handleAction={handleSubmit(onCreate)}
-                                isSubmitting={isSubmitting}
+                                disabled={isSubmitting || currentUser.role !== UserRole.ADMIN}
                             />
                         )}
                     </Box>
@@ -111,9 +112,7 @@ export default function ChannelFormView({
                                 focused
                                 label="Channel Name"
                                 variant="outlined"
-                                {...register('name', {
-                                    required: 'Channel name is required'
-                                })}
+                                {...register('name')}
                                 error={!!errors.name}
                                 helperText={errors.name?.message}
                             />
