@@ -29,6 +29,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
             sx={{ width: '100%' }}
             value={inputValue}
             onChange={handleInput}
+            autoComplete="off"
         />
     );
 }

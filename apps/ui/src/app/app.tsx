@@ -1,21 +1,22 @@
 import { CssBaseline, ThemeProvider, useMediaQuery } from '@mui/material';
-import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { Link, Route, Routes, useNavigate } from 'react-router-dom';
-import { useLazyGetUserByIdQuery } from './api/users-api';
+import { RootState, store } from './store/store';
+import { darkTheme, lightTheme } from './lib/themes';
+
 import ChannelComponent from './features/channels/components/ChannelComponent';
+import ChannelPage from './features/channels/pages/ChannelPage';
+import { DecodedPayload } from './types/login/DecodedPayload';
 import HomePage from './features/home/pages/HomePage';
-import SignInPage from './features/login/pages/SignInPage';
-import { setCredentials } from './features/login/slices/auth-slice';
-import SignUpPage from './features/register/pages/SignUpPage';
+import NotFoundPage from './pages/NotFoundPage';
 import { ProtectedRoute } from './layouts/ProtectedRoute';
 import SiderbarLayout from './layouts/SidebarLayout';
-import { darkTheme, lightTheme } from './lib/themes';
-import NotFoundPage from './pages/NotFoundPage';
-import { RootState, store } from './store/store';
-import { DecodedPayload } from './types/login/DecodedPayload';
+import SignInPage from './features/login/pages/SignInPage';
+import SignUpPage from './features/register/pages/SignUpPage';
 import { decodeToken } from './utils/utils';
-import ChannelPage from './features/channels/pages/ChannelPage';
+import { setCredentials } from './features/login/slices/auth-slice';
+import { useEffect } from 'react';
+import { useLazyGetUserByIdQuery } from './api/users-api';
+import { useSelector } from 'react-redux';
 
 export function App() {
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
