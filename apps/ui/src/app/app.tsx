@@ -8,7 +8,6 @@ import ChannelPage from './features/channels/pages/ChannelPage';
 import { DecodedPayload } from './types/login/DecodedPayload';
 import HomePage from './features/home/pages/HomePage';
 import NotFoundPage from './pages/NotFoundPage';
-import { ProtectedRoute } from './layouts/ProtectedRoute';
 import SiderbarLayout from './layouts/SidebarLayout';
 import SignInPage from './features/login/pages/SignInPage';
 import SignUpPage from './features/register/pages/SignUpPage';
@@ -60,22 +59,8 @@ export function App() {
                         <Route path=":id" element={<ChannelComponent />} />
                     </Route>
                 </Route>
-                <Route
-                    path="/login"
-                    element={
-                        <ProtectedRoute>
-                            <SignInPage />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/signup"
-                    element={
-                        <ProtectedRoute>
-                            <SignUpPage />
-                        </ProtectedRoute>
-                    }
-                />
+                <Route path="/login" element={<SignInPage />} />
+                <Route path="/signup" element={<SignUpPage />} />
                 <Route path="*" element={<NotFoundPage />} />
             </Routes>
         </ThemeProvider>
