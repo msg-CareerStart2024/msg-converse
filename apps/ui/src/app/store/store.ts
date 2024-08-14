@@ -2,9 +2,9 @@ import { authApi } from '../api/auth-api';
 import authReducer from '../features/login/slices/auth-slice';
 import { channelsApi } from '../api/channels-api';
 import { configureStore } from '@reduxjs/toolkit';
+import { messagesApi } from '../api/messages-api';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { usersApi } from '../api/users-api';
-import { messagesApi } from '../api/messages-api';
 
 export const store = configureStore({
     reducer: {
