@@ -9,26 +9,34 @@ import {
 import { useSocket } from '../../../contexts/SocketContext';
 
 export const useChannelSocket = (channelId: string) => {
-    const { socket } = useSocket();
+    const { socket, connectToChannel, disconnectFromChannel } = useSocket();
     const [joinChannel] = useJoinChannelMutation();
     const [leaveChannel] = useLeaveChannelMutation();
     const [sendMessage] = useSendMessageMutation();
-    const { data: messages = [] } = useReceiveMessagesQuery(channelId);
+    const { data: messages = [] } = useReceiveMessagesQuery(channelId, {
+        skip: !socket
+    });
 
     useEffect(() => {
-        if (socket && channelId) {
+        connectToChannel(channelId);
+        if (socket) {
             joinChannel(channelId);
-            return () => {
-                leaveChannel(channelId);
-            };
         }
-    }, [socket, channelId, joinChannel, leaveChannel]);
+        return () => {
+            if (socket) {
+                leaveChannel(channelId);
+            }
+            disconnectFromChannel();
+        };
+    }, [channelId, socket, connectToChannel, disconnectFromChannel, joinChannel, leaveChannel]);
 
     const sendMessageHandler = useCallback(
         (content: string) => {
-            sendMessage({ channelId, content });
+            if (socket) {
+                sendMessage({ channelId, content });
+            }
         },
-        [channelId, sendMessage]
+        [channelId, sendMessage, socket]
     );
 
     return { messages, sendMessage: sendMessageHandler };
