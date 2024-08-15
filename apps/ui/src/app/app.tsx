@@ -12,7 +12,6 @@ import NotFoundPage from './pages/NotFoundPage';
 import SiderbarLayout from './layouts/SidebarLayout';
 import SignInPage from './features/login/pages/SignInPage';
 import SignUpPage from './features/register/pages/SignUpPage';
-import { SocketProvider } from './contexts/SocketContext';
 import { decodeToken } from './utils/utils';
 import { useEffect } from 'react';
 import { useLazyGetUserByIdQuery } from './api/users-api/users-api';
@@ -48,26 +47,24 @@ export function App() {
 
     return (
         <ThemeProvider theme={prefersDarkMode ? darkTheme : lightTheme}>
-            <SocketProvider>
-                <CssBaseline />
-                <Routes>
-                    <Route element={<SiderbarLayout />} />
-                    <Route element={<SiderbarLayout />}>
-                        <Route path="/" element={<HomePage />} />
-                        <Route path="/channels">
-                            <Route path="new" element={<ChannelPage />} />
-                            <Route path="edit/:id" element={<ChannelPage />} />
+            <CssBaseline />
+            <Routes>
+                <Route element={<SiderbarLayout />} />
+                <Route element={<SiderbarLayout />}>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/channels">
+                        <Route path="new" element={<ChannelPage />} />
+                        <Route path="edit/:id" element={<ChannelPage />} />
 
-                            <Route path=":id" element={<ChannelComponent />} />
-                        </Route>
+                        <Route path=":id" element={<ChannelComponent />} />
                     </Route>
-                    <Route path="/login" element={<SignInPage />} />
-                    <Route path="/signup" element={<SignUpPage />} />
-                    <Route path="/login" element={<SignInPage />} />
-                    <Route path="/signup" element={<SignUpPage />} />
-                    <Route path="*" element={<NotFoundPage />} />
-                </Routes>
-            </SocketProvider>
+                </Route>
+                <Route path="/login" element={<SignInPage />} />
+                <Route path="/signup" element={<SignUpPage />} />
+                <Route path="/login" element={<SignInPage />} />
+                <Route path="/signup" element={<SignUpPage />} />
+                <Route path="*" element={<NotFoundPage />} />
+            </Routes>
         </ThemeProvider>
     );
 }

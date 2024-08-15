@@ -3,11 +3,12 @@
  * This is only a minimal backend to get started.
  */
 
-import { Logger, ValidationPipe } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
-
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { Logger, ValidationPipe } from '@nestjs/common';
+
 import { AppModule } from './app/app.module';
+import { IoAdapter } from '@nestjs/platform-socket.io';
+import { NestFactory } from '@nestjs/core';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
@@ -24,6 +25,8 @@ async function bootstrap() {
         .setVersion(version)
         .addBearerAuth()
         .build();
+
+    app.useWebSocketAdapter(new IoAdapter(app));
 
     const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
     SwaggerModule.setup('api', app, swaggerDocument);
