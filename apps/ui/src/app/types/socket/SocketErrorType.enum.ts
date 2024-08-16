@@ -1,0 +1,4 @@
+export enum SocketErrorType {
+  CUSTOM_ERROR = 'CUSTOM_ERROR',
+  CONNECTION_ERROR = 'CONNECTION_ERROR'
+}

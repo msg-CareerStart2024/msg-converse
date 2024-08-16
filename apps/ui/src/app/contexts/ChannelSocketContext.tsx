@@ -1,7 +1,9 @@
 import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { Socket, io } from 'socket.io-client';
 
+import { BASE_URL } from '../config/api-config';
 import { RootState } from '../store/store';
+import { SocketEvent } from '../types/socket/SocketEvent.enum';
 import { registerSocketInstance } from '../api/socket-api/socket-api';
 import { useSelector } from 'react-redux';
 
@@ -41,7 +43,7 @@ export const ChannelSocketProvider: React.FC<ChannelSocketProviderProps> = ({ ch
     const initializeChannelConnection = useCallback(
         (channelId: string) => {
             if (accessToken && !socketRef.current) {
-                const newChannelSocket = io('http://localhost:3000', {
+                const newChannelSocket = io(BASE_URL, {
                     auth: { accessToken },
                     query: { channelId },
                     transports: ['websocket'],
@@ -49,17 +51,17 @@ export const ChannelSocketProvider: React.FC<ChannelSocketProviderProps> = ({ ch
                     reconnectionDelay: 1000
                 });
 
-                newChannelSocket.on('connect', () => {
+                newChannelSocket.on(SocketEvent.CONNECT, () => {
                     console.log('Socket connected successfully');
                     setActiveSocket(newChannelSocket);
                     registerSocketInstance(() => newChannelSocket);
                 });
 
-                newChannelSocket.on('connect_error', error => {
+                newChannelSocket.on(SocketEvent.CONNECTION_ERROR, error => {
                     console.error('Socket connection error:', error);
                 });
 
-                newChannelSocket.on('disconnect', reason => {
+                newChannelSocket.on(SocketEvent.DISCONNECT, reason => {
                     console.log('Socket disconnected:', reason);
                 });
 

@@ -5,6 +5,7 @@ import {
 } from '../../../api/socket-api/socket-api';
 
 import { Message } from '../../../types/messages/Message.types';
+import { SocketEvent } from '../../../types/socket/SocketEvent.enum';
 import { useChatSocket } from '../../../contexts/ChannelSocketContext';
 
 export const useChannelSocket = (channelId: string) => {
@@ -26,18 +27,18 @@ export const useChannelSocket = (channelId: string) => {
         if (activeSocket) {
             initiateChannelChatJoin(channelId);
 
-            activeSocket.on('previousMessages', (messages: Message[]) => {
+            activeSocket.on(SocketEvent.PREVIOUS_MESSAGES, (messages: Message[]) => {
                 setChannelMessages(messages);
             });
 
-            activeSocket.on('newMessage', (message: Message) => {
+            activeSocket.on(SocketEvent.NEW_MESSAGE, (message: Message) => {
                 setChannelMessages(prevMessages => [...prevMessages, message]);
             });
 
             return () => {
                 initiateChannelChatLeave(channelId);
-                activeSocket.off('previousMessages');
-                activeSocket.off('newMessage');
+                activeSocket.off(SocketEvent.PREVIOUS_MESSAGES);
+                activeSocket.off(SocketEvent.NEW_MESSAGE);
             };
         }
     }, [channelId, activeSocket, initiateChannelChatJoin, initiateChannelChatLeave]);
