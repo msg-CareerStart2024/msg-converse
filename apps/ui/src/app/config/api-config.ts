@@ -20,6 +20,8 @@ const getBaseUrl = () => {
 
 export const BASE_URL = getBaseUrl();
 
+export const WS_BASE_URL = getBaseUrl().replace('/api', '');
+
 export const API_URLS = {
     CHANNELS: '/channels',
     AUTH: '/auth',
