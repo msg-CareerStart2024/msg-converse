@@ -1,34 +1,17 @@
 import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { Socket, io } from 'socket.io-client';
 
-import { BASE_URL } from '../config/api-config';
+import { ChannelSocketContextType } from '../types/socket/ChannelSocketContextType.interface';
 import { RootState } from '../store/store';
 import { SocketEvent } from '../types/socket/SocketEvent.enum';
+import { WS_BASE_URL } from '../config/api-config';
 import { registerSocketInstance } from '../api/socket-api/socket-api';
 import { useSelector } from 'react-redux';
 
-interface ChannelSocketContextType {
-    activeSocket: Socket | null;
-    initializeChannelConnection: (channelId: string) => void;
-    terminateChannelConnection: () => void;
-}
-
-const defaultInitializeChannelConnection = (channelId: string) => {
-    console.warn(
-        `Attempted to initialize connection for channel ${channelId}, but ChatSocketProvider is not set up.`
-    );
-};
-
-const defaultTerminateChannelConnection = () => {
-    console.warn(
-        'Attempted to terminate channel connection, but ChatSocketProvider is not set up.'
-    );
-};
-
 const ChannelSocketContext = createContext<ChannelSocketContextType>({
     activeSocket: null,
-    initializeChannelConnection: defaultInitializeChannelConnection,
-    terminateChannelConnection: defaultTerminateChannelConnection
+    initializeChannelConnection: () => console.warn('ChannelSocketProvider not set up'),
+    terminateChannelConnection: () => console.warn('ChannelSocketProvider not set up')
 });
 
 export const useChatSocket = () => useContext(ChannelSocketContext);
@@ -42,58 +25,64 @@ export const ChannelSocketProvider: React.FC<ChannelSocketProviderProps> = ({ ch
 
     const initializeChannelConnection = useCallback(
         (channelId: string) => {
-            if (accessToken && !socketRef.current) {
-                const newChannelSocket = io(BASE_URL, {
-                    auth: { accessToken },
-                    query: { channelId },
-                    transports: ['websocket'],
-                    reconnectionAttempts: 5,
-                    reconnectionDelay: 1000
-                });
+            if (!accessToken || socketRef.current) return;
 
-                newChannelSocket.on(SocketEvent.CONNECT, () => {
-                    console.log('Socket connected successfully');
-                    setActiveSocket(newChannelSocket);
-                    registerSocketInstance(() => newChannelSocket);
-                });
+            const newChannelSocket = io(WS_BASE_URL, {
+                auth: { accessToken },
+                query: { channelId },
+                transports: ['websocket'],
+                reconnectionAttempts: 5,
+                reconnectionDelay: 1000
+            });
 
-                newChannelSocket.on(SocketEvent.CONNECTION_ERROR, error => {
-                    console.error('Socket connection error:', error);
-                });
+            const handleConnect = () => {
+                console.log('Socket connected successfully');
+                setActiveSocket(newChannelSocket);
+                registerSocketInstance(() => newChannelSocket);
+            };
 
-                newChannelSocket.on(SocketEvent.DISCONNECT, reason => {
-                    console.log('Socket disconnected:', reason);
-                });
+            const handleConnectionError = (error: Error) => {
+                console.error('Socket connection error:', error);
+            };
 
-                socketRef.current = newChannelSocket;
-            }
+            const handleDisconnect = (reason: string) => {
+                console.log('Socket disconnected:', reason);
+            };
+
+            newChannelSocket.on(SocketEvent.CONNECT, handleConnect);
+            newChannelSocket.on(SocketEvent.CONNECTION_ERROR, handleConnectionError);
+            newChannelSocket.on(SocketEvent.DISCONNECT, handleDisconnect);
+
+            socketRef.current = newChannelSocket;
+
+            return () => {
+                newChannelSocket.off(SocketEvent.CONNECT, handleConnect);
+                newChannelSocket.off(SocketEvent.CONNECTION_ERROR, handleConnectionError);
+                newChannelSocket.off(SocketEvent.DISCONNECT, handleDisconnect);
+            };
         },
         [accessToken]
     );
 
     const terminateChannelConnection = useCallback(() => {
-        if (socketRef.current) {
-            socketRef.current.disconnect();
-            socketRef.current = null;
-            setActiveSocket(null);
-            registerSocketInstance(() => null);
-        }
+        if (!socketRef.current) return;
+
+        socketRef.current.disconnect();
+        socketRef.current = null;
+        setActiveSocket(null);
+        registerSocketInstance(() => null);
     }, []);
 
-    useEffect(() => {
-        return () => {
-            terminateChannelConnection();
-        };
-    }, [terminateChannelConnection]);
+    useEffect(() => terminateChannelConnection, [terminateChannelConnection]);
+
+    const contextValue = {
+        activeSocket,
+        initializeChannelConnection,
+        terminateChannelConnection
+    };
 
     return (
-        <ChannelSocketContext.Provider
-            value={{
-                activeSocket,
-                initializeChannelConnection,
-                terminateChannelConnection
-            }}
-        >
+        <ChannelSocketContext.Provider value={contextValue}>
             {children}
         </ChannelSocketContext.Provider>
     );
