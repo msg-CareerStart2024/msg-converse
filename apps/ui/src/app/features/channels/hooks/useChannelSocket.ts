@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
     useJoinChannelChatMutation,
-    useLeaveChannelChatMutation
+    useLeaveChannelChatMutation,
+    useSendMessageMutation
 } from '../../../api/socket-api/socket-api';
 
 import { Message } from '../../../types/messages/Message.types';
@@ -13,6 +14,7 @@ export const useChannelSocket = (channelId: string) => {
         useChatSocket();
     const [initiateChannelChatJoin] = useJoinChannelChatMutation();
     const [initiateChannelChatLeave] = useLeaveChannelChatMutation();
+    const [dispatchMessage] = useSendMessageMutation();
     const [channelMessages, setChannelMessages] = useState<Message[]>([]);
 
     useEffect(() => {
@@ -43,5 +45,14 @@ export const useChannelSocket = (channelId: string) => {
         }
     }, [channelId, activeSocket, initiateChannelChatJoin, initiateChannelChatLeave]);
 
-    return { channelMessages };
+    const sendChannelMessage = useCallback(
+        (messageContent: string) => {
+            if (activeSocket) {
+                dispatchMessage({ channelId, content: messageContent });
+            }
+        },
+        [channelId, dispatchMessage, activeSocket]
+    );
+
+    return { channelMessages, sendChannelMessage };
 };

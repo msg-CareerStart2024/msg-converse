@@ -1,6 +1,7 @@
 import {
     Alert,
     Box,
+    CircularProgress,
     Container,
     FormControl,
     Grid,
@@ -12,28 +13,37 @@ import {
     Typography
 } from '@mui/material';
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
-import {
-    useCreateMessageMutation,
-    useGetMessagesByChannelIdQuery
-} from '../../../api/messages-api/messages-api';
 
 import MessageComponent from './MessageComponent';
 import { RootState } from '../../../store/store';
 import SendIcon from '@mui/icons-material/Send';
 import { User } from '../../../types/login/User.types';
+import { useChannelSocket } from '../hooks/useChannelSocket';
 import { useGetChannelByIdQuery } from '../../../api/channels-api/channels-api';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 export default function ChannelComponent() {
     const { id: channelId } = useParams<string>();
+    const [writtenMessage, setWrittenMessage] = useState<string>('');
+    const lastMessageRef = useRef<HTMLLIElement>(null);
 
-    const {
-        data: messages,
-        isLoading: isLoadingMessages,
-        error: errorMessages
-    } = useGetMessagesByChannelIdQuery(channelId as string);
-    const [createMessage] = useCreateMessageMutation();
+    const { channelMessages, sendChannelMessage } = useChannelSocket(channelId as string);
+
+    const [isOffline, setIsOffline] = useState(!navigator.onLine);
+
+    useEffect(() => {
+        const handleOnline = () => setIsOffline(false);
+        const handleOffline = () => setIsOffline(true);
+
+        window.addEventListener('online', handleOnline);
+        window.addEventListener('offline', handleOffline);
+
+        return () => {
+            window.removeEventListener('online', handleOnline);
+            window.removeEventListener('offline', handleOffline);
+        };
+    }, []);
 
     const {
         data: channel,
@@ -42,9 +52,6 @@ export default function ChannelComponent() {
     } = useGetChannelByIdQuery(channelId as string);
 
     const currentUser: User = useSelector((state: RootState) => state.auth.user) as User;
-
-    const [writtenMessage, setWrittenMessage] = useState<string>('');
-    const messagesEndRef = useRef<HTMLDivElement>(null);
 
     const handleMessageChange = (event: ChangeEvent<HTMLInputElement>) => {
         setWrittenMessage(event.target.value);
@@ -56,30 +63,43 @@ export default function ChannelComponent() {
         }
 
         if (writtenMessage) {
-            await createMessage({
-                channelId: channelId as string,
-                messageData: { content: writtenMessage }
-            });
+            sendChannelMessage(writtenMessage);
             setWrittenMessage('');
         }
     };
 
     const scrollToBottom = () => {
-        if (messagesEndRef.current) {
-            messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
-        }
+        setTimeout(() => {
+            if (lastMessageRef.current) {
+                lastMessageRef.current.scrollIntoView({ behavior: 'smooth' });
+            }
+        }, 100);
     };
 
     useEffect(() => {
-        scrollToBottom();
-    }, [messages]);
+        if (channelMessages.length > 0) {
+            scrollToBottom();
+        }
+    }, [channelMessages]);
 
-    if (isLoadingMessages || isLoadingChannel) {
-        return <Typography>Loading...</Typography>;
+    useEffect(() => {
+        scrollToBottom();
+    }, []);
+
+    if (isOffline) {
+        return (
+            <Alert severity="warning">
+                You are currently offline. Messages will be sent when you're back online.
+            </Alert>
+        );
     }
 
-    if (errorMessages) {
-        return <Alert severity="error">There has been an error loading the messages</Alert>;
+    if (isLoadingChannel) {
+        return (
+            <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+                <CircularProgress />
+            </Box>
+        );
     }
 
     if (errorChannel) {
@@ -91,69 +111,73 @@ export default function ChannelComponent() {
             <Typography variant="h6" marginBottom={5}>
                 {channel?.name}
             </Typography>
-            {!messages ? (
-                <Alert severity="warning">There are no messages in this chat</Alert>
-            ) : (
-                <Paper>
-                    <Box padding={3}>
-                        <Grid container spacing={4} alignItems="center">
-                            <Grid item xs={12}>
-                                <List sx={{ height: '65dvh', overflow: 'auto' }}>
-                                    {[...messages]
-                                        .sort(
-                                            (m1, m2) =>
-                                                new Date(m1.createdAt).getTime() -
-                                                new Date(m2.createdAt).getTime()
-                                        )
-                                        .map(message => (
-                                            <ListItem
-                                                key={message.id}
-                                                sx={{
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    padding: 1,
-                                                    justifyContent:
-                                                        message.user.id === currentUser.id
-                                                            ? 'flex-end'
-                                                            : 'flex-start'
-                                                }}
-                                            >
-                                                <MessageComponent
-                                                    message={message.content}
-                                                    firstNameInitial={message.user.firstName[0].toUpperCase()}
-                                                    isSent={message.user.id === currentUser.id}
-                                                />
-                                            </ListItem>
-                                        ))}
-                                    <div ref={messagesEndRef} />
-                                </List>
-                            </Grid>
-                            <Grid item xs={11}>
-                                <form onSubmit={sendMessage} style={{ display: 'flex' }}>
-                                    <FormControl fullWidth>
-                                        <TextField
-                                            label="Type your message"
-                                            variant="outlined"
-                                            value={writtenMessage}
-                                            onChange={handleMessageChange}
-                                        />
-                                    </FormControl>
-                                </form>
-                            </Grid>
-                            <Grid item xs={1}>
-                                <IconButton
-                                    aria-label="send"
-                                    color="primary"
-                                    onClick={() => sendMessage()}
-                                    disabled={isLoadingMessages}
+            <Paper sx={{ height: '80vh', display: 'flex', flexDirection: 'column' }}>
+                <Box flex={1} overflow="auto" padding={3}>
+                    {!channelMessages || channelMessages.length === 0 ? (
+                        <Box
+                            display="flex"
+                            justifyContent="center"
+                            alignItems="center"
+                            height="100%"
+                        >
+                            <Typography color="text.secondary" align="center">
+                                Empty? Be the one to initiate the conversation!
+                            </Typography>
+                        </Box>
+                    ) : (
+                        <List>
+                            {channelMessages.map((message, index) => (
+                                <ListItem
+                                    ref={
+                                        index === channelMessages.length - 1 ? lastMessageRef : null
+                                    }
+                                    key={message.id}
+                                    sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        padding: 1,
+                                        justifyContent:
+                                            message.user.id === currentUser.id
+                                                ? 'flex-end'
+                                                : 'flex-start'
+                                    }}
                                 >
-                                    <SendIcon />
-                                </IconButton>
-                            </Grid>
+                                    <MessageComponent
+                                        message={message.content}
+                                        firstNameInitial={message.user.firstName[0].toUpperCase()}
+                                        isSent={message.user.id === currentUser.id}
+                                    />
+                                </ListItem>
+                            ))}
+                        </List>
+                    )}
+                </Box>
+                <Box padding={3} bgcolor="background.paper">
+                    <Grid container spacing={2} alignItems="center">
+                        <Grid item xs={11}>
+                            <form onSubmit={sendMessage} style={{ display: 'flex' }}>
+                                <FormControl fullWidth>
+                                    <TextField
+                                        label="Type your message"
+                                        variant="outlined"
+                                        value={writtenMessage}
+                                        onChange={handleMessageChange}
+                                    />
+                                </FormControl>
+                            </form>
                         </Grid>
-                    </Box>
-                </Paper>
-            )}
+                        <Grid item xs={1}>
+                            <IconButton
+                                aria-label="send"
+                                color="primary"
+                                onClick={() => sendMessage()}
+                            >
+                                <SendIcon />
+                            </IconButton>
+                        </Grid>
+                    </Grid>
+                </Box>
+            </Paper>
         </Container>
     );
 }

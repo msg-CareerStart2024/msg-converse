@@ -43,7 +43,7 @@ export const ChannelSocketProvider: React.FC<ChannelSocketProviderProps> = ({ ch
     const initializeChannelConnection = useCallback(
         (channelId: string) => {
             if (accessToken && !socketRef.current) {
-                const newChannelSocket = io(BASE_URL, {
+                const newChannelSocket = io('http://localhost:3000', {
                     auth: { accessToken },
                     query: { channelId },
                     transports: ['websocket'],
