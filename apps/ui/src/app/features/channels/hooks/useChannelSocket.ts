@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
     useJoinChannelChatMutation,
     useLeaveChannelChatMutation,
@@ -12,46 +12,51 @@ import { useChatSocket } from '../../../contexts/ChannelSocketContext';
 export const useChannelSocket = (channelId: string) => {
     const { activeSocket, initializeChannelConnection, terminateChannelConnection } =
         useChatSocket();
-    const [initiateChannelChatJoin] = useJoinChannelChatMutation();
-    const [initiateChannelChatLeave] = useLeaveChannelChatMutation();
-    const [dispatchMessage] = useSendMessageMutation();
+    const [joinChannelChat] = useJoinChannelChatMutation();
+    const [leaveChannelChat] = useLeaveChannelChatMutation();
+    const [sendMessage] = useSendMessageMutation();
     const [channelMessages, setChannelMessages] = useState<Message[]>([]);
+
+    const channelIdRef = useRef(channelId);
+
+    useEffect(() => {
+        channelIdRef.current = channelId;
+    }, [channelId]);
 
     useEffect(() => {
         initializeChannelConnection(channelId);
-
-        return () => {
-            terminateChannelConnection();
-        };
+        return terminateChannelConnection;
     }, [channelId, initializeChannelConnection, terminateChannelConnection]);
 
     useEffect(() => {
-        if (activeSocket) {
-            initiateChannelChatJoin(channelId);
+        if (!activeSocket) return;
 
-            activeSocket.on(SocketEvent.PREVIOUS_MESSAGES, (messages: Message[]) => {
-                setChannelMessages(messages);
-            });
+        const handlePreviousMessages = (messages: Message[]) => {
+            setChannelMessages(messages);
+        };
 
-            activeSocket.on(SocketEvent.NEW_MESSAGE, (message: Message) => {
-                setChannelMessages(prevMessages => [...prevMessages, message]);
-            });
+        const handleNewMessage = (message: Message) => {
+            setChannelMessages(prevMessages => [...prevMessages, message]);
+        };
 
-            return () => {
-                initiateChannelChatLeave(channelId);
-                activeSocket.off(SocketEvent.PREVIOUS_MESSAGES);
-                activeSocket.off(SocketEvent.NEW_MESSAGE);
-            };
-        }
-    }, [channelId, activeSocket, initiateChannelChatJoin, initiateChannelChatLeave]);
+        joinChannelChat(channelId);
+        activeSocket.on(SocketEvent.PREVIOUS_MESSAGES, handlePreviousMessages);
+        activeSocket.on(SocketEvent.NEW_MESSAGE, handleNewMessage);
+
+        return () => {
+            leaveChannelChat(channelIdRef.current);
+            activeSocket.off(SocketEvent.PREVIOUS_MESSAGES, handlePreviousMessages);
+            activeSocket.off(SocketEvent.NEW_MESSAGE, handleNewMessage);
+        };
+    }, [activeSocket, joinChannelChat, leaveChannelChat, channelId]);
 
     const sendChannelMessage = useCallback(
         (messageContent: string) => {
             if (activeSocket) {
-                dispatchMessage({ channelId, content: messageContent });
+                sendMessage({ channelId: channelIdRef.current, content: messageContent });
             }
         },
-        [channelId, dispatchMessage, activeSocket]
+        [activeSocket, sendMessage]
     );
 
     return { channelMessages, sendChannelMessage };
