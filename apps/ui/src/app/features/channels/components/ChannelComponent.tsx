@@ -12,7 +12,7 @@ import {
     TextField,
     Typography
 } from '@mui/material';
-import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import MessageComponent from './MessageComponent';
 import { RootState } from '../../../store/store';
@@ -23,68 +23,56 @@ import { useGetChannelByIdQuery } from '../../../api/channels-api/channels-api';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-export default function ChannelComponent() {
-    const { id: channelId } = useParams<string>();
-    const [writtenMessage, setWrittenMessage] = useState<string>('');
+const ChannelComponent: React.FC = () => {
+    const { id: channelId } = useParams<{ id: string }>();
+    const [writtenMessage, setWrittenMessage] = useState('');
     const lastMessageRef = useRef<HTMLLIElement>(null);
-
-    const { channelMessages, sendChannelMessage } = useChannelSocket(channelId as string);
-
     const [isOffline, setIsOffline] = useState(!navigator.onLine);
 
-    useEffect(() => {
-        const handleOnline = () => setIsOffline(false);
-        const handleOffline = () => setIsOffline(true);
-
-        window.addEventListener('online', handleOnline);
-        window.addEventListener('offline', handleOffline);
-
-        return () => {
-            window.removeEventListener('online', handleOnline);
-            window.removeEventListener('offline', handleOffline);
-        };
-    }, []);
-
+    const { channelMessages, sendChannelMessage } = useChannelSocket(channelId as string);
     const {
         data: channel,
         isLoading: isLoadingChannel,
         error: errorChannel
     } = useGetChannelByIdQuery(channelId as string);
 
-    const currentUser: User = useSelector((state: RootState) => state.auth.user) as User;
+    const currentUser: User = useSelector((state: RootState) => state.auth.user as User);
 
-    const handleMessageChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setWrittenMessage(event.target.value);
-    };
+    const handleOnlineStatus = useCallback(() => {
+        setIsOffline(!navigator.onLine);
+    }, []);
 
-    const sendMessage = async (event?: FormEvent<HTMLFormElement>) => {
-        if (event) {
-            event.preventDefault();
-        }
+    useEffect(() => {
+        window.addEventListener('online', handleOnlineStatus);
+        window.addEventListener('offline', handleOnlineStatus);
 
-        if (writtenMessage) {
-            sendChannelMessage(writtenMessage);
-            setWrittenMessage('');
-        }
-    };
+        return () => {
+            window.removeEventListener('online', handleOnlineStatus);
+            window.removeEventListener('offline', handleOnlineStatus);
+        };
+    }, [handleOnlineStatus]);
 
-    const scrollToBottom = () => {
-        setTimeout(() => {
-            if (lastMessageRef.current) {
-                lastMessageRef.current.scrollIntoView({ behavior: 'smooth' });
-            }
-        }, 100);
-    };
+    const scrollToBottom = useCallback(() => {
+        lastMessageRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, []);
 
     useEffect(() => {
         if (channelMessages.length > 0) {
             scrollToBottom();
         }
-    }, [channelMessages]);
+    }, [channelMessages, scrollToBottom]);
 
-    useEffect(() => {
-        scrollToBottom();
-    }, []);
+    const handleMessageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setWrittenMessage(event.target.value);
+    };
+
+    const sendMessage = (event?: React.FormEvent<HTMLFormElement>) => {
+        event?.preventDefault();
+        if (writtenMessage.trim()) {
+            sendChannelMessage(writtenMessage);
+            setWrittenMessage('');
+        }
+    };
 
     if (isOffline) {
         return (
@@ -113,7 +101,7 @@ export default function ChannelComponent() {
             </Typography>
             <Paper sx={{ height: '80vh', display: 'flex', flexDirection: 'column' }}>
                 <Box flex={1} overflow="auto" padding={3}>
-                    {!channelMessages || channelMessages.length === 0 ? (
+                    {channelMessages.length === 0 ? (
                         <Box
                             display="flex"
                             justifyContent="center"
@@ -152,26 +140,20 @@ export default function ChannelComponent() {
                         </List>
                     )}
                 </Box>
-                <Box padding={3} bgcolor="background.paper">
+                <Box component="form" onSubmit={sendMessage} padding={3}>
                     <Grid container spacing={2} alignItems="center">
                         <Grid item xs={11}>
-                            <form onSubmit={sendMessage} style={{ display: 'flex' }}>
-                                <FormControl fullWidth>
-                                    <TextField
-                                        label="Type your message"
-                                        variant="outlined"
-                                        value={writtenMessage}
-                                        onChange={handleMessageChange}
-                                    />
-                                </FormControl>
-                            </form>
+                            <FormControl fullWidth>
+                                <TextField
+                                    label="Type your message"
+                                    variant="outlined"
+                                    value={writtenMessage}
+                                    onChange={handleMessageChange}
+                                />
+                            </FormControl>
                         </Grid>
                         <Grid item xs={1}>
-                            <IconButton
-                                aria-label="send"
-                                color="primary"
-                                onClick={() => sendMessage()}
-                            >
+                            <IconButton type="submit" aria-label="send" color="primary">
                                 <SendIcon />
                             </IconButton>
                         </Grid>
@@ -180,4 +162,6 @@ export default function ChannelComponent() {
             </Paper>
         </Container>
     );
-}
+};
+
+export default ChannelComponent;
