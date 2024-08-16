@@ -20,7 +20,10 @@ export class Message {
     @Column({ name: 'is_pinned', nullable: false, default: false })
     isPinned: boolean;
 
-    @CreateDateColumn({ name: 'created_at' })
+    @Column({ name: 'is_deleted', nullable: false, default: false })
+    isDeleted: boolean;
+
+    @CreateDateColumn({ name: 'created_at', nullable: false })
     createdAt: Date;
 
     @ManyToOne(() => User, { eager: true })

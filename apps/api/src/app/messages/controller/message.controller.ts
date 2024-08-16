@@ -54,6 +54,7 @@ export class MessagesController {
     }
 
     @Put(':id')
+    @Roles([Role.ADMIN])
     @ApiOperation({ summary: 'Update a message' })
     @ApiParam({
         name: 'id',
@@ -72,8 +73,8 @@ export class MessagesController {
         @Body() updateMessageDto: UpdateMessageDTO
     ): Promise<MessageDTO> {
         const updateData = MessageMapper.fromUpdateDto(id, updateMessageDto);
-        const updatedChannel = await this.messageService.update(id, updateData);
-        return MessageMapper.toDto(updatedChannel);
+        const updatedMessage = await this.messageService.update(id, updateData);
+        return MessageMapper.toDto(updatedMessage);
     }
 
     @Delete(':id')
