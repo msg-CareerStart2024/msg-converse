@@ -118,8 +118,8 @@ export default function ChannelComponent() {
                                                 }}
                                             >
                                                 <MessageComponent
-                                                    message={message.content}
-                                                    firstNameInitial={message.user.firstName[0].toUpperCase()}
+                                                    message={message}
+                                                    user={message.user}
                                                     isSent={message.user.id === currentUser.id}
                                                 />
                                             </ListItem>

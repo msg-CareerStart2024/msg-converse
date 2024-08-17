@@ -20,7 +20,7 @@ export const messagesApi = createApi({
             Message,
             {
                 channelId: string;
-                messageData: Omit<Message, 'id' | 'isPinned' | 'createdAt' | 'user'>;
+                messageData: Omit<Message, 'id' | 'isPinned' | 'isDeleted' | 'createdAt' | 'user'>;
             }
         >({
             query: ({ channelId, messageData }) => ({

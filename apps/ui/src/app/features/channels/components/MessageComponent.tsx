@@ -1,13 +1,14 @@
 import { Avatar, Box, ListItemText, useTheme } from '@mui/material';
-import { MessageComponentProps } from '../../../types/messages/Message';
+import { MessageComponentProps } from '../../../types/messages/Message.types';
 import { getColor } from '../../../lib/avatar-colors';
 
 type UnifiedMessageProps = MessageComponentProps & {
     isSent: boolean;
 };
 
-const MessageComponent: React.FC<UnifiedMessageProps> = ({ message, firstNameInitial, isSent }) => {
+const MessageComponent: React.FC<UnifiedMessageProps> = ({ message, user, isSent }) => {
     const theme = useTheme();
+    const firstNameInitial = user.firstName[0].toUpperCase();
 
     const avatarStyle = {
         marginInline: 2,
@@ -37,7 +38,7 @@ const MessageComponent: React.FC<UnifiedMessageProps> = ({ message, firstNameIni
                 {firstNameInitial}
             </Avatar>
             <Box sx={messageBoxStyle}>
-                <ListItemText primary={message} />
+                <ListItemText primary={message.content} />
             </Box>
         </Box>
     );
