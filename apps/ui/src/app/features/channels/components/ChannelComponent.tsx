@@ -18,11 +18,13 @@ import { useParams } from 'react-router-dom';
 import { useGetChannelByIdQuery } from '../../../api/channels-api/channels-api';
 import {
     useCreateMessageMutation,
-    useGetMessagesByChannelIdQuery
+    useGetMessagesByChannelIdQuery,
+    useUpdateMessageMutation
 } from '../../../api/messages-api/messages-api';
 import { RootState } from '../../../store/store';
 import { User } from '../../../types/login/User.types';
 import MessageComponent from './MessageComponent';
+import { Message } from '../../../types/messages/Message.types';
 
 export default function ChannelComponent() {
     const { id: channelId } = useParams<string>();
@@ -33,6 +35,7 @@ export default function ChannelComponent() {
         error: errorMessages
     } = useGetMessagesByChannelIdQuery(channelId as string);
     const [createMessage] = useCreateMessageMutation();
+    const [updateMessage] = useUpdateMessageMutation();
 
     const {
         data: channel,
@@ -61,6 +64,14 @@ export default function ChannelComponent() {
             });
             setWrittenMessage('');
         }
+    };
+
+    const handleRemoveMessage = async (
+        id: string,
+        messageData: Omit<Message, 'id' | 'createdAt' | 'user'>
+    ) => {
+        messageData.isDeleted = true;
+        await updateMessage({ id, messageData });
     };
 
     const scrollToBottom = () => {
@@ -100,9 +111,9 @@ export default function ChannelComponent() {
                                 <List sx={{ height: '65dvh', overflow: 'auto' }}>
                                     {[...messages]
                                         .sort(
-                                            (m1, m2) =>
-                                                new Date(m1.createdAt).getTime() -
-                                                new Date(m2.createdAt).getTime()
+                                            (message1, message2) =>
+                                                new Date(message1.createdAt).getTime() -
+                                                new Date(message2.createdAt).getTime()
                                         )
                                         .map(message => (
                                             <ListItem
@@ -119,8 +130,8 @@ export default function ChannelComponent() {
                                             >
                                                 <MessageComponent
                                                     message={message}
-                                                    user={message.user}
-                                                    isSent={message.user.id === currentUser.id}
+                                                    currentUser={currentUser}
+                                                    handleRemoveMessage={handleRemoveMessage}
                                                 />
                                             </ListItem>
                                         ))}

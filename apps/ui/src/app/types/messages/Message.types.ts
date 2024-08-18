@@ -11,5 +11,4 @@ export interface Message {
 
 export interface MessageComponentProps {
     message: Message;
-    user: User;
 }
