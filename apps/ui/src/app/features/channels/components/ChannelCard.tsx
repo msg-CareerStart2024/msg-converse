@@ -1,5 +1,3 @@
-import EditIcon from '@mui/icons-material/Edit';
-import SendIcon from '@mui/icons-material/Send';
 import {
     Avatar,
     Box,
@@ -12,14 +10,17 @@ import {
     Stack,
     Typography
 } from '@mui/material';
-import { useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { useJoinChannelMutation } from '../../../api/channels-api/channels-api';
-import { getColor } from '../../../lib/avatar-colors';
-import { RootState } from '../../../store/store';
-import { Channel } from '../../../types/channel/channel.types';
-import { UserRole } from '../../../types/login/UserRole.enum';
 import { formatDate, shrinkToWords } from '../../../utils/utils';
+
+import { Channel } from '../../../types/channel/channel.types';
+import EditIcon from '@mui/icons-material/Edit';
+import { RootState } from '../../../store/store';
+import SendIcon from '@mui/icons-material/Send';
+import { UserRole } from '../../../types/login/UserRole.enum';
+import { getColor } from '../../../lib/avatar-colors';
+import { useJoinChannelMutation } from '../../../api/channels-api/channels-api';
+import { useSelector } from 'react-redux';
 
 interface ChannelCardProps {
     channel: Channel;
