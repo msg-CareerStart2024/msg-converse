@@ -66,23 +66,26 @@ export default function ChannelComponent() {
         }
     };
 
-    const handleRemoveMessage = async (
+    const handleChangeDeletionStatus = async (
         id: string,
         messageData: Omit<Message, 'id' | 'createdAt' | 'user'>
     ) => {
-        messageData.isDeleted = true;
+        const { isDeleted } = messageData;
+        messageData.isDeleted = !isDeleted;
         await updateMessage({ id, messageData });
     };
 
     const scrollToBottom = () => {
-        if (messagesEndRef.current) {
-            messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
-        }
+        setTimeout(() => {
+            if (messagesEndRef.current) {
+                messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+            }
+        }, 100);
     };
 
     useEffect(() => {
         scrollToBottom();
-    }, [messages]);
+    }, [messages?.length]);
 
     if (isLoadingMessages || isLoadingChannel) {
         return <Typography>Loading...</Typography>;
@@ -131,7 +134,9 @@ export default function ChannelComponent() {
                                                 <MessageComponent
                                                     message={message}
                                                     currentUser={currentUser}
-                                                    handleRemoveMessage={handleRemoveMessage}
+                                                    handleChangeDeletionStatus={
+                                                        handleChangeDeletionStatus
+                                                    }
                                                 />
                                             </ListItem>
                                         ))}
