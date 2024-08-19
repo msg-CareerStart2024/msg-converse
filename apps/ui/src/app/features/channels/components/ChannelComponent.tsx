@@ -1,3 +1,4 @@
+import SendIcon from '@mui/icons-material/Send';
 import {
     Alert,
     Box,
@@ -13,15 +14,13 @@ import {
     Typography
 } from '@mui/material';
 import { useCallback, useEffect, useRef, useState } from 'react';
-
-import MessageComponent from './MessageComponent';
+import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { useGetChannelByIdQuery } from '../../../api/channels-api/channels-api';
 import { RootState } from '../../../store/store';
-import SendIcon from '@mui/icons-material/Send';
 import { User } from '../../../types/login/User.types';
 import { useChannelSocket } from '../hooks/useChannelSocket';
-import { useGetChannelByIdQuery } from '../../../api/channels-api/channels-api';
-import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import MessageComponent from './MessageComponent';
 
 const ChannelComponent = () => {
     const { id: channelId } = useParams<{ id: string }>();

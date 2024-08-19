@@ -1,11 +1,11 @@
 import * as ReactDOM from 'react-dom/client';
 
-import App from './app/app';
+import { StrictMode } from 'react';
+import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
+import App from './app/app';
 import { ChannelSocketProvider } from './app/contexts/ChannelSocketContext';
 import { ProtectedRoute } from './app/layouts/ProtectedRoute';
-import { Provider } from 'react-redux';
-import { StrictMode } from 'react';
 import { store } from './app/store/store';
 import React from 'react';
 

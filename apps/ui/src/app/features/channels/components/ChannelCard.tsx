@@ -1,3 +1,5 @@
+import EditIcon from '@mui/icons-material/Edit';
+import SendIcon from '@mui/icons-material/Send';
 import {
     Avatar,
     Box,
@@ -10,17 +12,17 @@ import {
     Stack,
     Typography
 } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
-import { formatDate, shrinkToWords } from '../../../utils/utils';
-
-import { Channel } from '../../../types/channel/channel.types';
-import EditIcon from '@mui/icons-material/Edit';
-import { RootState } from '../../../store/store';
-import SendIcon from '@mui/icons-material/Send';
-import { UserRole } from '../../../types/login/UserRole.enum';
-import { getColor } from '../../../lib/avatar-colors';
-import { useJoinChannelMutation } from '../../../api/channels-api/channels-api';
 import { useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import {
+    useJoinChannelMutation,
+    useLeaveChannelMutation
+} from '../../../api/channels-api/channels-api';
+import { getColor } from '../../../lib/avatar-colors';
+import { RootState } from '../../../store/store';
+import { Channel } from '../../../types/channel/channel.types';
+import { UserRole } from '../../../types/login/UserRole.enum';
+import { formatDate, shrinkToWords } from '../../../utils/utils';
 
 interface ChannelCardProps {
     channel: Channel;
@@ -28,11 +30,18 @@ interface ChannelCardProps {
 
 const ChannelCard = ({ channel }: ChannelCardProps) => {
     const navigate = useNavigate();
-    const [joinChannel, { isLoading }] = useJoinChannelMutation();
+    const [joinChannel, { isLoading: isLoadingJoin }] = useJoinChannelMutation();
+    const [leaveChannel, { isLoading: isLoadingLeave }] = useLeaveChannelMutation();
     const user = useSelector((state: RootState) => state.auth.user);
+    const joinedChannels = useSelector((state: RootState) => state.joinedChannels);
+    const isJoined = joinedChannels.some(ch => ch.id === channel.id);
 
     const handleJoinChannel = () => {
-        joinChannel({ user: '123', channel: channel.id });
+        joinChannel(channel.id);
+    };
+
+    const handleLeaveChannel = () => {
+        leaveChannel(channel.id);
     };
 
     const handleNavigateToEditChannel = () => {
@@ -96,29 +105,42 @@ const ChannelCard = ({ channel }: ChannelCardProps) => {
                 </CardContent>
 
                 <CardActions sx={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
-                    <Button
-                        size="small"
-                        sx={{ color: 'secondary.main', fontWeight: '600' }}
-                        onClick={handleJoinChannel}
-                        disabled={isLoading}
-                    >
-                        Join
-                    </Button>
-                    <Link to={`/channels/${channel.id}`}>
+                    {!isJoined ? (
                         <Button
                             size="small"
-                            variant="contained"
-                            endIcon={<SendIcon />}
-                            sx={{
-                                fontWeight: '600',
-                                bgcolor: 'secondary.main',
-                                '&:hover': {
-                                    bgcolor: 'secondary.dark'
-                                }
-                            }}
+                            sx={{ color: 'secondary.main', fontWeight: '600' }}
+                            onClick={handleJoinChannel}
+                            disabled={isLoadingJoin}
                         >
-                            Message
+                            Join
                         </Button>
+                    ) : (
+                        <Button
+                            size="small"
+                            sx={{ color: 'secondary.main', fontWeight: '600' }}
+                            onClick={handleLeaveChannel}
+                            disabled={isLoadingLeave}
+                        >
+                            Leave
+                        </Button>
+                    )}
+                    <Link to={`/channels/${channel.id}`}>
+                        {isJoined && (
+                            <Button
+                                size="small"
+                                variant="contained"
+                                endIcon={<SendIcon />}
+                                sx={{
+                                    fontWeight: '600',
+                                    bgcolor: 'secondary.main',
+                                    '&:hover': {
+                                        bgcolor: 'secondary.dark'
+                                    }
+                                }}
+                            >
+                                Message
+                            </Button>
+                        )}
                     </Link>
                 </CardActions>
             </Stack>

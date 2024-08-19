@@ -1,16 +1,18 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import { setupListeners } from '@reduxjs/toolkit/query';
 import { authApi } from '../api/auth-api/auth-api';
-import authReducer from '../features/login/slices/auth-slice';
-import channelMessagesSlice from '../features/channels/slices/channel-messages-slice';
 import { channelsApi } from '../api/channels-api/channels-api';
 import { messagesApi } from '../api/messages-api/messages-api';
-import { setupListeners } from '@reduxjs/toolkit/query';
 import { socketApi } from '../api/socket-api/socket-api';
 import { usersApi } from '../api/users-api/users-api';
+import channelMessagesSlice from '../features/channels/slices/channel-messages-slice';
+import channelsReducer from '../features/channels/slices/channels-slice';
+import authReducer from '../features/login/slices/auth-slice';
 import themeReducer from '../features/sidebar/slices/theme-slice';
 
 const rootReducer = combineReducers({
     auth: authReducer,
+    joinedChannels: channelsReducer,
     theme: themeReducer,
     [authApi.reducerPath]: authApi.reducer,
     [usersApi.reducerPath]: usersApi.reducer,
