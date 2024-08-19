@@ -1,6 +1,6 @@
-import { Message } from "../../messages/Message.types";
+import { Message } from '../../messages/Message.types';
 
 export interface NewMessagePayload {
-  channelId: string;
-  message: Message;
+    channelId: string;
+    message: Message;
 }
