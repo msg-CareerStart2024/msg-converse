@@ -11,4 +11,5 @@ export interface Message {
 export interface MessageComponentProps {
     message: string;
     firstNameInitial: string;
+    fullName: string;
 }
