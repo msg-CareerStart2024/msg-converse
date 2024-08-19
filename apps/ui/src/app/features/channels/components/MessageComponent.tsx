@@ -52,6 +52,7 @@ const MessageComponent: React.FC<UnifiedMessageProps> = ({
     const handleMenuClose = () => {
         setAnchorEl(null);
         setSelectedMessage(null);
+        console.log('exit');
     };
 
     return (
@@ -69,7 +70,7 @@ const MessageComponent: React.FC<UnifiedMessageProps> = ({
             <Box
                 sx={messageBoxStyle}
                 onMouseEnter={event => handleMenuOpen(event, message)}
-                onMouseLeave={handleMenuClose}
+                onMouseOut={() => handleMenuClose}
             >
                 <ListItemText
                     primary={
@@ -82,6 +83,7 @@ const MessageComponent: React.FC<UnifiedMessageProps> = ({
                                 : ''
                     }
                 />
+
                 <Menu
                     anchorEl={anchorEl}
                     open={
@@ -90,9 +92,14 @@ const MessageComponent: React.FC<UnifiedMessageProps> = ({
                         currentUser.role === UserRole.ADMIN
                     }
                     onClose={handleMenuClose}
+                    onMouseLeave={handleMenuClose}
                     MenuListProps={{
-                        sx: { display: 'flex', flexDirection: 'row' }
+                        sx: {
+                            display: 'flex',
+                            flexDirection: 'row'
+                        }
                     }}
+                    hideBackdrop
                     disableScrollLock
                 >
                     {!isDeleted ? (
