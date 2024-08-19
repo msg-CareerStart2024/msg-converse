@@ -1,3 +1,4 @@
+import SendIcon from '@mui/icons-material/Send';
 import {
     Alert,
     Box,
@@ -16,7 +17,6 @@ import {
     useCreateMessageMutation,
     useGetMessagesByChannelIdQuery
 } from '../../../api/messages-api/messages-api';
-
 import MessageComponent from './MessageComponent';
 import { RootState } from '../../../store/store';
 import SendIcon from '@mui/icons-material/Send';
