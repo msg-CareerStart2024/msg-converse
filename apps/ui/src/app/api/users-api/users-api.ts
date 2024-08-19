@@ -9,7 +9,7 @@ export const usersApi = createApi({
     baseQuery: getFetchBaseQuery(API_URLS.USERS),
     endpoints: builder => ({
         getUserById: builder.query({
-            query: id => `${API_URLS.USERS}/${id}`,
+            query: id => `${id}`,
             providesTags: [API_CACHE_TAGS.USERS]
         })
     })
