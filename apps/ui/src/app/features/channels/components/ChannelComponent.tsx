@@ -132,6 +132,7 @@ const ChannelComponent = () => {
                                         <MessageComponent
                                             message={message.content}
                                             firstNameInitial={message.user.firstName[0].toUpperCase()}
+                                            fullName={`${message.user.firstName} ${message.user.lastName}`}
                                             isSent={message.user.id === currentUser.id}
                                         />
                                     </ListItem>
