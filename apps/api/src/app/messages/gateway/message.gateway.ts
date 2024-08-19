@@ -12,6 +12,8 @@ import { SocketEvent } from '../enum/socket-event.enum';
 import { UserService } from '../../users/service/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../../users/domain/user.domain';
+import { MessageService } from '../service/message.service';
+import { Message } from '../domain/message.domain';
 
 declare module 'socket.io' {
     interface Socket {
@@ -27,7 +29,8 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 
     constructor(
         private userService: UserService,
-        private jwtService: JwtService
+        private jwtService: JwtService,
+        private messageService: MessageService
     ) {}
 
     afterInit(): void {
@@ -63,8 +66,10 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
     }
 
     @SubscribeMessage(SocketEvent.JOIN_CHANNEL_CHAT)
-    handleConnectToChannel(client: Socket, channel: string): void {
+    async handleConnectToChannel(client: Socket, channel: string): Promise<void> {
         client.join(channel);
+        const messages: Message[] = await this.messageService.getByChannel(channel);
+        client.emit(SocketEvent.PREVIOUS_MESSAGES, messages);
     }
 
     @SubscribeMessage(SocketEvent.LEAVE_CHANNEL_CHAT)
@@ -72,13 +77,14 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
         client.leave(channel);
     }
 
-    @SubscribeMessage(SocketEvent.NEW_MESSAGE)
-    handleNewMessage(): void {
-        this.logger.log('new message');
-    }
-
-    @SubscribeMessage(SocketEvent.PREVIOUS_MESSAGES)
-    handlePreviousMessages(): void {
-        this.logger.log('previous messages');
+    @SubscribeMessage(SocketEvent.SEND_MESSAGE)
+    async handleNewMessage(
+        client: Socket,
+        { channelId, content }: { channelId: string; content: string }
+    ): Promise<void> {
+        const newMessage = await this.messageService.create(client.user.id, channelId, {
+            content
+        } as Message);
+        this.server.to(channelId).emit(SocketEvent.NEW_MESSAGE, newMessage);
     }
 }

@@ -6,17 +6,19 @@ import SignInPage from './features/login/pages/SignInPage';
 import SignUpPage from './features/register/pages/SignUpPage';
 import SiderbarLayout from './layouts/SidebarLayout';
 import NotFoundPage from './pages/NotFoundPage';
-import { decodeToken } from './utils/utils';
+import { RootState, store } from './store/store';
+import { DecodedPayload } from './types/login/DecodedPayload.types';
+import { decodeToken, getTheme } from './utils/utils';
 import ChannelPage from './features/channels/pages/ChannelPage';
 import { useEffect } from 'react';
 import { useLazyGetUserByIdQuery } from './api/users-api/users-api';
 import { useSelector } from 'react-redux';
-import { RootState, store } from './store/store';
 import { setCredentials, clearCredentials } from './features/login/slices/auth-slice';
 import { darkTheme, lightTheme } from './lib/themes';
 import { DecodedPayload } from './types/login/DecodedPayload.types';
 
 export function App() {
+    const theme = useSelector((state: RootState) => state.theme);
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
 
     const navigate = useNavigate();
@@ -45,7 +47,7 @@ export function App() {
     }, [getUserById, navigate, user]);
 
     return (
-        <ThemeProvider theme={prefersDarkMode ? darkTheme : lightTheme}>
+        <ThemeProvider theme={getTheme(theme, prefersDarkMode)}>
             <CssBaseline />
             <Routes>
                 <Route element={<SiderbarLayout />} />
@@ -58,8 +60,6 @@ export function App() {
                         <Route path=":id" element={<ChannelComponent />} />
                     </Route>
                 </Route>
-                <Route path="/login" element={<SignInPage />} />
-                <Route path="/signup" element={<SignUpPage />} />
                 <Route path="/login" element={<SignInPage />} />
                 <Route path="/signup" element={<SignUpPage />} />
                 <Route path="*" element={<NotFoundPage />} />

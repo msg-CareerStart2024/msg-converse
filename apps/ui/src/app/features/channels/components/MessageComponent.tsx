@@ -1,4 +1,4 @@
-import { Avatar, Box, ListItemText, useTheme } from '@mui/material';
+import { Avatar, Box, ListItemText, Tooltip, Typography, useTheme } from '@mui/material';
 
 import { MessageComponentProps } from '../../../types/messages/Message.types';
 import { getColor } from '../../../lib/avatar-colors';
@@ -7,7 +7,12 @@ type UnifiedMessageProps = MessageComponentProps & {
     isSent: boolean;
 };
 
-const MessageComponent: React.FC<UnifiedMessageProps> = ({ message, firstNameInitial, isSent }) => {
+const MessageComponent: React.FC<UnifiedMessageProps> = ({
+    message,
+    firstNameInitial,
+    fullName,
+    isSent
+}) => {
     const theme = useTheme();
 
     const avatarStyle = {
@@ -34,9 +39,16 @@ const MessageComponent: React.FC<UnifiedMessageProps> = ({ message, firstNameIni
                 justifyContent: isSent ? 'flex-end' : 'flex-start'
             }}
         >
-            <Avatar variant="circular" sx={avatarStyle}>
-                {firstNameInitial}
-            </Avatar>
+            <Tooltip
+                title={<Typography sx={{ fontSize: '1.25rem' }}>{fullName}</Typography>}
+                placement={isSent ? 'right-start' : 'left-start'}
+                arrow
+            >
+                <Avatar variant="circular" sx={avatarStyle}>
+                    {firstNameInitial}
+                </Avatar>
+            </Tooltip>
+
             <Box sx={messageBoxStyle}>
                 <ListItemText primary={message} />
             </Box>

@@ -2,9 +2,11 @@ import { Typography } from '@mui/material';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGetJoinedChannelsQuery } from '../../../api/channels-api/channels-api';
-import { store } from '../../../store/store';
+import { AppDispatch, store } from '../../../store/store';
 import { clearCredentials } from '../../login/slices/auth-slice';
 import SidebarView from '../components/SidebarView';
+import { useDispatch } from 'react-redux';
+import { setTheme } from '../slices/theme-slice';
 
 type SidebarContainerProps = {
     toggleSidebar: () => void;
@@ -12,17 +14,36 @@ type SidebarContainerProps = {
 };
 
 export default function SidebarContainer({ toggleSidebar, sidebarOpen }: SidebarContainerProps) {
+    const dispatch = useDispatch<AppDispatch>();
+    const navigate = useNavigate();
+
+    const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     const [anchorElement, setAnchorElement] = useState<null | HTMLElement>(null);
+
     const menuOpen = Boolean(anchorElement);
-    const handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+
+    const handleMenuOpen = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         setAnchorElement(event.currentTarget);
     };
-    const navigate = useNavigate();
-    const handleClose = () => {
+    const handleMenuClose = () => {
         setAnchorElement(null);
     };
+
+    const handleDialogOpen = () => {
+        setDialogOpen(true);
+    };
+    const handleDialogClose = () => {
+        setDialogOpen(false);
+    };
+    const handleChooseTheme = (theme: 'dark' | 'light' | 'system') => {
+        dispatch(setTheme(theme));
+        handleDialogClose();
+        handleMenuClose();
+    };
+
     const handleLogout = () => {
-        handleClose();
+        handleDialogClose();
+        handleMenuClose();
         store.dispatch(clearCredentials());
         navigate('/login');
     };
@@ -37,12 +58,16 @@ export default function SidebarContainer({ toggleSidebar, sidebarOpen }: Sidebar
         <SidebarView
             menuOpen={menuOpen}
             anchorElement={anchorElement}
-            handleClick={handleClick}
-            handleClose={handleClose}
+            handleMenuOpen={handleMenuOpen}
+            handleMenuClose={handleMenuClose}
             handleLogout={handleLogout}
             channels={joinedChannels}
             toggleSidebar={toggleSidebar}
             sidebarOpen={sidebarOpen}
+            handleChooseTheme={handleChooseTheme}
+            handleDialogOpen={handleDialogOpen}
+            handleDialogClose={handleDialogClose}
+            dialogOpen={dialogOpen}
         />
     );
 }
