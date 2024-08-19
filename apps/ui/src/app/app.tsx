@@ -8,18 +8,14 @@ import ChannelPage from './features/channels/pages/ChannelPage';
 import { DecodedPayload } from './types/login/DecodedPayload.types';
 import HomePage from './features/home/pages/HomePage';
 import SignInPage from './features/login/pages/SignInPage';
-import { clearCredentials, setCredentials } from './features/login/slices/auth-slice';
 import SignUpPage from './features/register/pages/SignUpPage';
 import SiderbarLayout from './layouts/SidebarLayout';
-import { darkTheme, lightTheme } from './lib/themes';
 import NotFoundPage from './pages/NotFoundPage';
-import { RootState, store } from './store/store';
-import { DecodedPayload } from './types/login/DecodedPayload.types';
+
 import { decodeToken } from './utils/utils';
 import { useEffect } from 'react';
 import { useLazyGetUserByIdQuery } from './api/users-api/users-api';
 import { useSelector } from 'react-redux';
-
 
 export function App() {
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');

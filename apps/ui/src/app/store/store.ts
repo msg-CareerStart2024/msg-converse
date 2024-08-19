@@ -16,13 +16,6 @@ const rootReducer = combineReducers({
     [socketApi.reducerPath]: socketApi.reducer
 });
 
-const rootReducer = combineReducers({
-    auth: authReducer,
-    [authApi.reducerPath]: authApi.reducer,
-    [usersApi.reducerPath]: usersApi.reducer,
-    [channelsApi.reducerPath]: channelsApi.reducer,
-    [messagesApi.reducerPath]: messagesApi.reducer
-});
 export const store = configureStore({
     reducer: rootReducer,
     middleware: getDefaultMiddleware =>

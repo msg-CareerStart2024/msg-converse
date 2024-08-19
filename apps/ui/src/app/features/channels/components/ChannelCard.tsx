@@ -73,13 +73,15 @@ const ChannelCard = ({ channel }: ChannelCardProps) => {
                                 </Typography>
                             </Box>
                         </Stack>
-                        <IconButton
-                            aria-label="edit"
-                            onClick={handleNavigateToEditChannel}
-                            disabled={user?.role !== UserRole.ADMIN}
-                        >
-                            <EditIcon sx={{ color: 'text.secondary' }} />
-                        </IconButton>
+                        {user?.role === UserRole.ADMIN && (
+                            <IconButton
+                                aria-label="edit"
+                                onClick={handleNavigateToEditChannel}
+                                // disabled={user?.role !== UserRole.ADMIN}
+                            >
+                                <EditIcon sx={{ color: 'text.secondary' }} />
+                            </IconButton>
+                        )}
                     </Stack>
                     <Stack direction="row" spacing={1} mb={2}>
                         {channel.topics.map(topic => (
