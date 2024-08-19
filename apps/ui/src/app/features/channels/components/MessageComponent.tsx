@@ -1,5 +1,6 @@
 import { Avatar, Box, ListItemText, useTheme } from '@mui/material';
-import { MessageComponentProps } from '../../../types/messages/Message';
+
+import { MessageComponentProps } from '../../../types/messages/Message.types';
 import { getColor } from '../../../lib/avatar-colors';
 
 type UnifiedMessageProps = MessageComponentProps & {
