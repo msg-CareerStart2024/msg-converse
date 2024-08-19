@@ -6,7 +6,6 @@ import SignInPage from './features/login/pages/SignInPage';
 import SignUpPage from './features/register/pages/SignUpPage';
 import SiderbarLayout from './layouts/SidebarLayout';
 import NotFoundPage from './pages/NotFoundPage';
-
 import { decodeToken } from './utils/utils';
 import ChannelPage from './features/channels/pages/ChannelPage';
 import { useEffect } from 'react';
