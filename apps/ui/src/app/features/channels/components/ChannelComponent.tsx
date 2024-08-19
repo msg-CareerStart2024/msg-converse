@@ -74,14 +74,6 @@ const ChannelComponent: React.FC = () => {
         }
     };
 
-    if (isOffline) {
-        return (
-            <Alert severity="warning">
-                You are currently offline. Messages will be sent when you're back online.
-            </Alert>
-        );
-    }
-
     if (isLoadingChannel) {
         return (
             <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
@@ -140,6 +132,11 @@ const ChannelComponent: React.FC = () => {
                         </List>
                     )}
                 </Box>
+                {isOffline && (
+                    <Alert severity="warning" sx={{ margin: 2 }}>
+                        You are currently offline. Messages will be sent when you're back online.
+                    </Alert>
+                )}
                 <Box component="form" onSubmit={sendMessage} padding={3}>
                     <Grid container spacing={2} alignItems="center">
                         <Grid item xs={11}>
@@ -149,11 +146,17 @@ const ChannelComponent: React.FC = () => {
                                     variant="outlined"
                                     value={writtenMessage}
                                     onChange={handleMessageChange}
+                                    disabled={isOffline}
                                 />
                             </FormControl>
                         </Grid>
                         <Grid item xs={1}>
-                            <IconButton type="submit" aria-label="send" color="primary">
+                            <IconButton
+                                type="submit"
+                                aria-label="send"
+                                color="primary"
+                                disabled={isOffline}
+                            >
                                 <SendIcon />
                             </IconButton>
                         </Grid>
