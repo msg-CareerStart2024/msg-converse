@@ -8,9 +8,23 @@ import { MessagesController } from './controller/message.controller';
 import { ChannelsModule } from '../channels/channels.module';
 import { UsersModule } from '../users/user.module';
 import { MessageGateway } from './gateway/message.gateway';
+import { JwtModule } from '@nestjs/jwt';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Message]), ChannelsModule, UsersModule],
+    imports: [
+        TypeOrmModule.forFeature([Message]),
+        ChannelsModule,
+        UsersModule,
+        JwtModule.registerAsync({
+            imports: [ConfigModule],
+            useFactory: async (configService: ConfigService) => ({
+                secret: configService.get<string>('JWT_SECRET'),
+                signOptions: { expiresIn: '14400s' }
+            }),
+            inject: [ConfigService]
+        })
+    ],
     providers: [MessageMapper, MessageRepository, MessageService, MessageGateway],
     controllers: [MessagesController]
 })

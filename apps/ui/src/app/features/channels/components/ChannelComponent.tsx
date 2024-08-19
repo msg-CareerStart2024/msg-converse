@@ -1,4 +1,3 @@
-import SendIcon from '@mui/icons-material/Send';
 import {
     Alert,
     Box,
