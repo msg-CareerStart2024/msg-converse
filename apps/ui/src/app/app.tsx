@@ -13,7 +13,7 @@ import SiderbarLayout from './layouts/SidebarLayout';
 import NotFoundPage from './pages/NotFoundPage';
 import { RootState, store } from './store/store';
 import { DecodedPayload } from './types/login/DecodedPayload.types';
-import { decodeToken } from './utils/utils';
+import { decodeToken, getTheme } from './utils/utils';
 
 export function App() {
     const theme = useSelector((state: RootState) => state.theme);
