@@ -23,10 +23,10 @@ import { useGetChannelByIdQuery } from '../../../api/channels-api/channels-api';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-const ChannelComponent: React.FC = () => {
+const ChannelComponent = () => {
     const { id: channelId } = useParams<{ id: string }>();
     const [writtenMessage, setWrittenMessage] = useState('');
-    const messagesEndRef = useRef<HTMLLIElement>(null);
+    const messagesEndRef = useRef<HTMLDivElement>(null);
     const [isOffline, setIsOffline] = useState(!navigator.onLine);
 
     const { channelMessages, sendChannelMessage } = useChannelSocket(channelId as string);
@@ -36,7 +36,7 @@ const ChannelComponent: React.FC = () => {
         error: errorChannel
     } = useGetChannelByIdQuery(channelId as string);
 
-    const currentUser: User = useSelector((state: RootState) => state.auth.user as User);
+    const currentUser: User = useSelector((state: RootState) => state.auth.user) as User;
 
     const handleOnlineStatus = useCallback(() => {
         setIsOffline(!navigator.onLine);
@@ -52,15 +52,19 @@ const ChannelComponent: React.FC = () => {
         };
     }, [handleOnlineStatus]);
 
-    const scrollToBottom = useCallback(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, []);
+    const scrollToBottom = () => {
+        setTimeout(() => {
+            if (messagesEndRef.current) {
+                messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+            }
+        }, 100);
+    };
 
     useEffect(() => {
         if (channelMessages.length > 0) {
             scrollToBottom();
         }
-    }, [channelMessages, scrollToBottom]);
+    }, [channelMessages]);
 
     const handleMessageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setWrittenMessage(event.target.value);
@@ -105,30 +109,34 @@ const ChannelComponent: React.FC = () => {
                             </Typography>
                         </Box>
                     ) : (
-                        <List>
-                            {channelMessages.map((message, index) => (
-                                <ListItem
-                                    ref={
-                                        index === channelMessages.length - 1 ? messagesEndRef : null
-                                    }
-                                    key={message.id}
-                                    sx={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        padding: 1,
-                                        justifyContent:
-                                            message.user.id === currentUser.id
-                                                ? 'flex-end'
-                                                : 'flex-start'
-                                    }}
-                                >
-                                    <MessageComponent
-                                        message={message.content}
-                                        firstNameInitial={message.user.firstName[0].toUpperCase()}
-                                        isSent={message.user.id === currentUser.id}
-                                    />
-                                </ListItem>
-                            ))}
+                        <List sx={{ height: '65dvh', overflow: 'auto' }}>
+                            {[...channelMessages]
+                                .sort(
+                                    (m1, m2) =>
+                                        new Date(m1.createdAt).getTime() -
+                                        new Date(m2.createdAt).getTime()
+                                )
+                                .map(message => (
+                                    <ListItem
+                                        key={message.id}
+                                        sx={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            padding: 1,
+                                            justifyContent:
+                                                message.user.id === currentUser.id
+                                                    ? 'flex-end'
+                                                    : 'flex-start'
+                                        }}
+                                    >
+                                        <MessageComponent
+                                            message={message.content}
+                                            firstNameInitial={message.user.firstName[0].toUpperCase()}
+                                            isSent={message.user.id === currentUser.id}
+                                        />
+                                    </ListItem>
+                                ))}
+                            <div ref={messagesEndRef} />
                         </List>
                     )}
                 </Box>
