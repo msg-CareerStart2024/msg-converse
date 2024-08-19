@@ -38,7 +38,7 @@ export const ChannelSocketProvider: React.FC<ChannelSocketProviderProps> = ({ ch
             });
 
             const handleConnect = () => {
-                console.log('Socket connected successfully');
+                console.info('Socket connected successfully');
                 setActiveSocket(newChannelSocket);
                 registerSocketInstance(() => newChannelSocket);
             };
@@ -48,7 +48,7 @@ export const ChannelSocketProvider: React.FC<ChannelSocketProviderProps> = ({ ch
             };
 
             const handleDisconnect = (reason: string) => {
-                console.log('Socket disconnected:', reason);
+                console.info('Socket disconnected:', reason);
             };
 
             newChannelSocket.on(SocketEvent.CONNECT, handleConnect);

@@ -1,47 +1,70 @@
-import { useEffect, useState } from 'react';
+import { addNewMessage, setPreviousMessages } from '../slices/channel-messages-slice';
+import { useCallback, useEffect, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
     useJoinChannelChatMutation,
-    useLeaveChannelChatMutation
+    useLeaveChannelChatMutation,
+    useSendMessageMutation
 } from '../../../api/socket-api/socket-api';
 
 import { Message } from '../../../types/messages/Message.types';
+import { RootState } from '../../../store/store';
 import { SocketEvent } from '../../../types/socket/SocketEvent.enum';
 import { useChatSocket } from '../../../contexts/ChannelSocketContext';
 
 export const useChannelSocket = (channelId: string) => {
+    const dispatch = useDispatch();
     const { activeSocket, initializeChannelConnection, terminateChannelConnection } =
         useChatSocket();
-    const [initiateChannelChatJoin] = useJoinChannelChatMutation();
-    const [initiateChannelChatLeave] = useLeaveChannelChatMutation();
-    const [channelMessages, setChannelMessages] = useState<Message[]>([]);
+    const [joinChannelChat] = useJoinChannelChatMutation();
+    const [leaveChannelChat] = useLeaveChannelChatMutation();
+    const [sendMessage] = useSendMessageMutation();
+
+    const channelMessages = useSelector(
+        (state: RootState) => state.channelMessages[channelId] || []
+    );
+
+    const channelIdRef = useRef(channelId);
+
+    useEffect(() => {
+        channelIdRef.current = channelId;
+    }, [channelId]);
 
     useEffect(() => {
         initializeChannelConnection(channelId);
-
-        return () => {
-            terminateChannelConnection();
-        };
+        return terminateChannelConnection;
     }, [channelId, initializeChannelConnection, terminateChannelConnection]);
 
     useEffect(() => {
-        if (activeSocket) {
-            initiateChannelChatJoin(channelId);
+        if (!activeSocket) return;
 
-            activeSocket.on(SocketEvent.PREVIOUS_MESSAGES, (messages: Message[]) => {
-                setChannelMessages(messages);
-            });
+        const handlePreviousMessages = (messages: Message[]) => {
+            dispatch(setPreviousMessages({ channelId, messages }));
+        };
 
-            activeSocket.on(SocketEvent.NEW_MESSAGE, (message: Message) => {
-                setChannelMessages(prevMessages => [...prevMessages, message]);
-            });
+        const handleNewMessage = (message: Message) => {
+            dispatch(addNewMessage({ channelId, message }));
+        };
 
-            return () => {
-                initiateChannelChatLeave(channelId);
-                activeSocket.off(SocketEvent.PREVIOUS_MESSAGES);
-                activeSocket.off(SocketEvent.NEW_MESSAGE);
-            };
-        }
-    }, [channelId, activeSocket, initiateChannelChatJoin, initiateChannelChatLeave]);
+        joinChannelChat(channelId);
+        activeSocket.on(SocketEvent.PREVIOUS_MESSAGES, handlePreviousMessages);
+        activeSocket.on(SocketEvent.NEW_MESSAGE, handleNewMessage);
 
-    return { channelMessages };
+        return () => {
+            leaveChannelChat(channelIdRef.current);
+            activeSocket.off(SocketEvent.PREVIOUS_MESSAGES, handlePreviousMessages);
+            activeSocket.off(SocketEvent.NEW_MESSAGE, handleNewMessage);
+        };
+    }, [activeSocket, joinChannelChat, leaveChannelChat, channelId, dispatch]);
+
+    const sendChannelMessage = useCallback(
+        (messageContent: string) => {
+            if (activeSocket) {
+                sendMessage({ channelId: channelIdRef.current, content: messageContent });
+            }
+        },
+        [activeSocket, sendMessage]
+    );
+
+    return { channelMessages, sendChannelMessage };
 };

@@ -1,18 +1,17 @@
 import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import ChannelFormView from '../components/ChannelFormView';
-
-import { Typography } from '@mui/material';
-
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import {
     useCreateChannelMutation,
     useDeleteChannelMutation,
     useLazyGetChannelByIdQuery,
     useUpdateChannelMutation
-} from '../../../api/channels-api/channels-api';
+} from '../../../api/channels-api';
+import { Typography } from '@mui/material';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { RootState } from '../../../store/store';
 import { Topic } from '../../../types/channel/Topic.types';
 import { User } from '../../../types/login/User.types';
