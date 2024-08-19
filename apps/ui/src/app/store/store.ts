@@ -6,9 +6,11 @@ import { messagesApi } from '../api/messages-api/messages-api';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { socketApi } from '../api/socket-api/socket-api';
 import { usersApi } from '../api/users-api/users-api';
+import themeReducer from '../features/sidebar/slices/theme-slice';
 
 const rootReducer = combineReducers({
     auth: authReducer,
+    theme: themeReducer,
     [authApi.reducerPath]: authApi.reducer,
     [usersApi.reducerPath]: usersApi.reducer,
     [channelsApi.reducerPath]: channelsApi.reducer,
