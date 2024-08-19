@@ -10,6 +10,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { SocketEvent } from '../enum/socket-event.enum';
 import { UserService } from '../../users/service/user.service';
+import { JwtService } from '@nestjs/jwt';
 
 @WebSocketGateway()
 export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
@@ -17,23 +18,36 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
     server: Server;
     private logger: Logger = new Logger('MessagesGateway');
 
-    constructor(private userService: UserService) {}
+    constructor(
+        private userService: UserService,
+        private jwtService: JwtService
+    ) {}
 
     afterInit(): void {
         this.logger.log('Server initialized');
     }
 
-    handleConnection(client: Socket): void {
-        console.log('query:', client.handshake.query);
-        console.log('headers:', client.handshake.headers);
-        console.log('auth:', client.handshake.auth);
-        const accessToken = client.handshake.auth.accessToken;
-        if (!accessToken) {
+    async handleConnection(client: Socket): Promise<void> {
+        const token = client.handshake.auth.accessToken;
+
+        if (!token) {
             this.logger.error('No authorization token provided!');
+            client.emit(SocketEvent.CONNECTION_ERROR, 'No auth token');
+            client.disconnect();
+            return;
         }
 
-        client.emit(SocketEvent.CONNECTION_ERROR, 'Invalid token');
-        client.disconnect();
+        try {
+            await this.jwtService.verifyAsync(token);
+            this.logger.log(`Client connected: ${client.id}`);
+        } catch (error) {
+            this.logger.error(
+                'The authorization token provided is not valid or has expired!',
+                error
+            );
+            client.emit(SocketEvent.CONNECTION_ERROR, 'Invalid token');
+            client.disconnect();
+        }
     }
 
     handleDisconnect(client: Socket): void {
@@ -41,13 +55,13 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
     }
 
     @SubscribeMessage(SocketEvent.JOIN_CHANNEL_CHAT)
-    handleConnectToChannel(): void {
-        this.logger.log('connect to channel chat');
+    handleConnectToChannel(client: Socket, channel: string): void {
+        client.join(channel);
     }
 
     @SubscribeMessage(SocketEvent.LEAVE_CHANNEL_CHAT)
-    handleDisconnectFromChannel(): void {
-        this.logger.log('disconnect from channel chat');
+    handleDisconnectFromChannel(client: Socket, channel: string): void {
+        client.leave(channel);
     }
 
     @SubscribeMessage(SocketEvent.NEW_MESSAGE)
