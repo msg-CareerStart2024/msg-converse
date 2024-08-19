@@ -8,23 +8,21 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 
-@WebSocketGateway({
-    cors: {
-        origin: '*'
-    }
-})
+@WebSocketGateway()
 export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
     @WebSocketServer()
     server: Server;
     private logger: Logger = new Logger('MessagesGateway');
 
-    afterInit() {
+    afterInit(): void {
         this.logger.log(`Server initialized`);
     }
-    handleConnection(client: Socket) {
+
+    handleConnection(client: Socket): void {
         this.logger.log(`Client connected: ${client.id}`);
     }
-    handleDisconnect(client: Socket) {
-        this.logger.log(`Client connected: ${client.id}`);
+
+    handleDisconnect(client: Socket): void {
+        this.logger.log(`Client disconnected: ${client.id}`);
     }
 }
