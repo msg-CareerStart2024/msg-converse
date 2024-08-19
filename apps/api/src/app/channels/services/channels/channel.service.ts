@@ -59,22 +59,18 @@ export class ChannelService {
     }
 
     async joinChannel(channelId: string, userId: string): Promise<Channel> {
-        return this.transactionManager.runInTransaction(async manager => {
-            const channel = await this.channelRepository.getOneById(channelId);
-            const user = await this.userService.getById(userId);
-            channel.users.push(user);
+        const channel = await this.channelRepository.getOneById(channelId);
+        const user = await this.userService.getById(userId);
+        channel.users.push(user);
 
-            return await this.channelRepository.save(channel, manager);
-        });
+        return await this.channelRepository.save(channel);
     }
 
     async leaveChannel(channelId: string, userId: string): Promise<Channel> {
-        return this.transactionManager.runInTransaction(async manager => {
-            const channel = await this.channelRepository.getOneById(channelId);
-            channel.users = channel.users.filter(user => user.id !== userId);
+        const channel = await this.channelRepository.getOneById(channelId);
+        channel.users = channel.users.filter(user => user.id !== userId);
 
-            return await this.channelRepository.save(channel, manager);
-        });
+        return await this.channelRepository.save(channel);
     }
 
     private escapeSpecialCharacters(term: string): string {
