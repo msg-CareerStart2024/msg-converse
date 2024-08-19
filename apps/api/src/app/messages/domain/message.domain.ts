@@ -20,7 +20,7 @@ export class Message {
     @Column({ name: 'is_pinned', nullable: false, default: false })
     isPinned: boolean;
 
-    @Column({ name: 'is_deleted', nullable: false, default: false })
+    @Column({ name: 'is_deleted', default: false })
     isDeleted: boolean;
 
     @CreateDateColumn({ name: 'created_at', nullable: false })
