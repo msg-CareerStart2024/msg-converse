@@ -1,7 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-
 import { Socket } from 'socket.io-client';
-import { SocketEvent } from '../../types/socket/SocketEvent.enum';
 
 let getActiveSocket: () => Socket | null;
 export const registerSocketInstance = (_getActiveSocket: () => Socket | null) => {
@@ -16,7 +14,7 @@ export const socketApi = createApi({
             queryFn: channelId => {
                 const activeSocket = getActiveSocket();
                 if (activeSocket) {
-                    activeSocket.emit(SocketEvent.JOIN_CHANNEL_CHAT, channelId);
+                    activeSocket.emit('joinChannelChat', channelId);
                     return { data: undefined };
                 }
                 return { error: { status: 'CUSTOM_ERROR', error: 'No active socket connection' } };
@@ -26,7 +24,7 @@ export const socketApi = createApi({
             queryFn: channelId => {
                 const activeSocket = getActiveSocket();
                 if (activeSocket) {
-                    activeSocket.emit(SocketEvent.LEAVE_CHANNEL_CHAT, channelId);
+                    activeSocket.emit('leaveChannelChat', channelId);
                     return { data: undefined };
                 }
                 return { error: { status: 'CUSTOM_ERROR', error: 'No active socket connection' } };
