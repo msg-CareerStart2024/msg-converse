@@ -1,13 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-<<<<<<< HEAD:apps/ui/src/app/api/users-api.ts
-import { API_CACHE_TAGS } from '../config/api-tags';
-import getFetchBaseQuery from './fetch-base-query';
-import { API_URLS } from '../config/api-config';
-=======
 import { API_URLS } from '../../config/api-config';
 import { API_CACHE_TAGS } from '../../config/api-tags';
 import getFetchBaseQuery from '../fetch-base-query';
->>>>>>> main:apps/ui/src/app/api/users-api/users-api.ts
 
 export const usersApi = createApi({
     reducerPath: 'usersApi',

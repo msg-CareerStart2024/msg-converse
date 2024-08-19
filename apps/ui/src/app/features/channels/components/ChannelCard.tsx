@@ -73,13 +73,6 @@ const ChannelCard = ({ channel }: ChannelCardProps) => {
                                 </Typography>
                             </Box>
                         </Stack>
-<<<<<<< HEAD
-                        <Link to={`/channels/edit/${channel.id}`}>
-                            <IconButton aria-label="edit">
-                                <EditIcon sx={{ color: 'text.secondary' }} />
-                            </IconButton>
-                        </Link>
-=======
                         <IconButton
                             aria-label="edit"
                             onClick={handleNavigateToEditChannel}
@@ -87,7 +80,6 @@ const ChannelCard = ({ channel }: ChannelCardProps) => {
                         >
                             <EditIcon sx={{ color: 'text.secondary' }} />
                         </IconButton>
->>>>>>> main
                     </Stack>
                     <Stack direction="row" spacing={1} mb={2}>
                         {channel.topics.map(topic => (

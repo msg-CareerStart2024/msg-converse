@@ -1,11 +1,4 @@
 import { Box, Button, Container, Grid, Typography } from '@mui/material';
-<<<<<<< HEAD
-import ChannelCard from '../../channels/components/ChannelCard';
-import { Channel } from '../../../types/channel/channel.types';
-
-import SearchBar from '../../../components/SearchBar';
-import { Link } from 'react-router-dom';
-=======
 import { Channel } from '../../../types/channel/channel.types';
 import ChannelCard from '../../channels/components/ChannelCard';
 
@@ -13,7 +6,6 @@ import { useSelector } from 'react-redux';
 import SearchBar from '../../../components/SearchBar';
 import { RootState } from '../../../store/store';
 import { UserRole } from '../../../types/login/UserRole.enum';
->>>>>>> main
 
 type HomeViewProps = {
     channels: Channel[] | undefined;
@@ -41,13 +33,6 @@ export default function HomeView({
                 >
                     <SearchBar onSearch={onSearch} />
                 </Box>
-<<<<<<< HEAD
-                <Link to="/channels/new">
-                    <Button variant="contained" color="primary">
-                        CREATE CHANNEL
-                    </Button>
-                </Link>
-=======
                 <Button
                     variant="contained"
                     color="primary"
@@ -56,7 +41,6 @@ export default function HomeView({
                 >
                     CREATE CHANNEL
                 </Button>
->>>>>>> main
             </Box>
 
             <Grid container spacing={3} alignItems="stretch">
