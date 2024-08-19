@@ -1,6 +1,6 @@
 import { FetchBaseQueryError, createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-import { SendMessageEventPayload } from '../../types/socket/payloads/SendMessageEventPayload.type';
+import { SendMessageEventPayload } from '../../types/socket/messages-socket.payload';
 import { Socket } from 'socket.io-client';
 import { SocketErrorMessage } from '../../types/socket/SocketErrorMessage.enum';
 import { SocketErrorType } from '../../types/socket/SocketErrorType.enum';
@@ -31,7 +31,6 @@ const emitSocketEvent = <T>(event: SocketEvent, payload?: T) => {
 export const socketApi = createApi({
     reducerPath: 'socketApi',
     baseQuery: fetchBaseQuery(),
-    tagTypes: ['Messages'],
     endpoints: builder => ({
         joinChannelChat: builder.mutation<void, string>({
             queryFn: channelId => emitSocketEvent(SocketEvent.JOIN_CHANNEL_CHAT, channelId)
