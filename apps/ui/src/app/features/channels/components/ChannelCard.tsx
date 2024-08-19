@@ -74,11 +74,7 @@ const ChannelCard = ({ channel }: ChannelCardProps) => {
                             </Box>
                         </Stack>
                         {user?.role === UserRole.ADMIN && (
-                            <IconButton
-                                aria-label="edit"
-                                onClick={handleNavigateToEditChannel}
-                                // disabled={user?.role !== UserRole.ADMIN}
-                            >
+                            <IconButton aria-label="edit" onClick={handleNavigateToEditChannel}>
                                 <EditIcon sx={{ color: 'text.secondary' }} />
                             </IconButton>
                         )}

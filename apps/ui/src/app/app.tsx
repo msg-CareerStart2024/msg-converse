@@ -12,6 +12,10 @@ import ChannelPage from './features/channels/pages/ChannelPage';
 import { useEffect } from 'react';
 import { useLazyGetUserByIdQuery } from './api/users-api/users-api';
 import { useSelector } from 'react-redux';
+import { RootState, store } from './store/store';
+import { setCredentials, clearCredentials } from './features/login/slices/auth-slice';
+import { darkTheme, lightTheme } from './lib/themes';
+import { DecodedPayload } from './types/login/DecodedPayload.types';
 
 export function App() {
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
