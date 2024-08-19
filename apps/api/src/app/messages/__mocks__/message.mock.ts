@@ -11,7 +11,8 @@ export const mockMessageCreateDto: CreateMessageDTO = {
 
 export const mockMessageUpdateDto: UpdateMessageDTO = {
     content: 'updated',
-    isPinned: true
+    isPinned: true,
+    isDeleted: false
 };
 
 export const mockMessages: Message[] = [
@@ -20,6 +21,7 @@ export const mockMessages: Message[] = [
         content: 'message',
         createdAt: new Date('2024-08-13 08:38:10.94152'),
         isPinned: false,
+        isDeleted: false,
         user: {
             id: 'd832f104-9f27-49c4-b53f-46a67b8c8449',
             email: 'user@gmail.com',
@@ -43,6 +45,7 @@ export const mockMessages: Message[] = [
         content: 'updated',
         createdAt: new Date('2024-08-13 08:38:10.94152'),
         isPinned: true,
+        isDeleted: false,
         user: {
             id: 'd832f104-9f27-49c4-b53f-46a67b8c8449',
             email: 'user@gmail.com',
