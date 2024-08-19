@@ -28,16 +28,14 @@ export const channelsApi = createApi({
                 url: `${id}/join`,
                 method: 'PUT'
             }),
-            invalidatesTags: (_, error) =>
-                error ? [] : [API_CACHE_TAGS.CHANNELS, API_CACHE_TAGS.JOINED_CHANNELS]
+            invalidatesTags: (_, error) => (error ? [] : [API_CACHE_TAGS.JOINED_CHANNELS])
         }),
         leaveChannel: builder.mutation<void, string>({
             query: id => ({
                 url: `${id}/leave`,
                 method: 'PUT'
             }),
-            invalidatesTags: (_, error) =>
-                error ? [] : [API_CACHE_TAGS.CHANNELS, API_CACHE_TAGS.JOINED_CHANNELS]
+            invalidatesTags: (_, error) => (error ? [] : [API_CACHE_TAGS.JOINED_CHANNELS])
         }),
         createChannel: builder.mutation<Channel, ChannelDTO>({
             query: channel => ({
