@@ -26,8 +26,6 @@ async function bootstrap() {
         .addBearerAuth()
         .build();
 
-    app.useWebSocketAdapter(new IoAdapter(app));
-
     const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
     SwaggerModule.setup('api', app, swaggerDocument);
 
