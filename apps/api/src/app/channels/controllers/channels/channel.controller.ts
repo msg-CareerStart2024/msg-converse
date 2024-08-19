@@ -167,7 +167,6 @@ export class ChannelController {
     }
 
     @Post(':channelId/enroll')
-    @Roles([Role.ADMIN, Role.USER])
     @ApiOperation({
         summary: 'Join a channel',
         description: 'Join a specific channel to participate in discussions.'
