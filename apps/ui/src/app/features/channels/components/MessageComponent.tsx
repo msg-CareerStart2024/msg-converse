@@ -1,9 +1,10 @@
-import { Avatar, Box, ListItemText, Menu, MenuItem, useTheme } from '@mui/material';
+import { Avatar, Box, ListItemText, MenuItem, useTheme } from '@mui/material';
 import { Message, MessageComponentProps } from '../../../types/messages/Message.types';
 import { getColor } from '../../../lib/avatar-colors';
 import { UserRole } from '../../../types/login/UserRole.enum';
 import { User } from '../../../types/login/User.types';
-import { MouseEvent, useState } from 'react';
+import HoverMenu from 'material-ui-popup-state/HoverMenu';
+import { bindHover, bindMenu, usePopupState } from 'material-ui-popup-state/hooks';
 import DeleteIcon from '@mui/icons-material/Delete';
 import RestoreIcon from '@mui/icons-material/Restore';
 
@@ -20,9 +21,6 @@ const MessageComponent: React.FC<UnifiedMessageProps> = ({
     currentUser,
     handleChangeDeletionStatus
 }) => {
-    const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-    const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
-
     const theme = useTheme();
     const firstNameInitial: string = message.user.firstName[0].toUpperCase();
     const isSent: boolean = message.user.id === currentUser.id;
@@ -41,19 +39,14 @@ const MessageComponent: React.FC<UnifiedMessageProps> = ({
         padding: 1,
         paddingX: 2,
         textAlign: isSent ? 'left' : 'right',
-        position: 'relative'
+        position: 'relative',
+        marginBottom: 1
     };
 
-    const handleMenuOpen = (event: MouseEvent<HTMLElement>, message: Message) => {
-        setAnchorEl(event.currentTarget);
-        setSelectedMessage(message);
-    };
-
-    const handleMenuClose = () => {
-        setAnchorEl(null);
-        setSelectedMessage(null);
-        console.log('exit');
-    };
+    const popupState = usePopupState({
+        variant: 'popover',
+        popupId: 'messageMenu'
+    });
 
     return (
         <Box
@@ -67,11 +60,7 @@ const MessageComponent: React.FC<UnifiedMessageProps> = ({
             <Avatar variant="circular" sx={avatarStyle} onMouseLeave={() => console.log('left')}>
                 {firstNameInitial}
             </Avatar>
-            <Box
-                sx={messageBoxStyle}
-                onMouseEnter={event => handleMenuOpen(event, message)}
-                onMouseOut={() => handleMenuClose}
-            >
+            <Box sx={messageBoxStyle} {...bindHover(popupState)}>
                 <ListItemText
                     primary={
                         !isDeleted
@@ -84,50 +73,40 @@ const MessageComponent: React.FC<UnifiedMessageProps> = ({
                     }
                 />
 
-                <Menu
-                    anchorEl={anchorEl}
-                    open={
-                        Boolean(anchorEl) &&
-                        selectedMessage === message &&
-                        currentUser.role === UserRole.ADMIN
-                    }
-                    onClose={handleMenuClose}
-                    onMouseLeave={handleMenuClose}
-                    MenuListProps={{
-                        sx: {
-                            display: 'flex',
-                            flexDirection: 'row'
-                        }
-                    }}
-                    hideBackdrop
-                    disableScrollLock
+                <HoverMenu
+                    {...bindMenu(popupState)}
+                    sx={{ display: 'flex', flexDirection: 'row' }}
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                    transformOrigin={{ vertical: 'top', horizontal: 'center' }}
                 >
-                    {!isDeleted ? (
-                        <MenuItem
-                            onClick={() =>
-                                handleChangeDeletionStatus(message.id, {
-                                    content: message.content,
-                                    isPinned: message.isPinned,
-                                    isDeleted
-                                })
-                            }
-                        >
-                            <DeleteIcon />
-                        </MenuItem>
-                    ) : (
-                        <MenuItem
-                            onClick={() =>
-                                handleChangeDeletionStatus(message.id, {
-                                    content: message.content,
-                                    isPinned: message.isPinned,
-                                    isDeleted
-                                })
-                            }
-                        >
-                            <RestoreIcon />
-                        </MenuItem>
-                    )}
-                </Menu>
+                    <Box sx={{ display: 'flex' }}>
+                        {!isDeleted ? (
+                            <MenuItem
+                                onClick={() =>
+                                    handleChangeDeletionStatus(message.id, {
+                                        content: message.content,
+                                        isPinned: message.isPinned,
+                                        isDeleted
+                                    })
+                                }
+                            >
+                                <DeleteIcon />
+                            </MenuItem>
+                        ) : (
+                            <MenuItem
+                                onClick={() =>
+                                    handleChangeDeletionStatus(message.id, {
+                                        content: message.content,
+                                        isPinned: message.isPinned,
+                                        isDeleted
+                                    })
+                                }
+                            >
+                                <RestoreIcon />
+                            </MenuItem>
+                        )}
+                    </Box>
+                </HoverMenu>
             </Box>
         </Box>
     );
