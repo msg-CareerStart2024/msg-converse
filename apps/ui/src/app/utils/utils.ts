@@ -1,4 +1,5 @@
 import { jwtDecode, JwtPayload } from 'jwt-decode';
+import { darkTheme, lightTheme } from '../lib/themes';
 
 /**
  * Shrinks a string to a specified number of words.
@@ -66,4 +67,21 @@ export const addBearerAuthHeader = (headers: Headers) => {
         headers.set('Authorization', `Bearer ${token}`);
     }
     return headers;
+};
+
+/**
+ * Returns the Theme, using the redux slice.
+ */
+export const getTheme = (theme: 'dark' | 'light' | 'system', prefersDarkMode: boolean) => {
+    if (theme === 'dark') {
+        return darkTheme;
+    }
+    if (theme === 'light') {
+        return lightTheme;
+    }
+
+    if (prefersDarkMode) {
+        return darkTheme;
+    }
+    return lightTheme;
 };
