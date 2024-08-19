@@ -1,4 +1,3 @@
-import SendIcon from '@mui/icons-material/Send';
 import {
     Alert,
     Box,
@@ -14,6 +13,7 @@ import {
     Typography
 } from '@mui/material';
 import { useCallback, useEffect, useRef, useState } from 'react';
+
 import MessageComponent from './MessageComponent';
 import { RootState } from '../../../store/store';
 import SendIcon from '@mui/icons-material/Send';
