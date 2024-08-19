@@ -20,6 +20,9 @@ const MessageComponent: React.FC<UnifiedMessageProps> = ({
     currentUser,
     handleChangeDeletionStatus
 }) => {
+    const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+    const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
+
     const theme = useTheme();
     const firstNameInitial: string = message.user.firstName[0].toUpperCase();
     const isSent: boolean = message.user.id === currentUser.id;
@@ -37,19 +40,17 @@ const MessageComponent: React.FC<UnifiedMessageProps> = ({
         borderRadius: '20px',
         padding: 1,
         paddingX: 2,
-        textAlign: isSent ? 'left' : 'right'
+        textAlign: isSent ? 'left' : 'right',
+        position: 'relative'
     };
 
-    const [anchorElement, setAnchorElement] = useState<HTMLElement | null>(null);
-    const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
-
     const handleMenuOpen = (event: MouseEvent<HTMLElement>, message: Message) => {
-        setAnchorElement(event.currentTarget);
+        setAnchorEl(event.currentTarget);
         setSelectedMessage(message);
     };
 
     const handleMenuClose = () => {
-        setAnchorElement(null);
+        setAnchorEl(null);
         setSelectedMessage(null);
     };
 
@@ -62,7 +63,7 @@ const MessageComponent: React.FC<UnifiedMessageProps> = ({
                 justifyContent: isSent ? 'flex-end' : 'flex-start'
             }}
         >
-            <Avatar variant="circular" sx={avatarStyle}>
+            <Avatar variant="circular" sx={avatarStyle} onMouseLeave={() => console.log('left')}>
                 {firstNameInitial}
             </Avatar>
             <Box
@@ -82,14 +83,17 @@ const MessageComponent: React.FC<UnifiedMessageProps> = ({
                     }
                 />
                 <Menu
-                    anchorEl={anchorElement}
+                    anchorEl={anchorEl}
                     open={
-                        Boolean(anchorElement) &&
+                        Boolean(anchorEl) &&
                         selectedMessage === message &&
                         currentUser.role === UserRole.ADMIN
                     }
                     onClose={handleMenuClose}
-                    MenuListProps={{ sx: { display: 'flex', flexDirection: 'row' } }}
+                    MenuListProps={{
+                        sx: { display: 'flex', flexDirection: 'row' }
+                    }}
+                    disableScrollLock
                 >
                     {!isDeleted ? (
                         <MenuItem
