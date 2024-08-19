@@ -1,4 +1,3 @@
-import SendIcon from '@mui/icons-material/Send';
 import {
     Alert,
     Box,
@@ -24,9 +23,12 @@ import { User } from '../../../types/login/User.types';
 import { useGetChannelByIdQuery } from '../../../api/channels-api/channels-api';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useChannelSocket } from '../hooks/useChannelSocket';
 
 export default function ChannelComponent() {
     const { id: channelId } = useParams<string>();
+
+    useChannelSocket(channelId as string);
 
     const {
         data: messages,

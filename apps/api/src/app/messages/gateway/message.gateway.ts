@@ -11,6 +11,13 @@ import { Server, Socket } from 'socket.io';
 import { SocketEvent } from '../enum/socket-event.enum';
 import { UserService } from '../../users/service/user.service';
 import { JwtService } from '@nestjs/jwt';
+import { User } from '../../users/domain/user.domain';
+
+declare module 'socket.io' {
+    interface Socket {
+        user?: User;
+    }
+}
 
 @WebSocketGateway()
 export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
@@ -38,7 +45,9 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
         }
 
         try {
-            await this.jwtService.verifyAsync(token);
+            const data = await this.jwtService.verifyAsync(token);
+            client.user = await this.userService.getById(data.sub);
+            console.log(client);
             this.logger.log(`Client connected: ${client.id}`);
         } catch (error) {
             this.logger.error(
