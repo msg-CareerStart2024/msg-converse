@@ -1,5 +1,4 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
-
 import { authApi } from '../api/auth-api/auth-api';
 import authReducer from '../features/login/slices/auth-slice';
 import { channelsApi } from '../api/channels-api/channels-api';
@@ -17,6 +16,13 @@ const rootReducer = combineReducers({
     [socketApi.reducerPath]: socketApi.reducer
 });
 
+const rootReducer = combineReducers({
+    auth: authReducer,
+    [authApi.reducerPath]: authApi.reducer,
+    [usersApi.reducerPath]: usersApi.reducer,
+    [channelsApi.reducerPath]: channelsApi.reducer,
+    [messagesApi.reducerPath]: messagesApi.reducer
+});
 export const store = configureStore({
     reducer: rootReducer,
     middleware: getDefaultMiddleware =>
