@@ -1,6 +1,7 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { authApi } from '../api/auth-api/auth-api';
 import authReducer from '../features/login/slices/auth-slice';
+import channelMessagesSlice from '../features/channels/slices/channel-messages-slice';
 import { channelsApi } from '../api/channels-api/channels-api';
 import { messagesApi } from '../api/messages-api/messages-api';
 import { setupListeners } from '@reduxjs/toolkit/query';
@@ -15,7 +16,8 @@ const rootReducer = combineReducers({
     [usersApi.reducerPath]: usersApi.reducer,
     [channelsApi.reducerPath]: channelsApi.reducer,
     [messagesApi.reducerPath]: messagesApi.reducer,
-    [socketApi.reducerPath]: socketApi.reducer
+    [socketApi.reducerPath]: socketApi.reducer,
+    channelMessages: channelMessagesSlice
 });
 
 export const store = configureStore({

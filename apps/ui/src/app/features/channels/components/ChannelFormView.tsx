@@ -6,12 +6,12 @@ import {
     UseFormRegister,
     UseFormSetValue
 } from 'react-hook-form';
-import { Topic } from '../../../types/channel/Topic.types';
-import { ChannelFormValues } from '../schemas/ChannelFormValues.schema';
-import ActionButtonView from './ActionButtonView';
-import TopicsView from './TopicsView';
 
+import ActionButtonView from './ActionButtonView';
 import { CHANNEL_FORM_ACTION_TYPE } from '../../../types/channel/ChannelFormActionType.enums';
+import { ChannelFormValues } from '../schemas/ChannelFormValues.schema';
+import { Topic } from '../../../types/channel/Topic.types';
+import TopicsView from './TopicsView';
 import { User } from '../../../types/login/User.types';
 import { UserRole } from '../../../types/login/UserRole.enum';
 
