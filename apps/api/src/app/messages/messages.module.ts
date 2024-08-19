@@ -7,10 +7,11 @@ import { MessageMapper } from './mapper/message.mapper';
 import { MessagesController } from './controller/message.controller';
 import { ChannelsModule } from '../channels/channels.module';
 import { UsersModule } from '../users/user.module';
+import { MessageGateway } from './gateway/message.gateway';
 
 @Module({
     imports: [TypeOrmModule.forFeature([Message]), ChannelsModule, UsersModule],
-    providers: [MessageMapper, MessageRepository, MessageService],
+    providers: [MessageMapper, MessageRepository, MessageService, MessageGateway],
     controllers: [MessagesController]
 })
 export class MessagesModule {}
