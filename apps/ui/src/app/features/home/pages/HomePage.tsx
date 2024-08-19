@@ -18,7 +18,7 @@ export default function HomePage() {
 
     return (
         <HomeView
-            channels={searchTerm.length > 0 ? channels?.slice(0, 3) : channels}
+            channels={channels}
             onSearch={handleSearch}
             handleNavigateToCreateChannel={handleNavigateToCreateChannel}
         />

@@ -1,5 +1,4 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-
 import { Socket } from 'socket.io-client';
 
 let getActiveSocket: () => Socket | null;
