@@ -20,6 +20,7 @@ type ChannelFormProps = {
     register: UseFormRegister<ChannelFormValues>;
     errors: FieldErrors<ChannelFormValues>;
     isSubmitting: boolean;
+    isValid: boolean;
     isEditForm: boolean;
     getValues: UseFormGetValues<{
         name: string;
@@ -46,6 +47,7 @@ export default function ChannelFormView({
     register,
     errors,
     isSubmitting,
+    isValid,
     isEditForm,
     getValues,
     setValue,
@@ -89,14 +91,20 @@ export default function ChannelFormView({
                                 <ActionButtonView
                                     action={CHANNEL_FORM_ACTION_TYPE.UPDATE_CHANNEL}
                                     handleAction={handleSubmit(onUpdate)}
-                                    disabled={isSubmitting || currentUser.role !== UserRole.ADMIN}
+                                    disabled={
+                                        isSubmitting ||
+                                        !isValid ||
+                                        currentUser.role !== UserRole.ADMIN
+                                    }
                                 />
                             </>
                         ) : (
                             <ActionButtonView
                                 action={CHANNEL_FORM_ACTION_TYPE.CREATE_CHANNEL}
                                 handleAction={handleSubmit(onCreate)}
-                                disabled={isSubmitting || currentUser.role !== UserRole.ADMIN}
+                                disabled={
+                                    isSubmitting || !isValid || currentUser.role !== UserRole.ADMIN
+                                }
                             />
                         )}
                     </Box>

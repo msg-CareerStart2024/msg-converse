@@ -101,9 +101,10 @@ export default function ChannelPage() {
         register,
         setValue,
         getValues,
-        formState: { errors }
+        formState: { errors, isValid }
     } = useForm<ChannelFormValues>({
-        resolver: zodResolver(ChannelFormSchema)
+        resolver: zodResolver(ChannelFormSchema),
+        mode: 'onChange'
     });
 
     useEffect(() => {
@@ -148,6 +149,7 @@ export default function ChannelPage() {
             handleSubmit={handleSubmit}
             errors={errors}
             isSubmitting={false}
+            isValid={isValid}
             isEditForm={!!id}
             getValues={getValues}
             setValue={setValue}
