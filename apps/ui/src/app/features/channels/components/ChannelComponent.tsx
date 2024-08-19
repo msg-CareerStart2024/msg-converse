@@ -12,11 +12,7 @@ import {
     TextField,
     Typography
 } from '@mui/material';
-import { ChangeEvent, FormEvent, useCallback, useEffect, useRef, useState } from 'react';
-import {
-    useCreateMessageMutation,
-    useGetMessagesByChannelIdQuery
-} from '../../../api/messages-api/messages-api';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import MessageComponent from './MessageComponent';
 import { RootState } from '../../../store/store';
@@ -56,13 +52,9 @@ const ChannelComponent: React.FC = () => {
         };
     }, [handleOnlineStatus]);
 
-    const scrollToBottom = () => {
-        setTimeout(() => {
-            if (messagesEndRef.current) {
-                messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
-            }
-        }, 100);
-    };
+    const scrollToBottom = useCallback(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, []);
 
     useEffect(() => {
         if (channelMessages.length > 0) {
