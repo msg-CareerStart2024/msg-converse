@@ -16,7 +16,9 @@ const ChannelSocketContext = createContext<ChannelSocketContextType>({
 
 export const useChatSocket = () => useContext(ChannelSocketContext);
 
-type ChannelSocketProviderProps = React.PropsWithChildren<Record<never, never>>;
+type ChannelSocketProviderProps = {
+    children: React.ReactNode;
+};
 
 export const ChannelSocketProvider: React.FC<ChannelSocketProviderProps> = ({ children }) => {
     const [activeSocket, setActiveSocket] = useState<Socket | null>(null);

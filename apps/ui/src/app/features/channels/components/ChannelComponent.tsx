@@ -12,7 +12,11 @@ import {
     TextField,
     Typography
 } from '@mui/material';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, FormEvent, useCallback, useEffect, useRef, useState } from 'react';
+import {
+    useCreateMessageMutation,
+    useGetMessagesByChannelIdQuery
+} from '../../../api/messages-api/messages-api';
 
 import MessageComponent from './MessageComponent';
 import { RootState } from '../../../store/store';
@@ -26,7 +30,7 @@ import { useSelector } from 'react-redux';
 const ChannelComponent: React.FC = () => {
     const { id: channelId } = useParams<{ id: string }>();
     const [writtenMessage, setWrittenMessage] = useState('');
-    const lastMessageRef = useRef<HTMLLIElement>(null);
+    const messagesEndRef = useRef<HTMLLIElement>(null);
     const [isOffline, setIsOffline] = useState(!navigator.onLine);
 
     const { channelMessages, sendChannelMessage } = useChannelSocket(channelId as string);
@@ -52,9 +56,13 @@ const ChannelComponent: React.FC = () => {
         };
     }, [handleOnlineStatus]);
 
-    const scrollToBottom = useCallback(() => {
-        lastMessageRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, []);
+    const scrollToBottom = () => {
+        setTimeout(() => {
+            if (messagesEndRef.current) {
+                messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+            }
+        }, 100);
+    };
 
     useEffect(() => {
         if (channelMessages.length > 0) {
@@ -109,7 +117,7 @@ const ChannelComponent: React.FC = () => {
                             {channelMessages.map((message, index) => (
                                 <ListItem
                                     ref={
-                                        index === channelMessages.length - 1 ? lastMessageRef : null
+                                        index === channelMessages.length - 1 ? messagesEndRef : null
                                     }
                                     key={message.id}
                                     sx={{
