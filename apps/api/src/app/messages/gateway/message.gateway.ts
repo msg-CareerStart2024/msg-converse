@@ -47,7 +47,6 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
         try {
             const data = await this.jwtService.verifyAsync(token);
             client.user = await this.userService.getById(data.sub);
-            console.log(client);
             this.logger.log(`Client connected: ${client.id}`);
         } catch (error) {
             this.logger.error(
