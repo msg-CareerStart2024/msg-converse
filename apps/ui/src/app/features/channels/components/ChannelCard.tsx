@@ -12,21 +12,30 @@ import {
     Stack,
     Typography
 } from '@mui/material';
-import { formatDate, shrinkToWords } from '../../../utils/utils';
+import { useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { useJoinChannelMutation } from '../../../api/channels-api/channels-api';
 import { getColor } from '../../../lib/avatar-colors';
-import { Link } from 'react-router-dom';
-import { useJoinChannelMutation } from '../../../api/channels-api';
+import { RootState } from '../../../store/store';
 import { Channel } from '../../../types/channel/channel.types';
+import { UserRole } from '../../../types/login/UserRole.enum';
+import { formatDate, shrinkToWords } from '../../../utils/utils';
 
 interface ChannelCardProps {
     channel: Channel;
 }
 
 const ChannelCard = ({ channel }: ChannelCardProps) => {
+    const navigate = useNavigate();
     const [joinChannel, { isLoading }] = useJoinChannelMutation();
+    const user = useSelector((state: RootState) => state.auth.user);
 
     const handleJoinChannel = () => {
         joinChannel({ user: '123', channel: channel.id });
+    };
+
+    const handleNavigateToEditChannel = () => {
+        navigate(`/channels/edit/${channel.id}`);
     };
 
     return (
@@ -64,11 +73,21 @@ const ChannelCard = ({ channel }: ChannelCardProps) => {
                                 </Typography>
                             </Box>
                         </Stack>
+<<<<<<< HEAD
                         <Link to={`/channels/edit/${channel.id}`}>
                             <IconButton aria-label="edit">
                                 <EditIcon sx={{ color: 'text.secondary' }} />
                             </IconButton>
                         </Link>
+=======
+                        <IconButton
+                            aria-label="edit"
+                            onClick={handleNavigateToEditChannel}
+                            disabled={user?.role !== UserRole.ADMIN}
+                        >
+                            <EditIcon sx={{ color: 'text.secondary' }} />
+                        </IconButton>
+>>>>>>> main
                     </Stack>
                     <Stack direction="row" spacing={1} mb={2}>
                         {channel.topics.map(topic => (

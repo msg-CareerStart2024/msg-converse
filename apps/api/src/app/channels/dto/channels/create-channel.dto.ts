@@ -14,6 +14,7 @@ import { Transform } from 'class-transformer';
 export class CreateChannelDto {
     @ApiProperty({ example: 'msg Career Start 2024', description: 'The name of the channel' })
     @IsString()
+    @MaxLength(50)
     @Transform(({ value }) => value?.trim())
     name: string;
 
@@ -23,7 +24,7 @@ export class CreateChannelDto {
     })
     @IsString()
     @IsOptional()
-    @MaxLength(150)
+    @MaxLength(250)
     @Transform(({ value }) => value?.trim())
     description?: string;
 

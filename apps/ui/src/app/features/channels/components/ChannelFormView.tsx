@@ -1,6 +1,4 @@
 import { Avatar, Box, Container, Grid, TextField } from '@mui/material';
-import ActionButtonView from './ActionButtonView';
-import TopicsView from './TopicsView';
 import {
     FieldErrors,
     UseFormGetValues,
@@ -10,9 +8,12 @@ import {
 } from 'react-hook-form';
 import { Topic } from '../../../types/channel/Topic.types';
 import { ChannelFormValues } from '../schemas/ChannelFormValues.schema';
+import ActionButtonView from './ActionButtonView';
+import TopicsView from './TopicsView';
 
-import { User } from '../../../types/login/User';
 import { CHANNEL_FORM_ACTION_TYPE } from '../../../types/channel/ChannelFormActionType.enums';
+import { User } from '../../../types/login/User.types';
+import { UserRole } from '../../../types/login/UserRole.enum';
 
 type ChannelFormProps = {
     handleSubmit: UseFormHandleSubmit<ChannelFormValues>;
@@ -83,19 +84,19 @@ export default function ChannelFormView({
                                 <ActionButtonView
                                     action={CHANNEL_FORM_ACTION_TYPE.DELETE_CHANNEL}
                                     handleAction={handleSubmit(onDelete)}
-                                    isSubmitting={isSubmitting}
+                                    disabled={isSubmitting || currentUser.role !== UserRole.ADMIN}
                                 />
                                 <ActionButtonView
                                     action={CHANNEL_FORM_ACTION_TYPE.UPDATE_CHANNEL}
                                     handleAction={handleSubmit(onUpdate)}
-                                    isSubmitting={isSubmitting}
+                                    disabled={isSubmitting || currentUser.role !== UserRole.ADMIN}
                                 />
                             </>
                         ) : (
                             <ActionButtonView
                                 action={CHANNEL_FORM_ACTION_TYPE.CREATE_CHANNEL}
                                 handleAction={handleSubmit(onCreate)}
-                                isSubmitting={isSubmitting}
+                                disabled={isSubmitting || currentUser.role !== UserRole.ADMIN}
                             />
                         )}
                     </Box>
@@ -111,9 +112,7 @@ export default function ChannelFormView({
                                 focused
                                 label="Channel Name"
                                 variant="outlined"
-                                {...register('name', {
-                                    required: 'Channel name is required'
-                                })}
+                                {...register('name')}
                                 error={!!errors.name}
                                 helperText={errors.name?.message}
                             />

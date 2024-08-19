@@ -4,10 +4,10 @@ import { CHANNEL_FORM_ACTION_TYPE } from '../../../types/channel/ChannelFormActi
 type ActionButtonProps = {
     action: CHANNEL_FORM_ACTION_TYPE;
     handleAction: () => void;
-    isSubmitting: boolean;
+    disabled: boolean;
 };
 
-const ActionButtonView: React.FC<ActionButtonProps> = ({ action, handleAction, isSubmitting }) => {
+const ActionButtonView: React.FC<ActionButtonProps> = ({ action, handleAction, disabled }) => {
     const actionType = CHANNEL_FORM_ACTION_TYPE[action];
 
     return (
@@ -22,7 +22,7 @@ const ActionButtonView: React.FC<ActionButtonProps> = ({ action, handleAction, i
                     bgcolor: 'primary.main',
                     '&:hover': { bgcolor: 'primary.dark' }
                 }}
-                disabled={isSubmitting}
+                disabled={disabled}
             >
                 {actionType.replace('_', ' ')}
             </Button>

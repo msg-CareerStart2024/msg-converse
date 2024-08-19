@@ -6,6 +6,8 @@ import { MessageMapper } from '../mapper/message.mapper';
 import { CreateMessageDTO } from '../dto/create-message.dto';
 import { CurrentUserId } from '../../auth/decorators/current-user-id.decorator';
 import { UpdateMessageDTO } from '../dto/update-message.dto';
+import { Roles } from '../../auth/decorators/roles.decorator';
+import { Role } from '../../users/enums/role.enum';
 
 @ApiTags('Messages')
 @ApiBearerAuth()
@@ -27,7 +29,7 @@ export class MessagesController {
         type: [MessageDTO]
     })
     @ApiResponse({ status: 401, description: 'Unauthorized - User not authenticated' })
-    async getByChannel(@Param('channelId') channelId: string) {
+    async getByChannel(@Param('channelId') channelId: string): Promise<MessageDTO[]> {
         const messages = await this.messageService.getByChannel(channelId);
         return messages.map(message => MessageMapper.toDto(message));
     }
@@ -45,7 +47,7 @@ export class MessagesController {
         @CurrentUserId() userId: string,
         @Param('channelId') channelId: string,
         @Body() createMessageDto: CreateMessageDTO
-    ) {
+    ): Promise<MessageDTO> {
         const message = MessageMapper.fromCreateDto(createMessageDto);
         const newMessage = await this.messageService.create(userId, channelId, message);
         return MessageMapper.toDto(newMessage);
@@ -75,6 +77,7 @@ export class MessagesController {
     }
 
     @Delete(':id')
+    @Roles([Role.ADMIN])
     @ApiOperation({
         summary: 'Delete a message'
     })

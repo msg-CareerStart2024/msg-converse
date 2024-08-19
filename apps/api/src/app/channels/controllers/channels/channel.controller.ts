@@ -13,6 +13,8 @@ import { UpdateChannelDto } from '../../dto/channels/update-channel.dto';
 import { ChannelMapper } from '../../mapper/channel.mapper';
 import { ChannelService } from '../../services/channels/channel.service';
 import { CurrentUserId } from '../../../auth/decorators/current-user-id.decorator';
+import { Roles } from '../../../auth/decorators/roles.decorator';
+import { Role } from '../../../users/enums/role.enum';
 
 @ApiTags('Channels')
 @ApiBearerAuth()
@@ -90,6 +92,7 @@ export class ChannelController {
     }
 
     @Post()
+    @Roles([Role.ADMIN])
     @ApiOperation({
         summary: 'Create a new channel',
         description: 'Create a new channel with the provided details.'
@@ -114,6 +117,7 @@ export class ChannelController {
     }
 
     @Put(':channelId')
+    @Roles([Role.ADMIN])
     @ApiOperation({
         summary: 'Update a channel',
         description: 'Update an existing channel with the provided details.'
@@ -143,6 +147,7 @@ export class ChannelController {
     }
 
     @Delete(':channelId')
+    @Roles([Role.ADMIN])
     @ApiOperation({
         summary: 'Delete a channel',
         description: 'Permanently remove a channel from the system.'

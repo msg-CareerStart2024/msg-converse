@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
-import ChannelFormView from '../components/ChannelFormView';
 import { useNavigate, useParams } from 'react-router-dom';
+import ChannelFormView from '../components/ChannelFormView';
 import {
     useCreateChannelMutation,
     useDeleteChannelMutation,
@@ -9,12 +9,13 @@ import {
 } from '../../../api/channels-api';
 import { Typography } from '@mui/material';
 
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
-import { ChannelFormValues } from '../schemas/ChannelFormValues.schema';
-import { Topic } from '../../../types/channel/Topic.types';
-import { RootState } from '../../../store/store';
 import { useSelector } from 'react-redux';
-import { User } from '../../../types/login/User';
+import { RootState } from '../../../store/store';
+import { Topic } from '../../../types/channel/Topic.types';
+import { User } from '../../../types/login/User.types';
+import { ChannelFormSchema, ChannelFormValues } from '../schemas/ChannelFormValues.schema';
 
 export default function ChannelPage() {
     const { id } = useParams<{ id?: string }>();
@@ -101,7 +102,9 @@ export default function ChannelPage() {
         setValue,
         getValues,
         formState: { errors }
-    } = useForm<ChannelFormValues>({});
+    } = useForm<ChannelFormValues>({
+        resolver: zodResolver(ChannelFormSchema)
+    });
 
     useEffect(() => {
         if (data) {
@@ -126,8 +129,8 @@ export default function ChannelPage() {
             return acc;
         }, []);
 
-        if (updatedTopics.length === topics.length) {
-            updatedTopics.push({ id: '', name: newTopicName });
+        if (!updatedTopics.includes({ name: newTopicName, id: '' })) {
+            updatedTopics.push({ name: newTopicName, id: '' });
         }
 
         setTopics(updatedTopics);
