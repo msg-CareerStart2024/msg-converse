@@ -54,6 +54,7 @@ export function App() {
                     <Route path="/channels">
                         <Route path="new" element={<ChannelPage />} />
                         <Route path="edit/:id" element={<ChannelPage />} />
+
                         <Route path=":id" element={<ChannelComponent />} />
                     </Route>
                 </Route>

@@ -6,13 +6,16 @@ import { UpdateMessageDTO } from '../dto/update-message.dto';
 
 export class MessageMapper {
     static toDto(entity: Message): MessageDTO {
-        const { id, content, isPinned, createdAt, user } = entity;
+        const { isDeleted } = entity;
         return {
-            id,
-            content,
-            isPinned,
-            createdAt,
-            user: UserMapper.toDTO(user)
+            id: entity.id,
+            content: !isDeleted
+                ? entity.content
+                : 'This message was removed by a Board Administrator',
+            isPinned: entity.isPinned,
+            isDeleted: isDeleted,
+            createdAt: entity.createdAt,
+            user: UserMapper.toDTO(entity.user)
         };
     }
 
@@ -22,6 +25,7 @@ export class MessageMapper {
             id: undefined,
             content,
             isPinned: false,
+            isDeleted: false,
             createdAt: undefined,
             user: undefined,
             channel: undefined
@@ -29,7 +33,15 @@ export class MessageMapper {
     }
 
     static fromUpdateDto(id: string, updateMessageDto: UpdateMessageDTO): Message {
-        const { content, isPinned } = updateMessageDto;
-        return { id, content, isPinned, createdAt: undefined, user: undefined, channel: undefined };
+        const { content, isPinned, isDeleted } = updateMessageDto;
+        return {
+            id,
+            content,
+            isPinned,
+            isDeleted,
+            createdAt: undefined,
+            user: undefined,
+            channel: undefined
+        };
     }
 }

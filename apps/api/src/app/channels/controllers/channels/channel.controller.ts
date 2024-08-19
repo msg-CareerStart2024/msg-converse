@@ -166,7 +166,7 @@ export class ChannelController {
         return await this.channelService.delete(channelId);
     }
 
-    @Post(':channelId/enroll')
+    @Put(':channelId/join')
     @ApiOperation({
         summary: 'Join a channel',
         description: 'Join a specific channel to participate in discussions.'
@@ -189,8 +189,7 @@ export class ChannelController {
         return ChannelMapper.toDto(joinedChannel);
     }
 
-    @Post(':channelId/leave')
-    @Roles([Role.ADMIN, Role.USER])
+    @Put(':channelId/leave')
     @ApiOperation({
         summary: 'Leave a channel',
         description: 'Leave a specific channel.'

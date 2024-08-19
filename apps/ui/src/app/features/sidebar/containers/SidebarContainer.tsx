@@ -1,8 +1,9 @@
 import { Typography } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGetJoinedChannelsQuery } from '../../../api/channels-api/channels-api';
 import { store } from '../../../store/store';
+import { setChannels } from '../../channels/slices/channels-slice';
 import { clearCredentials } from '../../login/slices/auth-slice';
 import SidebarView from '../components/SidebarView';
 
@@ -26,8 +27,11 @@ export default function SidebarContainer({ toggleSidebar, sidebarOpen }: Sidebar
         store.dispatch(clearCredentials());
         navigate('/login');
     };
-
     const { data: joinedChannels, isLoading } = useGetJoinedChannelsQuery();
+
+    useEffect(() => {
+        joinedChannels && store.dispatch(setChannels(joinedChannels));
+    }, [joinedChannels]);
 
     if (isLoading) {
         return <Typography>My channels are loading..</Typography>;
