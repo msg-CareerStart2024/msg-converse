@@ -5,7 +5,6 @@ import { channelsApi } from '../api/channels-api/channels-api';
 import { messagesApi } from '../api/messages-api/messages-api';
 import { socketApi } from '../api/socket-api/socket-api';
 import { usersApi } from '../api/users-api/users-api';
-import channelMessagesSlice from '../features/channels/slices/channel-messages-slice';
 import channelsReducer from '../features/channels/slices/channels-slice';
 import authReducer from '../features/login/slices/auth-slice';
 import themeReducer from '../features/sidebar/slices/theme-slice';
@@ -18,8 +17,7 @@ const rootReducer = combineReducers({
     [usersApi.reducerPath]: usersApi.reducer,
     [channelsApi.reducerPath]: channelsApi.reducer,
     [messagesApi.reducerPath]: messagesApi.reducer,
-    [socketApi.reducerPath]: socketApi.reducer,
-    channelMessages: channelMessagesSlice
+    [socketApi.reducerPath]: socketApi.reducer
 });
 
 export const store = configureStore({
