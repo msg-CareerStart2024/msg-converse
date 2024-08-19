@@ -13,16 +13,17 @@ import {
     Typography
 } from '@mui/material';
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
-import { useGetChannelByIdQuery } from '../../../api/channels-api/channels-api';
 import {
     useCreateMessageMutation,
     useGetMessagesByChannelIdQuery
 } from '../../../api/messages-api/messages-api';
-import { RootState } from '../../../store/store';
-import { User } from '../../../types/login/User.types';
 import MessageComponent from './MessageComponent';
+import { RootState } from '../../../store/store';
+import SendIcon from '@mui/icons-material/Send';
+import { User } from '../../../types/login/User.types';
+import { useGetChannelByIdQuery } from '../../../api/channels-api/channels-api';
+import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 export default function ChannelComponent() {
     const { id: channelId } = useParams<string>();

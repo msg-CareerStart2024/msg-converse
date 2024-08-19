@@ -1,4 +1,4 @@
-import { User } from '../login/User';
+import { User } from '../login/User.types';
 
 export interface Message {
     id: string;

@@ -11,6 +11,9 @@ export class MessageDTO {
     @ApiProperty({ description: 'The pinned status of the message' })
     isPinned: boolean;
 
+    @ApiProperty({ description: 'The deletion status of the message' })
+    isDeleted: boolean;
+
     @ApiProperty({ description: 'The date when the message was created' })
     createdAt: Date;
 

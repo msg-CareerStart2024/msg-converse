@@ -32,6 +32,7 @@ export class MessageService {
         const newMessage: Message = new Message();
         newMessage.content = messageData.content;
         newMessage.isPinned = false;
+        newMessage.isDeleted = false;
         newMessage.user = user;
         newMessage.channel = channel;
 
@@ -47,6 +48,7 @@ export class MessageService {
 
         existingMessage.content = messageData.content;
         existingMessage.isPinned = messageData.isPinned;
+        existingMessage.isDeleted = messageData.isDeleted;
 
         return this.messageRepository.update(existingMessage);
     }
