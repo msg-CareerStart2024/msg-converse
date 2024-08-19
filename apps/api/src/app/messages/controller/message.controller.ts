@@ -54,10 +54,11 @@ export class MessagesController {
     }
 
     @Put(':id')
+    @Roles([Role.ADMIN])
     @ApiOperation({ summary: 'Update a message' })
     @ApiParam({
         name: 'id',
-        description: 'ID of the message to update'
+        description: 'ID of the message to be updated'
     })
     @ApiResponse({
         status: 200,
@@ -72,8 +73,8 @@ export class MessagesController {
         @Body() updateMessageDto: UpdateMessageDTO
     ): Promise<MessageDTO> {
         const updateData = MessageMapper.fromUpdateDto(id, updateMessageDto);
-        const updatedChannel = await this.messageService.update(id, updateData);
-        return MessageMapper.toDto(updatedChannel);
+        const updatedMessage = await this.messageService.update(id, updateData);
+        return MessageMapper.toDto(updatedMessage);
     }
 
     @Delete(':id')
@@ -83,7 +84,7 @@ export class MessagesController {
     })
     @ApiParam({
         name: 'id',
-        description: 'ID of the message thas to be deleted'
+        description: 'ID of the message to be deleted'
     })
     async remove(@Param('id') id: string): Promise<void> {
         await this.messageService.remove(id);
