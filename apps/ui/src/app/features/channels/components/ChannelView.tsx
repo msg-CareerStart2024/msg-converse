@@ -12,80 +12,76 @@ import {
     TextField,
     Typography
 } from '@mui/material';
-import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
-import { useGetChannelByIdQuery } from '../../../api/channels-api/channels-api';
-import {
-    useCreateMessageMutation,
-    useGetMessagesByChannelIdQuery,
-    useUpdateMessageMutation
-} from '../../../api/messages-api/messages-api';
-import { RootState } from '../../../store/store';
-import { User } from '../../../types/login/User.types';
-import MessageComponent from './MessageComponent';
+import { FormEvent, useCallback, useEffect, useRef } from 'react';
 import { Message } from '../../../types/messages/Message.types';
+import { Channel } from '../../../types/channel/channel.types';
+import { User } from '../../../types/login/User.types';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
+import { SerializedError } from '@reduxjs/toolkit';
+import MessageContainer from './MessageContainer';
+import { fromEvent } from 'rxjs';
+import { debounceTime, map } from 'rxjs/operators';
 
-export default function ChannelComponent() {
-    const { id: channelId } = useParams<string>();
-
-    const {
-        data: messages,
-        isLoading: isLoadingMessages,
-        error: errorMessages
-    } = useGetMessagesByChannelIdQuery(channelId as string);
-    const [createMessage] = useCreateMessageMutation();
-    const [updateMessage] = useUpdateMessageMutation();
-
-    const {
-        data: channel,
-        isLoading: isLoadingChannel,
-        error: errorChannel
-    } = useGetChannelByIdQuery(channelId as string);
-
-    const currentUser: User = useSelector((state: RootState) => state.auth.user) as User;
-
-    const [writtenMessage, setWrittenMessage] = useState<string>('');
-    const messagesEndRef = useRef<HTMLDivElement>(null);
-
-    const handleMessageChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setWrittenMessage(event.target.value);
-    };
-
-    const sendMessage = async (event?: FormEvent<HTMLFormElement>) => {
-        if (event) {
-            event.preventDefault();
-        }
-
-        if (writtenMessage) {
-            await createMessage({
-                channelId: channelId as string,
-                messageData: { content: writtenMessage }
-            });
-            setWrittenMessage('');
-        }
-    };
-
-    const handleChangeDeletionStatus = async (
+type ChannelProps = {
+    messages: Message[] | undefined;
+    isLoadingMessages: boolean;
+    errorMessages: FetchBaseQueryError | SerializedError | undefined;
+    channel: Channel | undefined;
+    isLoadingChannel: boolean;
+    errorChannel: FetchBaseQueryError | SerializedError | undefined;
+    currentUser: User;
+    setWrittenMessage: React.Dispatch<React.SetStateAction<string>>;
+    sendMessage: (event?: FormEvent<HTMLFormElement>) => void;
+    handleChangeDeletionStatus: (
         id: string,
         messageData: Omit<Message, 'id' | 'createdAt' | 'user'>
-    ) => {
-        const { isDeleted } = messageData;
-        messageData.isDeleted = !isDeleted;
-        await updateMessage({ id, messageData });
-    };
+    ) => void;
+};
 
-    const scrollToBottom = () => {
+export default function ChannelView({
+    messages,
+    isLoadingMessages,
+    errorMessages,
+    channel,
+    isLoadingChannel,
+    errorChannel,
+    currentUser,
+    setWrittenMessage,
+    sendMessage,
+    handleChangeDeletionStatus
+}: ChannelProps) {
+    const messagesEndRef = useRef<HTMLDivElement>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    const scrollToBottom = useCallback(() => {
         setTimeout(() => {
             if (messagesEndRef.current) {
                 messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
             }
         }, 100);
-    };
+    }, []);
 
     useEffect(() => {
         scrollToBottom();
-    }, [messages?.length]);
+    }, [messages?.length, scrollToBottom]);
+
+    useEffect(() => {
+        const inputElement = inputRef.current;
+        if (inputElement) {
+            const subscription = fromEvent(inputElement, 'input')
+                .pipe(
+                    debounceTime(200),
+                    map((event: Event) => (event.target as HTMLInputElement).value)
+                )
+                .subscribe(value => {
+                    setWrittenMessage(value);
+                });
+
+            return () => {
+                subscription.unsubscribe();
+            };
+        }
+    }, [setWrittenMessage, inputRef]);
 
     if (isLoadingMessages || isLoadingChannel) {
         return <Typography>Loading...</Typography>;
@@ -131,7 +127,7 @@ export default function ChannelComponent() {
                                                             : 'flex-start'
                                                 }}
                                             >
-                                                <MessageComponent
+                                                <MessageContainer
                                                     message={message}
                                                     currentUser={currentUser}
                                                     handleChangeDeletionStatus={
@@ -147,10 +143,11 @@ export default function ChannelComponent() {
                                 <form onSubmit={sendMessage} style={{ display: 'flex' }}>
                                     <FormControl fullWidth>
                                         <TextField
+                                            inputRef={inputRef}
                                             label="Type your message"
                                             variant="outlined"
-                                            value={writtenMessage}
-                                            onChange={handleMessageChange}
+                                            // value={writtenMessage}
+                                            // onChange={handleMessageChange}
                                         />
                                     </FormControl>
                                 </form>
