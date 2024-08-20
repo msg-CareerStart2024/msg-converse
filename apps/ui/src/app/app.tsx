@@ -1,4 +1,4 @@
-import { CssBaseline, ThemeProvider, useMediaQuery } from '@mui/material';
+import { CssBaseline, GlobalStyles, ThemeProvider, useMediaQuery } from '@mui/material';
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Route, Routes, useNavigate } from 'react-router-dom';
@@ -13,7 +13,7 @@ import SiderbarLayout from './layouts/SidebarLayout';
 import NotFoundPage from './pages/NotFoundPage';
 import { RootState, store } from './store/store';
 import { DecodedPayload } from './types/login/DecodedPayload.types';
-import { decodeToken, getTheme } from './utils/utils';
+import { decodeToken, getScrollbar, getTheme } from './utils/utils';
 
 export function App() {
     const theme = useSelector((state: RootState) => state.theme);
@@ -47,6 +47,7 @@ export function App() {
     return (
         <ThemeProvider theme={getTheme(theme, prefersDarkMode)}>
             <CssBaseline />
+            <GlobalStyles styles={getScrollbar(theme, prefersDarkMode)} />
             <Routes>
                 <Route element={<SiderbarLayout />} />
                 <Route element={<SiderbarLayout />}>

@@ -95,7 +95,16 @@ const ChannelComponent = () => {
                 {channel?.name}
             </Typography>
             <Paper sx={{ height: '80vh', display: 'flex', flexDirection: 'column' }}>
-                <Box flex={1} overflow="auto" padding={3}>
+                <Box
+                    flex={1}
+                    overflow="auto"
+                    padding={3}
+                    sx={{
+                        '&::-webkit-scrollbar': {
+                            display: 'none'
+                        }
+                    }}
+                >
                     {channelMessages.length === 0 ? (
                         <Box
                             display="flex"
