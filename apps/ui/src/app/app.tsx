@@ -14,8 +14,7 @@ import { useEffect } from 'react';
 import { useLazyGetUserByIdQuery } from './api/users-api/users-api';
 import { useSelector } from 'react-redux';
 import { setCredentials, clearCredentials } from './features/login/slices/auth-slice';
-import { darkTheme, lightTheme } from './lib/themes';
-import { DecodedPayload } from './types/login/DecodedPayload.types';
+import { Toaster } from 'react-hot-toast';
 
 export function App() {
     const theme = useSelector((state: RootState) => state.theme);
@@ -48,6 +47,7 @@ export function App() {
 
     return (
         <ThemeProvider theme={getTheme(theme, prefersDarkMode)}>
+            <Toaster position="bottom-right" />
             <CssBaseline />
             <Routes>
                 <Route element={<SiderbarLayout />} />
