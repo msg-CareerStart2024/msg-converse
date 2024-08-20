@@ -7,7 +7,7 @@ type UnifiedMessageProps = MessageComponentProps & {
     currentUser: User;
     handleChangeDeletionStatus: (
         id: string,
-        messageData: Omit<Message, 'id' | 'createdAt' | 'user'>
+        messageData: Omit<Message, 'id' | 'content' | 'createdAt' | 'user'>
     ) => void;
 };
 
@@ -31,7 +31,6 @@ export default function MessageContainer({
 
     const handleDialogConfirmation = async () => {
         await handleChangeDeletionStatus(message.id, {
-            content: message.content,
             isPinned: message.isPinned,
             isDeleted
         });

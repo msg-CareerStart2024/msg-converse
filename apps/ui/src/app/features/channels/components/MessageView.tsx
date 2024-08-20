@@ -8,7 +8,9 @@ import {
     DialogTitle,
     IconButton,
     ListItemText,
-    MenuItem
+    MenuItem,
+    Tooltip,
+    Typography
 } from '@mui/material';
 import { getColor } from '../../../lib/avatar-colors';
 import { UserRole } from '../../../types/login/UserRole.enum';
@@ -19,6 +21,7 @@ import RestoreIcon from '@mui/icons-material/Restore';
 import { useTheme } from '@mui/material';
 import { Message } from '../../../types/messages/Message.types';
 import { User } from '../../../types/login/User.types';
+import { generateUserName } from '../../../utils/utils';
 
 type MessageProps = {
     message: Message;
@@ -78,9 +81,19 @@ export default function MessageView({
                     justifyContent: isSent ? 'flex-end' : 'flex-start'
                 }}
             >
-                <Avatar variant="circular" sx={avatarStyle}>
-                    {firstNameInitial}
-                </Avatar>
+                <Tooltip
+                    title={
+                        <Typography sx={{ fontSize: '1.25rem' }}>
+                            {generateUserName(message.user.firstName, message.user.lastName)}
+                        </Typography>
+                    }
+                    placement={isSent ? 'right-start' : 'left-start'}
+                    arrow
+                >
+                    <Avatar variant="circular" sx={avatarStyle}>
+                        {firstNameInitial}
+                    </Avatar>
+                </Tooltip>
                 <Box sx={messageBoxStyle} {...bindHover(popupState)}>
                     <ListItemText
                         primary={

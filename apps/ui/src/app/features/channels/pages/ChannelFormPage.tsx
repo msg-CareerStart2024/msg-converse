@@ -1,22 +1,22 @@
-import { useForm } from 'react-hook-form';
-import { useNavigate, useParams } from 'react-router-dom';
-import ChannelFormView from '../components/ChannelFormView';
-
-import { Typography } from '@mui/material';
-
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
     useCreateChannelMutation,
     useDeleteChannelMutation,
     useLazyGetChannelByIdQuery,
     useUpdateChannelMutation
-} from '../../../api/channels-api/channels-api';
+} from '../../../api/channels-api';
 import { RootState } from '../../../store/store';
 import { Topic } from '../../../types/channel/Topic.types';
 import { User } from '../../../types/login/User.types';
+import { capitalizeFirstLetter } from '../../../utils/utils';
+import ChannelFormView from '../components/ChannelFormView';
 import { ChannelFormSchema, ChannelFormValues } from '../schemas/ChannelFormValues.schema';
+import toast from 'react-hot-toast';
 
 export default function ChannelFormPage() {
     const { id } = useParams<{ id?: string }>();
@@ -28,7 +28,7 @@ export default function ChannelFormPage() {
     const [createChannel] = useCreateChannelMutation();
     function onCreate() {
         createChannel({
-            name: getValues('name'),
+            name: capitalizeFirstLetter(getValues('name')).trim(),
             description: getValues('description'),
             topics: topics.map(topic => {
                 return { name: topic.name };
@@ -36,12 +36,11 @@ export default function ChannelFormPage() {
         })
             .unwrap()
             .then(newChannel => {
-                alert('Channel created successfully');
+                toast.success('Channel created successfully.');
                 navigate('/');
             })
             .catch(error => {
-                console.error('Failed to create channel:', error);
-                alert('Failed to create channel');
+                toast.error('Failed to create the channel.');
             });
     }
 
@@ -52,12 +51,11 @@ export default function ChannelFormPage() {
             deleteChannel(channelId)
                 .unwrap()
                 .then(() => {
-                    alert('Channel successfully deleted');
+                    toast.success('Channel deleted successfully.');
                     navigate('/');
                 })
                 .catch(error => {
-                    alert('Failed to delete channel');
-                    console.error('Delete channel error:', error);
+                    toast.error('Failed to delete channel.');
                 });
         }
     }
@@ -65,7 +63,7 @@ export default function ChannelFormPage() {
     const [updateChannel] = useUpdateChannelMutation();
     function onUpdate() {
         const channelData = {
-            name: getValues('name'),
+            name: capitalizeFirstLetter(getValues('name')).trim(),
             description: getValues('description'),
             topics: topics.map(topic => ({
                 name: topic.name
@@ -77,15 +75,14 @@ export default function ChannelFormPage() {
             updateChannel({ id: channelId, partialChannel: channelData })
                 .unwrap()
                 .then(() => {
-                    alert('Channel updated successfully');
+                    toast.success('Channel updated successfully.');
                     navigate('/');
                 })
                 .catch(error => {
-                    alert('Failed to update channel');
-                    console.error('Update channel error:', error);
+                    toast.error('Failed to update the channel.');
                 });
         } else {
-            alert('Channel ID is missing');
+            toast.error('Channel ID is missing');
         }
     }
 
@@ -102,9 +99,10 @@ export default function ChannelFormPage() {
         register,
         setValue,
         getValues,
-        formState: { errors }
+        formState: { errors, isValid }
     } = useForm<ChannelFormValues>({
-        resolver: zodResolver(ChannelFormSchema)
+        resolver: zodResolver(ChannelFormSchema),
+        mode: 'onChange'
     });
 
     useEffect(() => {
@@ -120,7 +118,7 @@ export default function ChannelFormPage() {
     }
 
     const handleAddTopic = () => {
-        const newTopicName = getValues('topics');
+        const newTopicName = getValues('topics').toUpperCase().trim();
         if (!newTopicName) return;
 
         const updatedTopics = topics.reduce<Topic[]>((acc, topic) => {
@@ -130,7 +128,7 @@ export default function ChannelFormPage() {
             return acc;
         }, []);
 
-        if (!updatedTopics.includes({ name: newTopicName, id: '' })) {
+        if (!updatedTopics.includes({ name: newTopicName, id: '' }) && newTopicName !== '') {
             updatedTopics.push({ name: newTopicName, id: '' });
         }
 
@@ -149,9 +147,11 @@ export default function ChannelFormPage() {
             handleSubmit={handleSubmit}
             errors={errors}
             isSubmitting={false}
+            isValid={isValid}
             isEditForm={!!id}
             getValues={getValues}
             setValue={setValue}
+            data={data}
             onCreate={onCreate}
             onDelete={onDelete}
             onUpdate={onUpdate}

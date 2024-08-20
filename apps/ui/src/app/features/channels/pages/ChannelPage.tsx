@@ -1,27 +1,22 @@
-import { FormEvent, useCallback, useState } from 'react';
+import { FormEvent, useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { useGetChannelByIdQuery } from '../../../api/channels-api/channels-api';
-import {
-    useCreateMessageMutation,
-    useGetMessagesByChannelIdQuery,
-    useUpdateMessageMutation
-} from '../../../api/messages-api/messages-api';
+import { useUpdateMessageMutation } from '../../../api/messages-api/messages-api';
 import { RootState } from '../../../store/store';
 import { User } from '../../../types/login/User.types';
 import { Message } from '../../../types/messages/Message.types';
 import ChannelView from '../components/ChannelView';
+import { useChannelSocket } from '../hooks/useChannelSocket';
 
 export default function ChannelPage() {
     const { id: channelId } = useParams<string>();
     const [writtenMessage, setWrittenMessage] = useState<string>('');
+    const [isOffline, setIsOffline] = useState<boolean>(!navigator.onLine);
 
-    const {
-        data: messages,
-        isLoading: isLoadingMessages,
-        error: errorMessages
-    } = useGetMessagesByChannelIdQuery(channelId as string);
-    const [createMessage] = useCreateMessageMutation();
+    const { channelMessages, sendChannelMessage, refetchMessages } = useChannelSocket(
+        channelId as string
+    );
     const [updateMessage] = useUpdateMessageMutation();
 
     const {
@@ -32,21 +27,35 @@ export default function ChannelPage() {
 
     const currentUser: User = useSelector((state: RootState) => state.auth.user) as User;
 
+    const handleOnlineStatus = useCallback(() => {
+        setIsOffline(!navigator.onLine);
+        if (navigator.onLine) {
+            refetchMessages();
+        }
+    }, [refetchMessages]);
+
+    useEffect(() => {
+        window.addEventListener('online', handleOnlineStatus);
+        window.addEventListener('offline', handleOnlineStatus);
+
+        return () => {
+            window.removeEventListener('online', handleOnlineStatus);
+            window.removeEventListener('offline', handleOnlineStatus);
+        };
+    }, [handleOnlineStatus]);
+
     const sendMessage = useCallback(
         async (event?: FormEvent<HTMLFormElement>) => {
             if (event) {
                 event.preventDefault();
             }
 
-            if (writtenMessage) {
-                await createMessage({
-                    channelId: channelId as string,
-                    messageData: { content: writtenMessage }
-                });
+            if (writtenMessage.trim()) {
+                await sendChannelMessage(writtenMessage);
                 setWrittenMessage('');
             }
         },
-        [channelId, writtenMessage, createMessage]
+        [writtenMessage, sendChannelMessage]
     );
 
     const handleMessageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,7 +63,7 @@ export default function ChannelPage() {
     };
 
     const handleChangeDeletionStatus = useCallback(
-        async (id: string, messageData: Omit<Message, 'id' | 'createdAt' | 'user'>) => {
+        async (id: string, messageData: Omit<Message, 'id' | 'content' | 'createdAt' | 'user'>) => {
             const { isDeleted } = messageData;
             messageData.isDeleted = !isDeleted;
             await updateMessage({ id, messageData });
@@ -64,14 +73,13 @@ export default function ChannelPage() {
 
     return (
         <ChannelView
-            messages={messages}
-            isLoadingMessages={isLoadingMessages}
-            errorMessages={errorMessages}
+            channelMessages={channelMessages}
             channel={channel}
             isLoadingChannel={isLoadingChannel}
             errorChannel={errorChannel}
             currentUser={currentUser}
             writtenMessage={writtenMessage}
+            isOffline={isOffline}
             handleMessageChange={handleMessageChange}
             sendMessage={sendMessage}
             handleChangeDeletionStatus={handleChangeDeletionStatus}

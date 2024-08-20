@@ -53,7 +53,7 @@ export const messagesApi = createApi({
 
         updateMessage: builder.mutation<
             Message,
-            { id: string; messageData: Omit<Message, 'id' | 'createdAt' | 'user'> }
+            { id: string; messageData: Omit<Message, 'id' | 'content' | 'createdAt' | 'user'> }
         >({
             query: ({ id, messageData }) => ({
                 url: `${id}`,

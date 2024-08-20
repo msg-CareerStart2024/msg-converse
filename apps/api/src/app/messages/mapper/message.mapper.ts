@@ -9,9 +9,7 @@ export class MessageMapper {
         const { isDeleted } = entity;
         return {
             id: entity.id,
-            content: !isDeleted
-                ? entity.content
-                : 'This message was removed by a Board Administrator',
+            content: entity.content,
             isPinned: entity.isPinned,
             isDeleted: isDeleted,
             createdAt: entity.createdAt,
@@ -33,10 +31,10 @@ export class MessageMapper {
     }
 
     static fromUpdateDto(id: string, updateMessageDto: UpdateMessageDTO): Message {
-        const { content, isPinned, isDeleted } = updateMessageDto;
+        const { isPinned, isDeleted } = updateMessageDto;
         return {
             id,
-            content,
+            content: undefined,
             isPinned,
             isDeleted,
             createdAt: undefined,
