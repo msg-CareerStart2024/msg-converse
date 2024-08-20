@@ -12,17 +12,20 @@ import {
     TextField,
     Typography
 } from '@mui/material';
-import { FormEvent, useCallback, useEffect, useRef } from 'react';
+import { FormEvent, RefObject, useCallback, useEffect, useRef } from 'react';
 import { Message } from '../../../types/messages/Message.types';
 import { Channel } from '../../../types/channel/channel.types';
 import { User } from '../../../types/login/User.types';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { SerializedError } from '@reduxjs/toolkit';
 import MessageContainer from './MessageContainer';
-import { fromEvent } from 'rxjs';
-import { debounceTime, map } from 'rxjs/operators';
 
 type ChannelProps = {
+    inputRef:
+        | ((instance: HTMLDivElement | null) => void)
+        | RefObject<HTMLDivElement>
+        | null
+        | undefined;
     messages: Message[] | undefined;
     isLoadingMessages: boolean;
     errorMessages: FetchBaseQueryError | SerializedError | undefined;
@@ -30,7 +33,7 @@ type ChannelProps = {
     isLoadingChannel: boolean;
     errorChannel: FetchBaseQueryError | SerializedError | undefined;
     currentUser: User;
-    setWrittenMessage: React.Dispatch<React.SetStateAction<string>>;
+    handleMessageChange: () => void;
     sendMessage: (event?: FormEvent<HTMLFormElement>) => void;
     handleChangeDeletionStatus: (
         id: string,
@@ -39,6 +42,7 @@ type ChannelProps = {
 };
 
 export default function ChannelView({
+    inputRef,
     messages,
     isLoadingMessages,
     errorMessages,
@@ -46,12 +50,11 @@ export default function ChannelView({
     isLoadingChannel,
     errorChannel,
     currentUser,
-    setWrittenMessage,
+    handleMessageChange,
     sendMessage,
     handleChangeDeletionStatus
 }: ChannelProps) {
     const messagesEndRef = useRef<HTMLDivElement>(null);
-    const inputRef = useRef<HTMLInputElement>(null);
 
     const scrollToBottom = useCallback(() => {
         setTimeout(() => {
@@ -64,24 +67,6 @@ export default function ChannelView({
     useEffect(() => {
         scrollToBottom();
     }, [messages?.length, scrollToBottom]);
-
-    useEffect(() => {
-        const inputElement = inputRef.current;
-        if (inputElement) {
-            const subscription = fromEvent(inputElement, 'input')
-                .pipe(
-                    debounceTime(200),
-                    map((event: Event) => (event.target as HTMLInputElement).value)
-                )
-                .subscribe(value => {
-                    setWrittenMessage(value);
-                });
-
-            return () => {
-                subscription.unsubscribe();
-            };
-        }
-    }, [setWrittenMessage, inputRef]);
 
     if (isLoadingMessages || isLoadingChannel) {
         return <Typography>Loading...</Typography>;
@@ -143,11 +128,10 @@ export default function ChannelView({
                                 <form onSubmit={sendMessage} style={{ display: 'flex' }}>
                                     <FormControl fullWidth>
                                         <TextField
-                                            inputRef={inputRef}
+                                            ref={inputRef}
                                             label="Type your message"
                                             variant="outlined"
-                                            // value={writtenMessage}
-                                            // onChange={handleMessageChange}
+                                            onChange={handleMessageChange}
                                         />
                                     </FormControl>
                                 </form>

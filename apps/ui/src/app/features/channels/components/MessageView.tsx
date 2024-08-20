@@ -44,6 +44,7 @@ export default function MessageView({
     handleDialogConfirmation
 }: MessageProps) {
     const theme = useTheme();
+    const isCurrentUserAdmin = currentUser.role === UserRole.ADMIN;
     const avatarStyle = {
         marginInline: 2,
         backgroundColor: getColor(firstNameInitial)
@@ -77,11 +78,7 @@ export default function MessageView({
                     justifyContent: isSent ? 'flex-end' : 'flex-start'
                 }}
             >
-                <Avatar
-                    variant="circular"
-                    sx={avatarStyle}
-                    onMouseLeave={() => console.log('left')}
-                >
+                <Avatar variant="circular" sx={avatarStyle}>
                     {firstNameInitial}
                 </Avatar>
                 <Box sx={messageBoxStyle} {...bindHover(popupState)}>
@@ -104,35 +101,36 @@ export default function MessageView({
                         transformOrigin={{ vertical: 'top', horizontal: 'center' }}
                     >
                         <Box sx={{ display: 'flex' }}>
-                            {!isDeleted ? (
-                                <MenuItem
-                                    onClick={handleOpenDialog}
-                                    sx={{
-                                        '&:hover': {
-                                            background: 'none'
-                                        },
-                                        maxHeight: '25px'
-                                    }}
-                                >
-                                    <IconButton>
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </MenuItem>
-                            ) : (
-                                <MenuItem
-                                    onClick={handleOpenDialog}
-                                    sx={{
-                                        '&:hover': {
-                                            background: 'none'
-                                        },
-                                        maxHeight: '25px'
-                                    }}
-                                >
-                                    <IconButton>
-                                        <RestoreIcon />
-                                    </IconButton>
-                                </MenuItem>
-                            )}
+                            {isCurrentUserAdmin &&
+                                (!isDeleted ? (
+                                    <MenuItem
+                                        onClick={handleOpenDialog}
+                                        sx={{
+                                            '&:hover': {
+                                                background: 'none'
+                                            },
+                                            maxHeight: '25px'
+                                        }}
+                                    >
+                                        <IconButton>
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </MenuItem>
+                                ) : (
+                                    <MenuItem
+                                        onClick={handleOpenDialog}
+                                        sx={{
+                                            '&:hover': {
+                                                background: 'none'
+                                            },
+                                            maxHeight: '25px'
+                                        }}
+                                    >
+                                        <IconButton>
+                                            <RestoreIcon />
+                                        </IconButton>
+                                    </MenuItem>
+                                ))}
                         </Box>
                     </HoverMenu>
                 </Box>
