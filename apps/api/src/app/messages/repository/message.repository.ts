@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Message } from '../domain/message.domain';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 
 @Injectable()
 export class MessageRepository {
@@ -23,6 +23,11 @@ export class MessageRepository {
 
     async update(messageData: Message): Promise<Message> {
         return this.messageRepository.save(messageData);
+    }
+
+    async removeByChannelId(channelId: string, manager?: EntityManager): Promise<void> {
+        const repo = manager ? manager.getRepository(Message) : this.messageRepository;
+        await repo.delete({ channel: { id: channelId } });
     }
 
     async remove(id: string): Promise<void> {

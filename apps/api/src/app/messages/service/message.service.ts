@@ -1,15 +1,17 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 
 import { ChannelService } from '../../channels/services/channels/channel.service';
 import { Message } from '../domain/message.domain';
 import { MessageRepository } from '../repository/message.repository';
 import { UserService } from '../../users/service/user.service';
+import { EntityManager } from 'typeorm';
 
 @Injectable()
 export class MessageService {
     constructor(
         private readonly messageRepository: MessageRepository,
         private readonly userService: UserService,
+        @Inject(forwardRef(() => ChannelService))
         private readonly channelService: ChannelService
     ) {}
 
@@ -51,6 +53,10 @@ export class MessageService {
         existingMessage.isDeleted = messageData.isDeleted;
 
         return this.messageRepository.update(existingMessage);
+    }
+
+    async removeByChannelId(channelId: string, manager?: EntityManager): Promise<void> {
+        await this.messageRepository.removeByChannelId(channelId, manager);
     }
 
     async remove(id: string): Promise<void> {
