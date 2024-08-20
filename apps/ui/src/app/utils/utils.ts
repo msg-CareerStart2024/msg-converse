@@ -102,3 +102,13 @@ export const getScrollbar = (theme: 'dark' | 'light' | 'system', prefersDarkMode
     }
     return lightScrollbar;
 };
+
+/**
+ * Capitalizes the first letter of a string.
+ * @param {string} text - Initial text.
+ * @returns {string} - The transformed text.
+ */
+export const capitalizeFirstLetter = (text: string): string => {
+    if (!text) return '';
+    return text.charAt(0).toUpperCase() + text.slice(1);
+};

@@ -1,20 +1,20 @@
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import ChannelFormView from '../components/ChannelFormView';
 import {
     useCreateChannelMutation,
     useDeleteChannelMutation,
     useLazyGetChannelByIdQuery,
     useUpdateChannelMutation
 } from '../../../api/channels-api';
-import { Typography } from '@mui/material';
-
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { RootState } from '../../../store/store';
 import { Topic } from '../../../types/channel/Topic.types';
 import { User } from '../../../types/login/User.types';
+import { capitalizeFirstLetter } from '../../../utils/utils';
+import ChannelFormView from '../components/ChannelFormView';
 import { ChannelFormSchema, ChannelFormValues } from '../schemas/ChannelFormValues.schema';
 import toast from 'react-hot-toast';
 
@@ -28,7 +28,7 @@ export default function ChannelPage() {
     const [createChannel] = useCreateChannelMutation();
     function onCreate() {
         createChannel({
-            name: getValues('name'),
+            name: capitalizeFirstLetter(getValues('name')).trim(),
             description: getValues('description'),
             topics: topics.map(topic => {
                 return { name: topic.name };
@@ -63,7 +63,7 @@ export default function ChannelPage() {
     const [updateChannel] = useUpdateChannelMutation();
     function onUpdate() {
         const channelData = {
-            name: getValues('name'),
+            name: capitalizeFirstLetter(getValues('name')).trim(),
             description: getValues('description'),
             topics: topics.map(topic => ({
                 name: topic.name
@@ -118,7 +118,7 @@ export default function ChannelPage() {
     }
 
     const handleAddTopic = () => {
-        const newTopicName = getValues('topics');
+        const newTopicName = getValues('topics').toUpperCase().trim();
         if (!newTopicName) return;
 
         const updatedTopics = topics.reduce<Topic[]>((acc, topic) => {
@@ -128,7 +128,7 @@ export default function ChannelPage() {
             return acc;
         }, []);
 
-        if (!updatedTopics.includes({ name: newTopicName, id: '' })) {
+        if (!updatedTopics.includes({ name: newTopicName, id: '' }) && newTopicName !== '') {
             updatedTopics.push({ name: newTopicName, id: '' });
         }
 
@@ -151,6 +151,7 @@ export default function ChannelPage() {
             isEditForm={!!id}
             getValues={getValues}
             setValue={setValue}
+            data={data}
             onCreate={onCreate}
             onDelete={onDelete}
             onUpdate={onUpdate}
