@@ -12,7 +12,7 @@ import {
     TextField,
     Typography
 } from '@mui/material';
-import { FormEvent, RefObject, useCallback, useEffect, useRef } from 'react';
+import { FormEvent, useCallback, useEffect, useRef } from 'react';
 import { Message } from '../../../types/messages/Message.types';
 import { Channel } from '../../../types/channel/channel.types';
 import { User } from '../../../types/login/User.types';
@@ -21,11 +21,6 @@ import { SerializedError } from '@reduxjs/toolkit';
 import MessageContainer from './MessageContainer';
 
 type ChannelProps = {
-    inputRef:
-        | ((instance: HTMLDivElement | null) => void)
-        | RefObject<HTMLDivElement>
-        | null
-        | undefined;
     messages: Message[] | undefined;
     isLoadingMessages: boolean;
     errorMessages: FetchBaseQueryError | SerializedError | undefined;
@@ -33,7 +28,8 @@ type ChannelProps = {
     isLoadingChannel: boolean;
     errorChannel: FetchBaseQueryError | SerializedError | undefined;
     currentUser: User;
-    handleMessageChange: () => void;
+    writtenMessage: string;
+    handleMessageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
     sendMessage: (event?: FormEvent<HTMLFormElement>) => void;
     handleChangeDeletionStatus: (
         id: string,
@@ -42,7 +38,6 @@ type ChannelProps = {
 };
 
 export default function ChannelView({
-    inputRef,
     messages,
     isLoadingMessages,
     errorMessages,
@@ -50,6 +45,7 @@ export default function ChannelView({
     isLoadingChannel,
     errorChannel,
     currentUser,
+    writtenMessage,
     handleMessageChange,
     sendMessage,
     handleChangeDeletionStatus
@@ -93,34 +89,28 @@ export default function ChannelView({
                         <Grid container spacing={4} alignItems="center">
                             <Grid item xs={12}>
                                 <List sx={{ height: '65dvh', overflow: 'auto' }}>
-                                    {[...messages]
-                                        .sort(
-                                            (message1, message2) =>
-                                                new Date(message1.createdAt).getTime() -
-                                                new Date(message2.createdAt).getTime()
-                                        )
-                                        .map(message => (
-                                            <ListItem
-                                                key={message.id}
-                                                sx={{
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    padding: 1,
-                                                    justifyContent:
-                                                        message.user.id === currentUser.id
-                                                            ? 'flex-end'
-                                                            : 'flex-start'
-                                                }}
-                                            >
-                                                <MessageContainer
-                                                    message={message}
-                                                    currentUser={currentUser}
-                                                    handleChangeDeletionStatus={
-                                                        handleChangeDeletionStatus
-                                                    }
-                                                />
-                                            </ListItem>
-                                        ))}
+                                    {messages.map(message => (
+                                        <ListItem
+                                            key={message.id}
+                                            sx={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                padding: 1,
+                                                justifyContent:
+                                                    message.user.id === currentUser.id
+                                                        ? 'flex-end'
+                                                        : 'flex-start'
+                                            }}
+                                        >
+                                            <MessageContainer
+                                                message={message}
+                                                currentUser={currentUser}
+                                                handleChangeDeletionStatus={
+                                                    handleChangeDeletionStatus
+                                                }
+                                            />
+                                        </ListItem>
+                                    ))}
                                     <div ref={messagesEndRef} />
                                 </List>
                             </Grid>
@@ -128,9 +118,9 @@ export default function ChannelView({
                                 <form onSubmit={sendMessage} style={{ display: 'flex' }}>
                                     <FormControl fullWidth>
                                         <TextField
-                                            ref={inputRef}
                                             label="Type your message"
                                             variant="outlined"
+                                            value={writtenMessage}
                                             onChange={handleMessageChange}
                                         />
                                     </FormControl>
