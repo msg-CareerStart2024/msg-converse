@@ -99,7 +99,7 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
         this.emitTypingUsers(channelId);
     }
 
-    @SubscribeMessage(SocketEvent.TYPING)
+    @SubscribeMessage(SocketEvent.START_TYPING)
     handleTyping(client: Socket, channelId: string): void {
         this.addTypingUser(channelId, client.user.firstName);
         this.emitTypingUsers(channelId);
