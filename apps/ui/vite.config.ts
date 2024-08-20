@@ -1,4 +1,5 @@
 /// <reference types='vitest' />
+
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
@@ -9,7 +10,15 @@ export default defineConfig({
 
     server: {
         port: 4200,
-        host: '127.0.0.1'
+        host: '127.0.0.1',
+
+        proxy: {
+            '/socket.io': {
+                target: 'http://localhost:3000',
+                changeOrigin: true,
+                ws: true
+            }
+        }
     },
 
     preview: {

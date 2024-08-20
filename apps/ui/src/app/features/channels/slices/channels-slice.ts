@@ -1,4 +1,5 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+
 import { Channel } from '../../../types/channel/channel.types';
 
 const initialState = [] as Channel[];
@@ -6,10 +7,9 @@ const channelsSlice = createSlice({
     name: 'channels',
     initialState,
     reducers: {
-        setChannels: (state, action: PayloadAction<Channel[]>) => action.payload,
-        clearChannels: () => []
+        setChannels: (state, action: PayloadAction<Channel[]>) => action.payload
     }
 });
 
-export const { setChannels, clearChannels } = channelsSlice.actions;
+export const { setChannels } = channelsSlice.actions;
 export default channelsSlice.reducer;

@@ -1,20 +1,20 @@
-import { Controller, Get, Param, Delete, Post, Body, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
 import {
-    ApiTags,
-    ApiOperation,
-    ApiResponse,
-    ApiParam,
     ApiBearerAuth,
-    ApiQuery
+    ApiOperation,
+    ApiParam,
+    ApiQuery,
+    ApiResponse,
+    ApiTags
 } from '@nestjs/swagger';
+import { CurrentUserId } from '../../../auth/decorators/current-user-id.decorator';
+import { Roles } from '../../../auth/decorators/roles.decorator';
+import { Role } from '../../../users/enums/role.enum';
 import { ChannelDto } from '../../dto/channels/channel.dto';
 import { CreateChannelDto } from '../../dto/channels/create-channel.dto';
 import { UpdateChannelDto } from '../../dto/channels/update-channel.dto';
 import { ChannelMapper } from '../../mapper/channel.mapper';
 import { ChannelService } from '../../services/channels/channel.service';
-import { CurrentUserId } from '../../../auth/decorators/current-user-id.decorator';
-import { Roles } from '../../../auth/decorators/roles.decorator';
-import { Role } from '../../../users/enums/role.enum';
 
 @ApiTags('Channels')
 @ApiBearerAuth()
@@ -164,5 +164,51 @@ export class ChannelController {
     @ApiResponse({ status: 404, description: 'Channel not found' })
     async deleteChannel(@Param('channelId') channelId: string): Promise<void> {
         return await this.channelService.delete(channelId);
+    }
+
+    @Put(':channelId/join')
+    @ApiOperation({
+        summary: 'Join a channel',
+        description: 'Join a specific channel to participate in discussions.'
+    })
+    @ApiParam({
+        name: 'channelId',
+        description: 'Unique identifier of the channel to be joined'
+    })
+    @ApiResponse({ status: 204, description: 'Channel successfully joined' })
+    @ApiResponse({
+        status: 401,
+        description: 'Unauthorized - Valid authentication credentials are required'
+    })
+    @ApiResponse({ status: 404, description: 'Channel not found' })
+    async joinChannel(
+        @CurrentUserId() userId: string,
+        @Param('channelId') channelId: string
+    ): Promise<ChannelDto> {
+        const joinedChannel = await this.channelService.joinChannel(channelId, userId);
+        return ChannelMapper.toDto(joinedChannel);
+    }
+
+    @Put(':channelId/leave')
+    @ApiOperation({
+        summary: 'Leave a channel',
+        description: 'Leave a specific channel.'
+    })
+    @ApiParam({
+        name: 'channelId',
+        description: 'Unique identifier of the channel to be left'
+    })
+    @ApiResponse({ status: 204, description: 'Channel successfully left' })
+    @ApiResponse({
+        status: 401,
+        description: 'Unauthorized - Valid authentication credentials are required'
+    })
+    @ApiResponse({ status: 404, description: 'Channel not found' })
+    async leaveChannel(
+        @CurrentUserId() userId: string,
+        @Param('channelId') channelId: string
+    ): Promise<ChannelDto> {
+        const leftChannel = await this.channelService.leaveChannel(channelId, userId);
+        return ChannelMapper.toDto(leftChannel);
     }
 }

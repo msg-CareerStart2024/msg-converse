@@ -33,14 +33,15 @@ export default function HomeView({
                 >
                     <SearchBar onSearch={onSearch} />
                 </Box>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleNavigateToCreateChannel}
-                    disabled={user?.role !== UserRole.ADMIN}
-                >
-                    CREATE CHANNEL
-                </Button>
+                {user?.role === UserRole.ADMIN && (
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleNavigateToCreateChannel}
+                    >
+                        CREATE CHANNEL
+                    </Button>
+                )}
             </Box>
 
             <Grid container spacing={3} alignItems="stretch">

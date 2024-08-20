@@ -6,11 +6,14 @@ import { UpdateMessageDTO } from '../dto/update-message.dto';
 
 export class MessageMapper {
     static toDto(entity: Message): MessageDTO {
+        const { isDeleted } = entity;
         return {
             id: entity.id,
-            content: entity.content,
+            content: !isDeleted
+                ? entity.content
+                : 'This message was removed by a Board Administrator',
             isPinned: entity.isPinned,
-            isDeleted: entity.isDeleted,
+            isDeleted: isDeleted,
             createdAt: entity.createdAt,
             user: UserMapper.toDTO(entity.user)
         };

@@ -1,11 +1,11 @@
-import { Channel } from '../../domain/channel.entity';
-import { ChannelRepository } from '../../repository/channel.repository';
-import { EntityManager } from 'typeorm';
 import { Injectable } from '@nestjs/common';
-import { TopicService } from '../topics/topic.service';
+import { EntityManager } from 'typeorm';
 import { TransactionManager } from '../../../shared/services/transaction.manager';
 import { User } from '../../../users/domain/user.domain';
 import { UserService } from '../../../users/service/user.service';
+import { Channel } from '../../domain/channel.entity';
+import { ChannelRepository } from '../../repository/channel.repository';
+import { TopicService } from '../topics/topic.service';
 
 @Injectable()
 export class ChannelService {
@@ -56,6 +56,21 @@ export class ChannelService {
 
     async delete(channelId: string, manager?: EntityManager): Promise<void> {
         await this.channelRepository.remove(channelId, manager);
+    }
+
+    async joinChannel(channelId: string, userId: string): Promise<Channel> {
+        const channel = await this.channelRepository.getOneById(channelId);
+        const user = await this.userService.getById(userId);
+        channel.users.push(user);
+
+        return await this.channelRepository.save(channel);
+    }
+
+    async leaveChannel(channelId: string, userId: string): Promise<Channel> {
+        const channel = await this.channelRepository.getOneById(channelId);
+        channel.users = channel.users.filter(user => user.id !== userId);
+
+        return await this.channelRepository.save(channel);
     }
 
     private escapeSpecialCharacters(term: string): string {

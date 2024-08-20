@@ -74,3 +74,41 @@ export const darkTheme = createTheme({
         fontFamily: 'Montserrat, Arial, sans-serif'
     }
 });
+
+export const lightScrollbar = {
+    '*::-webkit-scrollbar': {
+        width: '8px',
+        height: '8px'
+    },
+    '*::-webkit-scrollbar-track': {
+        background: '#f1f1f1'
+    },
+    '*::-webkit-scrollbar-thumb': {
+        backgroundColor: '#888',
+        borderRadius: '10px',
+        border: '2px solid transparent',
+        backgroundClip: 'content-box'
+    },
+    '*::-webkit-scrollbar-thumb:hover': {
+        backgroundColor: '#555'
+    }
+};
+
+export const darkScrollbar = {
+    '*::-webkit-scrollbar': {
+        width: '8px',
+        height: '8px'
+    },
+    '*::-webkit-scrollbar-track': {
+        background: '#2c2c2c'
+    },
+    '*::-webkit-scrollbar-thumb': {
+        backgroundColor: '#888888',
+        borderRadius: '10px',
+        border: '2px solid transparent',
+        backgroundClip: 'content-box'
+    },
+    '*::-webkit-scrollbar-thumb:hover': {
+        backgroundColor: '#bbbbbb'
+    }
+};
