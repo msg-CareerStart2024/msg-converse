@@ -1,4 +1,3 @@
-import SendIcon from '@mui/icons-material/Send';
 import {
     Alert,
     Box,
@@ -14,13 +13,14 @@ import {
     Typography
 } from '@mui/material';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
-import { useGetChannelByIdQuery } from '../../../api/channels-api/channels-api';
+import MessageComponent from './MessageComponent';
 import { RootState } from '../../../store/store';
+import SendIcon from '@mui/icons-material/Send';
 import { User } from '../../../types/login/User.types';
 import { useChannelSocket } from '../hooks/useChannelSocket';
-import MessageComponent from './MessageComponent';
+import { useGetChannelByIdQuery } from '../../../api/channels-api/channels-api';
+import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const ChannelComponent = () => {
     const { id: channelId } = useParams<{ id: string }>();
@@ -28,7 +28,9 @@ const ChannelComponent = () => {
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const [isOffline, setIsOffline] = useState(!navigator.onLine);
 
-    const { channelMessages, sendChannelMessage } = useChannelSocket(channelId as string);
+    const { channelMessages, sendChannelMessage, refetchMessages } = useChannelSocket(
+        channelId as string
+    );
     const {
         data: channel,
         isLoading: isLoadingChannel,
@@ -39,7 +41,10 @@ const ChannelComponent = () => {
 
     const handleOnlineStatus = useCallback(() => {
         setIsOffline(!navigator.onLine);
-    }, []);
+        if (navigator.onLine) {
+            refetchMessages();
+        }
+    }, [refetchMessages]);
 
     useEffect(() => {
         window.addEventListener('online', handleOnlineStatus);
@@ -60,7 +65,7 @@ const ChannelComponent = () => {
     };
 
     useEffect(() => {
-        if (channelMessages.length > 0) {
+        if (channelMessages && channelMessages.length > 0) {
             scrollToBottom();
         }
     }, [channelMessages]);
@@ -85,7 +90,7 @@ const ChannelComponent = () => {
         );
     }
 
-    if (errorChannel) {
+    if (errorChannel || !channelMessages) {
         return <Alert severity="error">There has been an error loading the channel</Alert>;
     }
 

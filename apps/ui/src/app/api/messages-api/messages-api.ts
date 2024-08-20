@@ -13,9 +13,29 @@ export const messagesApi = createApi({
             query: channelId => ({
                 url: `${channelId}`
             }),
-            providesTags: [API_CACHE_TAGS.MESSAGES]
+            providesTags: (result, _error, channelId) =>
+                result
+                    ? [
+                          ...result.map(({ id }) => ({ type: API_CACHE_TAGS.MESSAGES, id })),
+                          { type: API_CACHE_TAGS.MESSAGES, id: channelId }
+                      ]
+                    : [{ type: API_CACHE_TAGS.MESSAGES, id: channelId }]
         }),
-
+        addMessage: builder.mutation<Message, { channelId: string; message: Message }>({
+            queryFn: ({ message }) => ({ data: message }),
+            async onQueryStarted({ channelId, message }, { dispatch, queryFulfilled }) {
+                const patchResult = dispatch(
+                    messagesApi.util.updateQueryData('getMessagesByChannelId', channelId, draft => {
+                        draft.push(message);
+                    })
+                );
+                try {
+                    await queryFulfilled;
+                } catch {
+                    patchResult.undo();
+                }
+            }
+        }),
         createMessage: builder.mutation<
             Message,
             {
@@ -57,5 +77,6 @@ export const {
     useGetMessagesByChannelIdQuery,
     useCreateMessageMutation,
     useUpdateMessageMutation,
-    useRemoveMessageMutation
+    useRemoveMessageMutation,
+    useAddMessageMutation
 } = messagesApi;

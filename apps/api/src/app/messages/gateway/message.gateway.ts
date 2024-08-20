@@ -68,8 +68,6 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
     @SubscribeMessage(SocketEvent.JOIN_CHANNEL_CHAT)
     async handleConnectToChannel(client: Socket, channel: string): Promise<void> {
         client.join(channel);
-        const messages: Message[] = await this.messageService.getByChannel(channel);
-        client.emit(SocketEvent.PREVIOUS_MESSAGES, messages);
     }
 
     @SubscribeMessage(SocketEvent.LEAVE_CHANNEL_CHAT)
