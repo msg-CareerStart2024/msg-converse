@@ -1,11 +1,12 @@
 import { Typography } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useGetJoinedChannelsQuery } from '../../../api/channels-api/channels-api';
 import { AppDispatch, store } from '../../../store/store';
+import { setChannels } from '../../channels/slices/channels-slice';
 import { clearCredentials } from '../../login/slices/auth-slice';
 import SidebarView from '../components/SidebarView';
-import { useDispatch } from 'react-redux';
 import { setTheme } from '../slices/theme-slice';
 
 type SidebarContainerProps = {
@@ -47,8 +48,11 @@ export default function SidebarContainer({ toggleSidebar, sidebarOpen }: Sidebar
         store.dispatch(clearCredentials());
         navigate('/login');
     };
-
     const { data: joinedChannels, isLoading } = useGetJoinedChannelsQuery();
+
+    useEffect(() => {
+        joinedChannels && store.dispatch(setChannels(joinedChannels));
+    }, [joinedChannels]);
 
     if (isLoading) {
         return <Typography>My channels are loading..</Typography>;
