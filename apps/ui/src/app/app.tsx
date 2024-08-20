@@ -13,6 +13,7 @@ import SiderbarLayout from './layouts/SidebarLayout';
 import NotFoundPage from './pages/NotFoundPage';
 import { RootState, store } from './store/store';
 import { DecodedPayload } from './types/login/DecodedPayload.types';
+import { Toaster } from 'react-hot-toast';
 import { decodeToken, getScrollbar, getTheme } from './utils/utils';
 
 export function App() {
@@ -46,6 +47,7 @@ export function App() {
 
     return (
         <ThemeProvider theme={getTheme(theme, prefersDarkMode)}>
+            <Toaster position="bottom-right" />
             <CssBaseline />
             <GlobalStyles styles={getScrollbar(theme, prefersDarkMode)} />
             <Routes>

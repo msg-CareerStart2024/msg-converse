@@ -16,6 +16,7 @@ import { RootState } from '../../../store/store';
 import { Topic } from '../../../types/channel/Topic.types';
 import { User } from '../../../types/login/User.types';
 import { ChannelFormSchema, ChannelFormValues } from '../schemas/ChannelFormValues.schema';
+import toast from 'react-hot-toast';
 
 export default function ChannelPage() {
     const { id } = useParams<{ id?: string }>();
@@ -35,12 +36,11 @@ export default function ChannelPage() {
         })
             .unwrap()
             .then(newChannel => {
-                alert('Channel created successfully');
+                toast.success('Channel created successfully.');
                 navigate('/');
             })
             .catch(error => {
-                console.error('Failed to create channel:', error);
-                alert('Failed to create channel');
+                toast.error('Failed to create the channel.');
             });
     }
 
@@ -51,12 +51,11 @@ export default function ChannelPage() {
             deleteChannel(channelId)
                 .unwrap()
                 .then(() => {
-                    alert('Channel successfully deleted');
+                    toast.success('Channel deleted successfully.');
                     navigate('/');
                 })
                 .catch(error => {
-                    alert('Failed to delete channel');
-                    console.error('Delete channel error:', error);
+                    toast.error('Failed to delete channel.');
                 });
         }
     }
@@ -76,15 +75,14 @@ export default function ChannelPage() {
             updateChannel({ id: channelId, partialChannel: channelData })
                 .unwrap()
                 .then(() => {
-                    alert('Channel updated successfully');
+                    toast.success('Channel updated successfully.');
                     navigate('/');
                 })
                 .catch(error => {
-                    alert('Failed to update channel');
-                    console.error('Update channel error:', error);
+                    toast.error('Failed to update the channel.');
                 });
         } else {
-            alert('Channel ID is missing');
+            toast.error('Channel ID is missing');
         }
     }
 
