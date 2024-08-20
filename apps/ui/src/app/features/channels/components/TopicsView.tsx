@@ -1,5 +1,5 @@
 import { AddCircle, Cancel } from '@mui/icons-material';
-import { Grid, TextField, IconButton, Box, Chip } from '@mui/material';
+import { Box, Chip, Grid, IconButton, TextField } from '@mui/material';
 import { UseFormGetValues, UseFormRegister, UseFormSetValue } from 'react-hook-form';
 import { Topic } from '../../../types/channel/Topic.types';
 import { ChannelFormValues } from '../schemas/ChannelFormValues.schema';
@@ -35,12 +35,15 @@ export default function TopicsView({
                     fullWidth
                     focused
                     variant="outlined"
+                    color="secondary"
                     label="Topics"
                     {...register('topics')}
+                    onKeyDown={e => e.key === 'Enter' && handleAddTopic()}
+                    sx={{ '& label': { fontWeight: 'bold' } }}
                 />
             </Grid>
             <Grid item xs={12} sm={6}>
-                <IconButton color="primary" onClick={handleAddTopic}>
+                <IconButton color="secondary" onClick={handleAddTopic}>
                     <AddCircle sx={{ fontSize: 60, marginLeft: -6, marginTop: -1 }} />
                 </IconButton>
             </Grid>
@@ -50,7 +53,7 @@ export default function TopicsView({
                         <Chip
                             key={index}
                             label={topic.name}
-                            color="primary"
+                            color="secondary"
                             onDelete={() => handleDeleteTopic(topic.name)}
                             deleteIcon={<Cancel />}
                         />

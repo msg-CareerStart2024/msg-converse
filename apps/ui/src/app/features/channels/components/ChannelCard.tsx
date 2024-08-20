@@ -45,7 +45,7 @@ const ChannelCard = ({ channel }: ChannelCardProps) => {
     };
 
     const handleNavigateToEditChannel = () => {
-        navigate(`/channels/edit/${channel.id}`);
+        navigate(`/channels/${channel.id}/edit`);
     };
 
     return (
