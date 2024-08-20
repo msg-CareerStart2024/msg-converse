@@ -1,5 +1,5 @@
 import { jwtDecode, JwtPayload } from 'jwt-decode';
-import { darkTheme, lightTheme } from '../lib/themes';
+import { darkScrollbar, darkTheme, lightScrollbar, lightTheme } from '../lib/themes';
 
 /**
  * Shrinks a string to a specified number of words.
@@ -70,7 +70,7 @@ export const addBearerAuthHeader = (headers: Headers) => {
 };
 
 /**
- * Returns the Theme, using the redux slice.
+ * Returns the Theme.
  */
 export const getTheme = (theme: 'dark' | 'light' | 'system', prefersDarkMode: boolean) => {
     if (theme === 'dark') {
@@ -84,4 +84,31 @@ export const getTheme = (theme: 'dark' | 'light' | 'system', prefersDarkMode: bo
         return darkTheme;
     }
     return lightTheme;
+};
+
+/**
+ * Returns the scrollbar design.
+ */
+export const getScrollbar = (theme: 'dark' | 'light' | 'system', prefersDarkMode: boolean) => {
+    if (theme === 'dark') {
+        return darkScrollbar;
+    }
+    if (theme === 'light') {
+        return lightScrollbar;
+    }
+
+    if (prefersDarkMode) {
+        return darkScrollbar;
+    }
+    return lightScrollbar;
+};
+
+/**
+ * Capitalizes the first letter of a string.
+ * @param {string} text - Initial text.
+ * @returns {string} - The transformed text.
+ */
+export const capitalizeFirstLetter = (text: string): string => {
+    if (!text) return '';
+    return text.charAt(0).toUpperCase() + text.slice(1);
 };

@@ -16,7 +16,10 @@ export class MessageService {
     ) {}
 
     async getByChannel(channelId: string): Promise<Message[]> {
-        return this.messageRepository.getByChannel(channelId);
+        const messages: Message[] = await this.messageRepository.getByChannel(channelId);
+        return messages.map(message =>
+            message.isDeleted ? { ...message, content: undefined } : message
+        );
     }
 
     async create(userId: string, channelId: string, messageData: Message): Promise<Message> {

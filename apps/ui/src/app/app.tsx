@@ -1,10 +1,9 @@
-import { CssBaseline, ThemeProvider, useMediaQuery } from '@mui/material';
+import { CssBaseline, GlobalStyles, ThemeProvider, useMediaQuery } from '@mui/material';
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import { useLazyGetUserByIdQuery } from './api/users-api/users-api';
-import ChannelComponent from './features/channels/components/ChannelComponent';
-import ChannelPage from './features/channels/pages/ChannelPage';
+import ChannelFormPage from './features/channels/pages/ChannelFormPage';
 import HomePage from './features/home/pages/HomePage';
 import SignInPage from './features/login/pages/SignInPage';
 import { clearCredentials, setCredentials } from './features/login/slices/auth-slice';
@@ -13,7 +12,9 @@ import SiderbarLayout from './layouts/SidebarLayout';
 import NotFoundPage from './pages/NotFoundPage';
 import { RootState, store } from './store/store';
 import { DecodedPayload } from './types/login/DecodedPayload.types';
-import { decodeToken, getTheme } from './utils/utils';
+import ChannelPage from './features/channels/pages/ChannelPage';
+import { Toaster } from 'react-hot-toast';
+import { decodeToken, getScrollbar, getTheme } from './utils/utils';
 
 export function App() {
     const theme = useSelector((state: RootState) => state.theme);
@@ -46,16 +47,17 @@ export function App() {
 
     return (
         <ThemeProvider theme={getTheme(theme, prefersDarkMode)}>
+            <Toaster position="bottom-right" />
             <CssBaseline />
+            <GlobalStyles styles={getScrollbar(theme, prefersDarkMode)} />
             <Routes>
                 <Route element={<SiderbarLayout />} />
                 <Route element={<SiderbarLayout />}>
                     <Route path="/" element={<HomePage />} />
                     <Route path="/channels">
-                        <Route path="new" element={<ChannelPage />} />
-                        <Route path="edit/:id" element={<ChannelPage />} />
-
-                        <Route path=":id" element={<ChannelComponent />} />
+                        <Route path="new" element={<ChannelFormPage />} />
+                        <Route path=":id/edit" element={<ChannelFormPage />} />
+                        <Route path=":id" element={<ChannelPage />} />
                     </Route>
                 </Route>
                 <Route path="/login" element={<SignInPage />} />

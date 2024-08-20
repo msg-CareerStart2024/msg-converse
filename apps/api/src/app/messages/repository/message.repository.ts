@@ -10,7 +10,10 @@ export class MessageRepository {
     ) {}
 
     async getByChannel(channelId: string): Promise<Message[]> {
-        return this.messageRepository.find({ where: { channel: { id: channelId } } });
+        return this.messageRepository.find({
+            where: { channel: { id: channelId } },
+            order: { createdAt: 'ASC' }
+        });
     }
 
     async getById(id: string): Promise<Message> {

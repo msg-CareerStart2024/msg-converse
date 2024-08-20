@@ -1,4 +1,4 @@
-import { Avatar, Box, Container, Grid, TextField } from '@mui/material';
+import { Avatar, Box, Container, Grid, Paper, TextField } from '@mui/material';
 import {
     FieldErrors,
     UseFormGetValues,
@@ -7,13 +7,15 @@ import {
     UseFormSetValue
 } from 'react-hook-form';
 
-import ActionButtonView from './ActionButtonView';
+import { getColor } from '../../../lib/avatar-colors';
+import { Channel } from '../../../types/channel/channel.types';
 import { CHANNEL_FORM_ACTION_TYPE } from '../../../types/channel/ChannelFormActionType.enums';
-import { ChannelFormValues } from '../schemas/ChannelFormValues.schema';
 import { Topic } from '../../../types/channel/Topic.types';
-import TopicsView from './TopicsView';
 import { User } from '../../../types/login/User.types';
 import { UserRole } from '../../../types/login/UserRole.enum';
+import { ChannelFormValues } from '../schemas/ChannelFormValues.schema';
+import ActionButtonView from './ActionButtonView';
+import TopicsView from './TopicsView';
 
 type ChannelFormProps = {
     handleSubmit: UseFormHandleSubmit<ChannelFormValues>;
@@ -40,6 +42,7 @@ type ChannelFormProps = {
     currentUser: User;
     handleAddTopic: () => void;
     handleDeleteTopic: (name: string) => void;
+    data?: Channel;
 };
 
 export default function ChannelFormView({
@@ -58,9 +61,11 @@ export default function ChannelFormView({
     setTopics,
     currentUser,
     handleAddTopic,
-    handleDeleteTopic
+    handleDeleteTopic,
+    data
 }: ChannelFormProps) {
-    const channelName = getValues('name');
+    const channelName = data?.name;
+    const channelInitial = getValues('name')?.charAt(0).toUpperCase();
     return (
         <Container
             component="main"
@@ -85,7 +90,7 @@ export default function ChannelFormView({
                             <>
                                 <ActionButtonView
                                     action={CHANNEL_FORM_ACTION_TYPE.DELETE_CHANNEL}
-                                    handleAction={handleSubmit(onDelete)}
+                                    handleAction={onDelete}
                                     disabled={isSubmitting || currentUser.role !== UserRole.ADMIN}
                                 />
                                 <ActionButtonView
@@ -108,44 +113,58 @@ export default function ChannelFormView({
                             />
                         )}
                     </Box>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 4, mb: 4 }}>
-                        <Avatar sx={{ bgcolor: 'gray', width: 64, height: 64 }}>
-                            {currentUser.firstName[0].toUpperCase()}
-                        </Avatar>
-                    </Box>
-                    <Grid container spacing={8} sx={{ marginBottom: 4 }}>
-                        <Grid item xs={12} sm={6}>
-                            <TextField
-                                fullWidth
-                                focused
-                                label="Channel Name"
-                                variant="outlined"
-                                {...register('name')}
-                                error={!!errors.name}
-                                helperText={errors.name?.message}
+                    <Paper elevation={0} variant="outlined" sx={{ padding: 5, pb: 0 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 4, height: 64 }}>
+                            {channelInitial && (
+                                <Avatar
+                                    sx={{
+                                        bgcolor: getColor(channelInitial),
+                                        width: 64,
+                                        height: 64
+                                    }}
+                                >
+                                    {channelInitial}
+                                </Avatar>
+                            )}
+                        </Box>
+                        <Grid container spacing={8} sx={{ marginBottom: 4 }}>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    fullWidth
+                                    focused
+                                    label="Channel Name"
+                                    variant="outlined"
+                                    color="secondary"
+                                    {...register('name')}
+                                    error={!!errors.name}
+                                    helperText={errors.name?.message}
+                                    sx={{ '& label': { fontWeight: 'bold' } }}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    fullWidth
+                                    focused
+                                    label="Description"
+                                    variant="outlined"
+                                    color="secondary"
+                                    {...register('description')}
+                                    error={!!errors.description}
+                                    helperText={errors.description?.message}
+                                    sx={{ '& label': { fontWeight: 'bold' } }}
+                                />
+                            </Grid>
+                            <TopicsView
+                                register={register}
+                                topics={topics}
+                                getValues={getValues}
+                                setTopics={setTopics}
+                                setValue={setValue}
+                                handleAddTopic={handleAddTopic}
+                                handleDeleteTopic={handleDeleteTopic}
                             />
                         </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <TextField
-                                fullWidth
-                                focused
-                                label="Description"
-                                variant="outlined"
-                                {...register('description')}
-                                error={!!errors.description}
-                                helperText={errors.description?.message}
-                            />
-                        </Grid>
-                        <TopicsView
-                            register={register}
-                            topics={topics}
-                            getValues={getValues}
-                            setTopics={setTopics}
-                            setValue={setValue}
-                            handleAddTopic={handleAddTopic}
-                            handleDeleteTopic={handleDeleteTopic}
-                        />
-                    </Grid>
+                    </Paper>
                 </form>
             </Box>
         </Container>

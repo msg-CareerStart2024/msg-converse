@@ -10,7 +10,6 @@ export const mockMessageCreateDto: CreateMessageDTO = {
 };
 
 export const mockMessageUpdateDto: UpdateMessageDTO = {
-    content: 'updated',
     isPinned: true,
     isDeleted: false
 };
