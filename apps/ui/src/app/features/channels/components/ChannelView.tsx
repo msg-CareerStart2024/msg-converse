@@ -20,6 +20,7 @@ import { User } from '../../../types/login/User.types';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { SerializedError } from '@reduxjs/toolkit';
 import MessageContainer from './MessageContainer';
+import ChannelTypingIndicator from './ChannelTypingIndicator';
 
 type ChannelProps = {
     channelMessages: Message[] | undefined;
@@ -35,6 +36,7 @@ type ChannelProps = {
         id: string,
         messageData: Omit<Message, 'id' | 'content' | 'createdAt' | 'user'>
     ) => void;
+    typingUsers: string[];
 };
 
 export default function ChannelView({
@@ -47,7 +49,8 @@ export default function ChannelView({
     isOffline,
     handleMessageChange,
     sendMessage,
-    handleChangeDeletionStatus
+    handleChangeDeletionStatus,
+    typingUsers
 }: ChannelProps) {
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -129,36 +132,41 @@ export default function ChannelView({
                         </List>
                     )}
                 </Box>
+
                 {isOffline && (
                     <Alert severity="warning" sx={{ margin: 2 }}>
                         You are currently offline. Messages will be sent when you're back online.
                     </Alert>
                 )}
-                <Box component="form" onSubmit={sendMessage} padding={3}>
-                    <Grid container spacing={2} alignItems="center">
-                        <Grid item xs={11}>
-                            <FormControl fullWidth>
-                                <TextField
-                                    label="Type your message"
-                                    variant="outlined"
-                                    value={writtenMessage}
-                                    onChange={handleMessageChange}
+
+                <Box position="relative">
+                    <ChannelTypingIndicator typingUsers={typingUsers} />
+                    <Box component="form" onSubmit={sendMessage} padding={3}>
+                        <Grid container spacing={2} alignItems="center">
+                            <Grid item xs={11}>
+                                <FormControl fullWidth>
+                                    <TextField
+                                        label="Type your message"
+                                        variant="outlined"
+                                        value={writtenMessage}
+                                        onChange={handleMessageChange}
+                                        disabled={isOffline}
+                                    />
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={1}>
+                                <IconButton
+                                    type="submit"
+                                    aria-label="send"
+                                    color="primary"
+                                    onClick={() => sendMessage()}
                                     disabled={isOffline}
-                                />
-                            </FormControl>
+                                >
+                                    <SendIcon />
+                                </IconButton>
+                            </Grid>
                         </Grid>
-                        <Grid item xs={1}>
-                            <IconButton
-                                type="submit"
-                                aria-label="send"
-                                color="primary"
-                                onClick={() => sendMessage()}
-                                disabled={isOffline}
-                            >
-                                <SendIcon />
-                            </IconButton>
-                        </Grid>
-                    </Grid>
+                    </Box>
                 </Box>
             </Paper>
         </Container>

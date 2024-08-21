@@ -14,9 +14,8 @@ export default function ChannelPage() {
     const [writtenMessage, setWrittenMessage] = useState<string>('');
     const [isOffline, setIsOffline] = useState<boolean>(!navigator.onLine);
 
-    const { channelMessages, sendChannelMessage, refetchMessages } = useChannelSocket(
-        channelId as string
-    );
+    const { channelMessages, sendChannelMessage, refetchMessages, handleTyping, typingUsers } =
+        useChannelSocket(channelId as string);
     const [updateMessage] = useUpdateMessageMutation();
 
     const {
@@ -51,7 +50,7 @@ export default function ChannelPage() {
             }
 
             if (writtenMessage.trim()) {
-                await sendChannelMessage(writtenMessage);
+                sendChannelMessage(writtenMessage);
                 setWrittenMessage('');
             }
         },
@@ -60,6 +59,7 @@ export default function ChannelPage() {
 
     const handleMessageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setWrittenMessage(event.target.value);
+        handleTyping();
     };
 
     const handleChangeDeletionStatus = useCallback(
@@ -83,6 +83,7 @@ export default function ChannelPage() {
             handleMessageChange={handleMessageChange}
             sendMessage={sendMessage}
             handleChangeDeletionStatus={handleChangeDeletionStatus}
+            typingUsers={typingUsers}
         />
     );
 }
