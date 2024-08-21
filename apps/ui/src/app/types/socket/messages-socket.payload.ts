@@ -14,3 +14,8 @@ export type SendMessageEventPayload = {
     channelId: string;
     content: string;
 };
+
+export type TypingUser = {
+    id: string;
+    firstName: string;
+};
