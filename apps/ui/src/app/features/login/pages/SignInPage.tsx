@@ -5,7 +5,7 @@ import { useLoginUserMutation } from '../../../api/auth-api/auth-api';
 import { LoginFormValues, userSchema } from '../../../types/users/LoginFormValues.types';
 import SignInFormView from '../components/SignInFormView';
 import { store } from '../../../store/store';
-import { channelsApi } from '../../../api/channels-api';
+import { channelsApi } from '../../../api/channels-api/channels-api';
 import { API_CACHE_TAGS } from '../../../config/api-tags';
 
 export default function SignInPage() {
