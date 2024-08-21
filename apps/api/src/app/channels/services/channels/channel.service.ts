@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { EntityManager } from 'typeorm';
 import { TransactionManager } from '../../../shared/services/transaction.manager';
 import { User } from '../../../users/domain/user.domain';
@@ -6,6 +6,7 @@ import { UserService } from '../../../users/service/user.service';
 import { Channel } from '../../domain/channel.entity';
 import { ChannelRepository } from '../../repository/channel.repository';
 import { TopicService } from '../topics/topic.service';
+import { MessageService } from '../../../messages/service/message.service';
 
 @Injectable()
 export class ChannelService {
@@ -13,6 +14,8 @@ export class ChannelService {
         private readonly channelRepository: ChannelRepository,
         private readonly topicService: TopicService,
         private readonly userService: UserService,
+        @Inject(forwardRef(() => MessageService))
+        private readonly messageService: MessageService,
         private readonly transactionManager: TransactionManager
     ) {}
 
@@ -54,8 +57,11 @@ export class ChannelService {
         });
     }
 
-    async delete(channelId: string, manager?: EntityManager): Promise<void> {
-        await this.channelRepository.remove(channelId, manager);
+    async delete(channelId: string): Promise<void> {
+        return this.transactionManager.runInTransaction(async manager => {
+            await this.messageService.removeByChannelId(channelId, manager);
+            await this.channelRepository.remove(channelId, manager);
+        });
     }
 
     async joinChannel(channelId: string, userId: string): Promise<Channel> {

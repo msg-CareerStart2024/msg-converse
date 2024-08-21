@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Message } from './domain/message.domain';
 import { MessageRepository } from './repository/message.repository';
@@ -14,7 +14,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 @Module({
     imports: [
         TypeOrmModule.forFeature([Message]),
-        ChannelsModule,
+        forwardRef(() => ChannelsModule),
         UsersModule,
         JwtModule.registerAsync({
             imports: [ConfigModule],
@@ -26,6 +26,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         })
     ],
     providers: [MessageMapper, MessageRepository, MessageService, MessageGateway],
-    controllers: [MessagesController]
+    controllers: [MessagesController],
+    exports: [MessageService, MessageRepository]
 })
 export class MessagesModule {}
