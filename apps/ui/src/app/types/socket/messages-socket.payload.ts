@@ -20,3 +20,8 @@ export type PinMessageEventPayload = {
     messageId: string;
     pinStatus: boolean;
 };
+
+export type TypingUser = {
+    id: string;
+    firstName: string;
+};

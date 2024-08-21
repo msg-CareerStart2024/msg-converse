@@ -1,9 +1,11 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
     useJoinChannelChatMutation,
     useLeaveChannelChatMutation,
     usePinMessageMutation,
-    useSendMessageMutation
+    useSendMessageMutation,
+    useStartTypingMutation,
+    useStopTypingMutation
 } from '../../../api/socket-api/socket-api';
 import { Message } from '../../../types/messages/Message.types';
 import { SocketEvent } from '../../../types/socket/SocketEvent.enum';
@@ -13,6 +15,9 @@ import {
     useAddMessageMutation,
     useSwapMessageMutation
 } from '../../../api/messages-api/messages-api';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../store/store';
+import { TypingUser } from '../../../types/socket/messages-socket.payload';
 
 export const useChannelSocket = (channelId: string) => {
     const { activeSocket, initializeChannelConnection, terminateChannelConnection } =
@@ -23,6 +28,13 @@ export const useChannelSocket = (channelId: string) => {
     const [addMessage] = useAddMessageMutation();
     const [pinMessage] = usePinMessageMutation();
     const [swapMessage] = useSwapMessageMutation();
+    const [startTyping] = useStartTypingMutation();
+    const [stopTyping] = useStopTypingMutation();
+
+    const [typingUsers, setTypingUsers] = useState<TypingUser[]>([]);
+    const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+    const currentUser = useSelector((state: RootState) => state.auth.user);
 
     const { data: channelMessages, refetch } = useGetMessagesByChannelIdQuery(channelId);
 
@@ -48,23 +60,50 @@ export const useChannelSocket = (channelId: string) => {
             swapMessage({ channelId, updatedMessage: message });
         };
 
+        const handleTypingUsers = (users: TypingUser[]) => {
+            setTypingUsers(users.filter(user => user.id !== currentUser?.id));
+        };
+
         joinChannelChat(channelId);
         activeSocket.on(SocketEvent.NEW_MESSAGE, handleNewMessage);
         activeSocket.on(SocketEvent.PIN_FROM_SERVER, handlePinMessage);
+        activeSocket.on(SocketEvent.TYPING_USERS, handleTypingUsers);
 
         return () => {
             leaveChannelChat(channelIdRef.current);
             activeSocket.off(SocketEvent.NEW_MESSAGE, handleNewMessage);
+            activeSocket.off(SocketEvent.TYPING_USERS, handleTypingUsers);
         };
-    }, [activeSocket, joinChannelChat, leaveChannelChat, channelId, addMessage, swapMessage]);
+    }, [
+        activeSocket,
+        joinChannelChat,
+        leaveChannelChat,
+        channelId,
+        addMessage,
+        currentUser,
+        swapMessage
+    ]);
+
+    const handleTyping = useCallback(() => {
+        if (typingTimeoutRef.current) {
+            clearTimeout(typingTimeoutRef.current);
+        }
+
+        startTyping(channelId);
+
+        typingTimeoutRef.current = setTimeout(() => {
+            stopTyping(channelId);
+        }, 2000);
+    }, [channelId, startTyping, stopTyping]);
 
     const sendChannelMessage = useCallback(
         (messageContent: string) => {
             if (activeSocket) {
                 sendMessage({ channelId: channelIdRef.current, content: messageContent });
+                stopTyping(channelIdRef.current);
             }
         },
-        [activeSocket, sendMessage]
+        [activeSocket, sendMessage, stopTyping]
     );
 
     const pinChannelMessage = useCallback(
@@ -76,5 +115,12 @@ export const useChannelSocket = (channelId: string) => {
         [activeSocket, pinMessage]
     );
 
-    return { channelMessages, sendChannelMessage, refetchMessages: refetch, pinChannelMessage };
+    return {
+        channelMessages,
+        sendChannelMessage,
+        handleTyping,
+        typingUsers,
+        refetchMessages: refetch,
+        pinChannelMessage
+    };
 };

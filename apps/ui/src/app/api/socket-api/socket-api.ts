@@ -46,6 +46,12 @@ export const socketApi = createApi({
         }),
         pinMessage: builder.mutation<void, PinMessageEventPayload>({
             queryFn: payload => emitSocketEvent(SocketEvent.PIN_FROM_CLIENT, payload)
+        }),
+        startTyping: builder.mutation<void, string>({
+            queryFn: channelId => emitSocketEvent(SocketEvent.START_TYPING, channelId)
+        }),
+        stopTyping: builder.mutation<void, string>({
+            queryFn: channelId => emitSocketEvent(SocketEvent.STOP_TYPING, channelId)
         })
     })
 });
@@ -54,5 +60,7 @@ export const {
     useJoinChannelChatMutation,
     useLeaveChannelChatMutation,
     useSendMessageMutation,
-    usePinMessageMutation
+    usePinMessageMutation,
+    useStartTypingMutation,
+    useStopTypingMutation
 } = socketApi;

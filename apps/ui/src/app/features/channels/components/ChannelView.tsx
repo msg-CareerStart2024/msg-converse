@@ -18,7 +18,7 @@ import {
     TextField,
     Typography
 } from '@mui/material';
-import { FormEvent, useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { Message } from '../../../types/messages/Message.types';
 import { Channel } from '../../../types/channel/channel.types';
 import { User } from '../../../types/login/User.types';
@@ -28,6 +28,10 @@ import MessageContainer from './MessageContainer';
 import { Close, PushPin } from '@mui/icons-material';
 import { generateUserName } from '../../../utils/utils';
 import { UserRole } from '../../../types/login/UserRole.enum';
+import ChannelTypingIndicator from './ChannelTypingIndicator';
+import { TypingUser } from '../../../types/socket/messages-socket.payload';
+import { ChannelChatValues } from '../schemas/ChatInputValues.schema';
+import { FieldErrors, SubmitHandler, UseFormHandleSubmit, UseFormRegister } from 'react-hook-form';
 
 type ChannelProps = {
     channelMessages: Message[] | undefined;
@@ -35,18 +39,22 @@ type ChannelProps = {
     isLoadingChannel: boolean;
     errorChannel: FetchBaseQueryError | SerializedError | undefined;
     currentUser: User;
-    writtenMessage: string;
     isOffline: boolean;
     popoverOpen: boolean;
     popoverAnchor: HTMLElement | null;
     setPopoverAnchor: React.Dispatch<React.SetStateAction<HTMLElement | null>>;
-    handleMessageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    sendMessage: (event?: FormEvent<HTMLFormElement>) => void;
+    errors: FieldErrors<ChannelChatValues>;
+    isValid: boolean;
+    handleSubmit: UseFormHandleSubmit<ChannelChatValues>;
+    register: UseFormRegister<ChannelChatValues>;
+    sendMessage: SubmitHandler<ChannelChatValues>;
     handleChangeDeletionStatus: (
         id: string,
         messageData: Omit<Message, 'id' | 'content' | 'createdAt' | 'user'>
     ) => void;
     handlePinStatus: (messageId: string, pinStatus: boolean) => void;
+    typingUsers: TypingUser[];
+    handleTyping: () => void;
 };
 
 export default function ChannelView({
@@ -55,15 +63,19 @@ export default function ChannelView({
     isLoadingChannel,
     errorChannel,
     currentUser,
-    writtenMessage,
     isOffline,
     popoverOpen,
     popoverAnchor,
     setPopoverAnchor,
-    handleMessageChange,
     sendMessage,
     handleChangeDeletionStatus,
-    handlePinStatus
+    handlePinStatus,
+    errors,
+    isValid,
+    handleSubmit,
+    register,
+    typingUsers,
+    handleTyping
 }: ChannelProps) {
     const pinnedMessages = channelMessages?.filter(channelMessage => channelMessage.isPinned) || [];
     const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -232,36 +244,52 @@ export default function ChannelView({
                         </List>
                     )}
                 </Box>
+
                 {isOffline && (
                     <Alert severity="warning" sx={{ margin: 2 }}>
                         You are currently offline. Messages will be sent when you're back online.
                     </Alert>
                 )}
-                <Box component="form" onSubmit={sendMessage} padding={3}>
-                    <Grid container spacing={2} alignItems="center">
-                        <Grid item xs={11}>
+
+                <Box position="relative">
+                    <ChannelTypingIndicator typingUsers={typingUsers} />
+                    <Box component="form" onSubmit={handleSubmit(sendMessage)} padding={3}>
+                        <Grid container spacing={2} alignItems="center">
                             <FormControl fullWidth>
-                                <TextField
-                                    label="Type your message"
-                                    variant="outlined"
-                                    value={writtenMessage}
-                                    onChange={handleMessageChange}
-                                    disabled={isOffline}
-                                />
+                                <Grid container spacing={2}>
+                                    <Grid item xs={11}>
+                                        <TextField
+                                            fullWidth
+                                            label="Type your message"
+                                            variant="outlined"
+                                            {...register('message')}
+                                            error={!!errors.message}
+                                            disabled={isOffline}
+                                            onInput={handleTyping}
+                                        />
+                                    </Grid>
+                                    <Grid
+                                        item
+                                        xs={1}
+                                        sx={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center'
+                                        }}
+                                    >
+                                        <IconButton
+                                            type="submit"
+                                            aria-label="send"
+                                            color="primary"
+                                            disabled={isOffline || !isValid}
+                                        >
+                                            <SendIcon />
+                                        </IconButton>
+                                    </Grid>
+                                </Grid>
                             </FormControl>
                         </Grid>
-                        <Grid item xs={1}>
-                            <IconButton
-                                type="submit"
-                                aria-label="send"
-                                color="primary"
-                                onClick={() => sendMessage()}
-                                disabled={isOffline}
-                            >
-                                <SendIcon />
-                            </IconButton>
-                        </Grid>
-                    </Grid>
+                    </Box>
                 </Box>
             </Paper>
         </Container>

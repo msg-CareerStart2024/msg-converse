@@ -9,7 +9,7 @@ import {
     useDeleteChannelMutation,
     useLazyGetChannelByIdQuery,
     useUpdateChannelMutation
-} from '../../../api/channels-api';
+} from '../../../api/channels-api/channels-api';
 import { RootState } from '../../../store/store';
 import { Topic } from '../../../types/channel/Topic.types';
 import { User } from '../../../types/login/User.types';
@@ -26,7 +26,21 @@ export default function ChannelFormPage() {
     const currentUser = useSelector((state: RootState) => state.auth.user) as User;
 
     const [createChannel] = useCreateChannelMutation();
+
+    const isNoTopicAlert = (action: string): boolean => {
+        if (topics.length === 0) {
+            toast.error(`Please add at least one topic before ${action} the channel.`);
+            return true;
+        }
+
+        return false;
+    };
+
     function onCreate() {
+        if (isNoTopicAlert('creating')) {
+            return;
+        }
+
         createChannel({
             name: capitalizeFirstLetter(getValues('name')).trim(),
             description: getValues('description'),
@@ -61,7 +75,12 @@ export default function ChannelFormPage() {
     }
 
     const [updateChannel] = useUpdateChannelMutation();
+
     function onUpdate() {
+        if (isNoTopicAlert('updating')) {
+            return;
+        }
+
         const channelData = {
             name: capitalizeFirstLetter(getValues('name')).trim(),
             description: getValues('description'),
@@ -99,7 +118,7 @@ export default function ChannelFormPage() {
         register,
         setValue,
         getValues,
-        formState: { errors, isValid }
+        formState: { errors, isValid, isDirty }
     } = useForm<ChannelFormValues>({
         resolver: zodResolver(ChannelFormSchema),
         mode: 'onChange'
@@ -148,6 +167,7 @@ export default function ChannelFormPage() {
             errors={errors}
             isSubmitting={false}
             isValid={isValid}
+            isDirty={isDirty}
             isEditForm={!!id}
             getValues={getValues}
             setValue={setValue}

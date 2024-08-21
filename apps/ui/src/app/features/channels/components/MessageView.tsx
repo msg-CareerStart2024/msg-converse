@@ -72,9 +72,9 @@ export default function MessageView({
         borderRadius: '20px',
         padding: 1,
         paddingX: 2,
-        textAlign: isSent ? 'left' : 'right',
         position: 'relative',
-        marginBottom: 1
+        marginBottom: 1,
+        alignSelf: isSent ? 'end' : 'start'
     };
 
     const popupState = usePopupState({
@@ -89,7 +89,9 @@ export default function MessageView({
                     display: 'flex',
                     flexDirection: isSent ? 'row-reverse' : 'row',
                     alignItems: 'center',
-                    justifyContent: isSent ? 'flex-end' : 'flex-start'
+                    wordBreak: 'break-word',
+                    justifyContent: isSent ? 'flex-end' : 'flex-start',
+                    maxWidth: '70%'
                 }}
             >
                 <Tooltip
