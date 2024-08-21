@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -17,16 +17,24 @@ import { capitalizeFirstLetter } from '../../../utils/utils';
 import ChannelFormView from '../components/ChannelFormView';
 import { ChannelFormSchema, ChannelFormValues } from '../schemas/ChannelFormValues.schema';
 import toast from 'react-hot-toast';
+import { ChannelDTO } from '../../../types/channel/channel.types';
 
 export default function ChannelFormPage() {
     const { id } = useParams<{ id?: string }>();
     const [getChannelById, { data }] = useLazyGetChannelByIdQuery();
     const [topics, setTopics] = useState<Topic[]>([]);
-
+    const [initialValues, setInitialValues] = useState<ChannelDTO | null>(null);
     const currentUser = useSelector((state: RootState) => state.auth.user) as User;
+    const isChangedRef = useRef(false);
+    const [isChanged, setIsChanged] = useState(false);
 
     const [createChannel] = useCreateChannelMutation();
     function onCreate() {
+        if (topics.length === 0) {
+            toast.error('Please add at least one topic before creating the channel.');
+            return;
+        }
+
         createChannel({
             name: capitalizeFirstLetter(getValues('name')).trim(),
             description: getValues('description'),
@@ -99,19 +107,58 @@ export default function ChannelFormPage() {
         register,
         setValue,
         getValues,
+        watch,
         formState: { errors, isValid }
     } = useForm<ChannelFormValues>({
         resolver: zodResolver(ChannelFormSchema),
-        mode: 'onChange'
+        mode: 'onChange',
+        defaultValues: {
+            name: data?.name,
+            description: data?.description,
+            topics: data?.topics.map(t => t.name).join(', ')
+        }
     });
 
     useEffect(() => {
         if (data) {
+            setInitialValues({
+                name: data.name,
+                description: data.description,
+                topics: data.topics
+            });
             setValue('name', data.name);
             setValue('description', data.description);
             setTopics(data.topics);
         }
     }, [data, setValue]);
+
+    const nameValue = watch('name');
+    const descriptionValue = watch('description');
+
+    interface SimpleTopic {
+        name: string;
+    }
+
+    const areTopicsEqual = useCallback((topics1: Topic[], topics2: SimpleTopic[]): boolean => {
+        const names1 = topics1.map(t => t.name).sort();
+        const names2 = topics2.map(t => t.name).sort();
+
+        if (names1.length !== names2.length) return false;
+
+        return names1.every((name, index) => name === names2[index]);
+    }, []);
+
+    useEffect(() => {
+        if (initialValues) {
+            const topicsChanged = !areTopicsEqual(topics, initialValues.topics);
+            isChangedRef.current =
+                initialValues.name !== nameValue ||
+                initialValues.description !== descriptionValue ||
+                topicsChanged;
+            console.log('Is form changed from initial?', isChangedRef.current);
+            setIsChanged(isChangedRef.current);
+        }
+    }, [nameValue, descriptionValue, initialValues, areTopicsEqual, topics]);
 
     if (id && !data) {
         return <Typography>Loading...</Typography>;
@@ -160,6 +207,7 @@ export default function ChannelFormPage() {
             currentUser={currentUser}
             handleAddTopic={handleAddTopic}
             handleDeleteTopic={handleDeleteTopic}
+            isChanged={isChanged}
         />
     );
 }
