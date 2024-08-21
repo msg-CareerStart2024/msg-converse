@@ -109,6 +109,7 @@
         "class-validator": "^0.14.1",
         "joi": "^17.13.3",
         "jwt-decode": "^4.0.0",
+        "material-ui-popup-state": "^5.1.2",
         "passport": "^0.7.0",
         "passport-jwt": "^4.0.1",
         "passport-local": "^1.0.0",
