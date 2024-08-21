@@ -13,7 +13,7 @@ import {
     TextField,
     Typography
 } from '@mui/material';
-import { FormEvent, useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { Message } from '../../../types/messages/Message.types';
 import { Channel } from '../../../types/channel/channel.types';
 import { User } from '../../../types/login/User.types';
@@ -22,6 +22,8 @@ import { SerializedError } from '@reduxjs/toolkit';
 import MessageContainer from './MessageContainer';
 import ChannelTypingIndicator from './ChannelTypingIndicator';
 import { TypingUser } from '../../../types/socket/messages-socket.payload';
+import { ChannelChatValues } from '../schemas/ChatInputValues.schema';
+import { FieldErrors, SubmitHandler, UseFormHandleSubmit, UseFormRegister } from 'react-hook-form';
 
 type ChannelProps = {
     channelMessages: Message[] | undefined;
@@ -29,10 +31,12 @@ type ChannelProps = {
     isLoadingChannel: boolean;
     errorChannel: FetchBaseQueryError | SerializedError | undefined;
     currentUser: User;
-    writtenMessage: string;
     isOffline: boolean;
-    handleMessageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    sendMessage: (event?: FormEvent<HTMLFormElement>) => void;
+    errors: FieldErrors<ChannelChatValues>;
+    isValid: boolean;
+    handleSubmit: UseFormHandleSubmit<ChannelChatValues>;
+    register: UseFormRegister<ChannelChatValues>;
+    sendMessage: SubmitHandler<ChannelChatValues>;
     handleChangeDeletionStatus: (
         id: string,
         messageData: Omit<Message, 'id' | 'content' | 'createdAt' | 'user'>
@@ -46,9 +50,11 @@ export default function ChannelView({
     isLoadingChannel,
     errorChannel,
     currentUser,
-    writtenMessage,
     isOffline,
-    handleMessageChange,
+    errors,
+    isValid,
+    handleSubmit,
+    register,
     sendMessage,
     handleChangeDeletionStatus,
     typingUsers
@@ -142,30 +148,40 @@ export default function ChannelView({
 
                 <Box position="relative">
                     <ChannelTypingIndicator typingUsers={typingUsers} />
-                    <Box component="form" onSubmit={sendMessage} padding={3}>
+                    <Box component="form" onSubmit={handleSubmit(sendMessage)} padding={3}>
                         <Grid container spacing={2} alignItems="center">
-                            <Grid item xs={11}>
-                                <FormControl fullWidth>
-                                    <TextField
-                                        label="Type your message"
-                                        variant="outlined"
-                                        value={writtenMessage}
-                                        onChange={handleMessageChange}
-                                        disabled={isOffline}
-                                    />
-                                </FormControl>
-                            </Grid>
-                            <Grid item xs={1}>
-                                <IconButton
-                                    type="submit"
-                                    aria-label="send"
-                                    color="primary"
-                                    onClick={() => sendMessage()}
-                                    disabled={isOffline}
-                                >
-                                    <SendIcon />
-                                </IconButton>
-                            </Grid>
+                            <FormControl fullWidth>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={11}>
+                                        <TextField
+                                            fullWidth
+                                            label="Type your message"
+                                            variant="outlined"
+                                            {...register('message')}
+                                            error={!!errors.message}
+                                            disabled={isOffline}
+                                        />
+                                    </Grid>
+                                    <Grid
+                                        item
+                                        xs={1}
+                                        sx={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center'
+                                        }}
+                                    >
+                                        <IconButton
+                                            type="submit"
+                                            aria-label="send"
+                                            color="primary"
+                                            disabled={isOffline || !isValid}
+                                        >
+                                            <SendIcon />
+                                        </IconButton>
+                                    </Grid>
+                                </Grid>
+                            </FormControl>
                         </Grid>
                     </Box>
                 </Box>
