@@ -6,5 +6,8 @@ export enum SocketEvent {
     CONNECTION_ERROR = 'connection_error',
     PREVIOUS_MESSAGES = 'previous_messages',
     NEW_MESSAGE = 'new_message',
-    SEND_MESSAGE = 'send_message'
+    SEND_MESSAGE = 'send_message',
+    START_TYPING = 'start_typing',
+    STOP_TYPING = 'stop_typing',
+    TYPING_USERS = 'typing_users'
 }

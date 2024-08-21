@@ -16,9 +16,8 @@ export default function ChannelPage() {
     const { id: channelId } = useParams<string>();
     const [isOffline, setIsOffline] = useState<boolean>(!navigator.onLine);
 
-    const { channelMessages, sendChannelMessage, refetchMessages } = useChannelSocket(
-        channelId as string
-    );
+    const { channelMessages, sendChannelMessage, refetchMessages, handleTyping, typingUsers } =
+        useChannelSocket(channelId as string);
     const [updateMessage] = useUpdateMessageMutation();
 
     const {
@@ -60,7 +59,7 @@ export default function ChannelPage() {
     const sendMessage: SubmitHandler<ChannelChatValues> = useCallback(async () => {
         const message = getValues('message');
         if (message.trim()) {
-            await sendChannelMessage(message);
+            sendChannelMessage(message);
             reset();
         }
     }, [getValues, sendChannelMessage, reset]);
@@ -88,6 +87,8 @@ export default function ChannelPage() {
             register={register}
             sendMessage={sendMessage}
             handleChangeDeletionStatus={handleChangeDeletionStatus}
+            typingUsers={typingUsers}
+            handleTyping={handleTyping}
         />
     );
 }
