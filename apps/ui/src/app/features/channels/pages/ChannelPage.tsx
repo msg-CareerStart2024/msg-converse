@@ -1,4 +1,4 @@
-import { FormEvent, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { useGetChannelByIdQuery } from '../../../api/channels-api/channels-api';
@@ -8,10 +8,12 @@ import { User } from '../../../types/login/User.types';
 import { Message } from '../../../types/messages/Message.types';
 import ChannelView from '../components/ChannelView';
 import { useChannelSocket } from '../hooks/useChannelSocket';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { ChannelChatSchema, ChannelChatValues } from '../schemas/ChatInputValues.schema';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 export default function ChannelPage() {
     const { id: channelId } = useParams<string>();
-    const [writtenMessage, setWrittenMessage] = useState<string>('');
     const [isOffline, setIsOffline] = useState<boolean>(!navigator.onLine);
 
     const { channelMessages, sendChannelMessage, refetchMessages } = useChannelSocket(
@@ -44,23 +46,24 @@ export default function ChannelPage() {
         };
     }, [handleOnlineStatus]);
 
-    const sendMessage = useCallback(
-        async (event?: FormEvent<HTMLFormElement>) => {
-            if (event) {
-                event.preventDefault();
-            }
+    const {
+        handleSubmit,
+        register,
+        getValues,
+        reset,
+        formState: { errors, isValid }
+    } = useForm<ChannelChatValues>({
+        resolver: zodResolver(ChannelChatSchema),
+        mode: 'onChange'
+    });
 
-            if (writtenMessage.trim()) {
-                await sendChannelMessage(writtenMessage);
-                setWrittenMessage('');
-            }
-        },
-        [writtenMessage, sendChannelMessage]
-    );
-
-    const handleMessageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setWrittenMessage(event.target.value);
-    };
+    const sendMessage: SubmitHandler<ChannelChatValues> = useCallback(async () => {
+        const message = getValues('message');
+        if (message.trim()) {
+            await sendChannelMessage(message);
+            reset();
+        }
+    }, [getValues, sendChannelMessage, reset]);
 
     const handleChangeDeletionStatus = useCallback(
         async (id: string, messageData: Omit<Message, 'id' | 'content' | 'createdAt' | 'user'>) => {
@@ -78,9 +81,11 @@ export default function ChannelPage() {
             isLoadingChannel={isLoadingChannel}
             errorChannel={errorChannel}
             currentUser={currentUser}
-            writtenMessage={writtenMessage}
             isOffline={isOffline}
-            handleMessageChange={handleMessageChange}
+            errors={errors}
+            isValid={isValid}
+            handleSubmit={handleSubmit}
+            register={register}
             sendMessage={sendMessage}
             handleChangeDeletionStatus={handleChangeDeletionStatus}
         />
