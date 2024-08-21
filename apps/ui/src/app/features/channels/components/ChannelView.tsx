@@ -37,10 +37,7 @@ type ChannelProps = {
     handleSubmit: UseFormHandleSubmit<ChannelChatValues>;
     register: UseFormRegister<ChannelChatValues>;
     sendMessage: SubmitHandler<ChannelChatValues>;
-    handleChangeDeletionStatus: (
-        id: string,
-        messageData: Omit<Message, 'id' | 'content' | 'createdAt' | 'user'>
-    ) => void;
+    handleChangeDeletionStatus: (id: string, isDeleted: boolean) => void;
     typingUsers: TypingUser[];
     handleTyping: () => void;
 };

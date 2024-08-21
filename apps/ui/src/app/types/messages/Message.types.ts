@@ -8,7 +8,6 @@ export interface Message {
     createdAt: Date;
     user: User;
 }
-
 export interface MessageComponentProps {
     message: Message;
 }

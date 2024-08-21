@@ -51,9 +51,20 @@ export class MessageService {
             throw new NotFoundException('The message was not found');
         }
 
-        existingMessage.content = messageData.content;
         existingMessage.isPinned = messageData.isPinned;
         existingMessage.isDeleted = messageData.isDeleted;
+
+        return this.messageRepository.update(existingMessage);
+    }
+
+    async updateDeletedStatus(id: string, newDeletedStatus: boolean): Promise<Message> {
+        const existingMessage = await this.messageRepository.getById(id);
+
+        if (!existingMessage) {
+            throw new NotFoundException('The message was not found');
+        }
+
+        existingMessage.isDeleted = newDeletedStatus;
 
         return this.messageRepository.update(existingMessage);
     }

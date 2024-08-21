@@ -4,7 +4,8 @@ import {
     useLeaveChannelChatMutation,
     useSendMessageMutation,
     useStartTypingMutation,
-    useStopTypingMutation
+    useStopTypingMutation,
+    useUpdateDeletedStatusMutation
 } from '../../../api/socket-api/socket-api';
 import { Message } from '../../../types/messages/Message.types';
 import { SocketEvent } from '../../../types/socket/SocketEvent.enum';
@@ -23,6 +24,7 @@ export const useChannelSocket = (channelId: string) => {
     const [joinChannelChat] = useJoinChannelChatMutation();
     const [leaveChannelChat] = useLeaveChannelChatMutation();
     const [sendMessage] = useSendMessageMutation();
+    const [updateDeletedStatus] = useUpdateDeletedStatusMutation();
     const [addMessage] = useAddMessageMutation();
     const [startTyping] = useStartTypingMutation();
     const [stopTyping] = useStopTypingMutation();
@@ -89,9 +91,19 @@ export const useChannelSocket = (channelId: string) => {
         [activeSocket, sendMessage, stopTyping]
     );
 
+    const updateMessageDeletedStatus = useCallback(
+        (messageId: string, deletedStatus: boolean) => {
+            if (activeSocket) {
+                updateDeletedStatus({ channelId: channelIdRef.current, messageId, deletedStatus });
+            }
+        },
+        [activeSocket, updateDeletedStatus]
+    );
+
     return {
         channelMessages,
         sendChannelMessage,
+        updateMessageDeletedStatus,
         handleTyping,
         typingUsers,
         refetchMessages: refetch
