@@ -9,7 +9,7 @@ import {
     useDeleteChannelMutation,
     useLazyGetChannelByIdQuery,
     useUpdateChannelMutation
-} from '../../../api/channels-api';
+} from '../../../api/channels-api/channels-api';
 import { RootState } from '../../../store/store';
 import { Topic } from '../../../types/channel/Topic.types';
 import { User } from '../../../types/login/User.types';
