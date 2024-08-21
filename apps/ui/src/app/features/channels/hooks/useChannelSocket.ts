@@ -15,11 +15,7 @@ import {
 } from '../../../api/messages-api/messages-api';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../store/store';
-
-export type TypingUser = {
-    id: string;
-    firstName: string;
-};
+import { TypingUser } from '../../../types/socket/messages-socket.payload';
 
 export const useChannelSocket = (channelId: string) => {
     const { activeSocket, initializeChannelConnection, terminateChannelConnection } =
@@ -90,7 +86,7 @@ export const useChannelSocket = (channelId: string) => {
                 stopTyping(channelIdRef.current);
             }
         },
-        [activeSocket, sendMessage]
+        [activeSocket, sendMessage, stopTyping]
     );
 
     return {

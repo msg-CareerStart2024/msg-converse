@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Box, Typography } from '@mui/material';
+import { TypingUser } from '../../../types/socket/messages-socket.payload';
 
 interface ChannelTypingIndicatorProps {
-    typingUsers: { id: string; firstName: string }[];
+    typingUsers: TypingUser[];
 }
 
 const ChannelTypingIndicator: React.FC<ChannelTypingIndicatorProps> = ({ typingUsers }) => {

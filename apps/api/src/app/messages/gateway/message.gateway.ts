@@ -14,17 +14,13 @@ import { JwtService } from '@nestjs/jwt';
 import { User } from '../../users/domain/user.domain';
 import { MessageService } from '../service/message.service';
 import { Message } from '../domain/message.domain';
+import { NewMessagePayload, TypingUser } from '../type/message-gateway.types';
 
 declare module 'socket.io' {
     interface Socket {
         user?: User;
     }
 }
-
-type TypingUser = {
-    id: string;
-    firstName: string;
-};
 
 type TypingUsersMap = Map<string, Map<string, TypingUser>>;
 
@@ -94,7 +90,7 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
     @SubscribeMessage(SocketEvent.SEND_MESSAGE)
     async handleNewMessage(
         client: Socket,
-        { channelId, content }: { channelId: string; content: string }
+        { channelId, content }: NewMessagePayload
     ): Promise<void> {
         const newMessage = await this.messageService.create(client.user.id, channelId, {
             content

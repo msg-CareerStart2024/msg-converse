@@ -21,7 +21,7 @@ import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { SerializedError } from '@reduxjs/toolkit';
 import MessageContainer from './MessageContainer';
 import ChannelTypingIndicator from './ChannelTypingIndicator';
-import { TypingUser } from '../hooks/useChannelSocket';
+import { TypingUser } from '../../../types/socket/messages-socket.payload';
 
 type ChannelProps = {
     channelMessages: Message[] | undefined;
