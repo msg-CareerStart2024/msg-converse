@@ -17,9 +17,8 @@ export default function ChannelPage() {
     const [popoverAnchor, setPopoverAnchor] = useState<null | HTMLElement>(null);
     const popoverOpen = Boolean(popoverAnchor);
 
-    const { channelMessages, sendChannelMessage, refetchMessages } = useChannelSocket(
-        channelId as string
-    );
+    const { channelMessages, sendChannelMessage, refetchMessages, pinChannelMessage } =
+        useChannelSocket(channelId as string);
     const [updateMessage] = useUpdateMessageMutation();
 
     const {
@@ -75,14 +74,9 @@ export default function ChannelPage() {
         [updateMessage]
     );
 
-    const handleChangePinStatus = useCallback(
-        async (id: string, messageData: Omit<Message, 'id' | 'content' | 'createdAt' | 'user'>) => {
-            const { isPinned } = messageData;
-            messageData.isPinned = !isPinned;
-            await updateMessage({ id, messageData });
-        },
-        [updateMessage]
-    );
+    const handlePinStatus = (messageId: string, pinStatus: boolean) => {
+        if (channelId) pinChannelMessage(channelId, messageId, pinStatus);
+    };
 
     return (
         <ChannelView
@@ -99,7 +93,7 @@ export default function ChannelPage() {
             handleMessageChange={handleMessageChange}
             sendMessage={sendMessage}
             handleChangeDeletionStatus={handleChangeDeletionStatus}
-            handleChangePinStatus={handleChangePinStatus}
+            handlePinStatus={handlePinStatus}
         />
     );
 }

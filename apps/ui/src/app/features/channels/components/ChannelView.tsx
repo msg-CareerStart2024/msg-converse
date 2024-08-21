@@ -26,6 +26,8 @@ import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { SerializedError } from '@reduxjs/toolkit';
 import MessageContainer from './MessageContainer';
 import { Close, PushPin } from '@mui/icons-material';
+import { generateUserName } from '../../../utils/utils';
+import { UserRole } from '../../../types/login/UserRole.enum';
 
 type ChannelProps = {
     channelMessages: Message[] | undefined;
@@ -44,10 +46,7 @@ type ChannelProps = {
         id: string,
         messageData: Omit<Message, 'id' | 'content' | 'createdAt' | 'user'>
     ) => void;
-    handleChangePinStatus: (
-        id: string,
-        messageData: Omit<Message, 'id' | 'content' | 'createdAt' | 'user'>
-    ) => void;
+    handlePinStatus: (messageId: string, pinStatus: boolean) => void;
 };
 
 export default function ChannelView({
@@ -64,7 +63,7 @@ export default function ChannelView({
     handleMessageChange,
     sendMessage,
     handleChangeDeletionStatus,
-    handleChangePinStatus
+    handlePinStatus
 }: ChannelProps) {
     const pinnedMessages = channelMessages?.filter(channelMessage => channelMessage.isPinned) || [];
     const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -130,23 +129,41 @@ export default function ChannelView({
                         <List>
                             {pinnedMessages.length > 0 ? (
                                 pinnedMessages.map((message, index) => (
-                                    <>
+                                    <div key={'PIN' + message.id}>
                                         <ListItem
-                                            key={'PIN' + message.id}
                                             disablePadding
                                             secondaryAction={
-                                                <IconButton edge="end" aria-label="unpin">
-                                                    <Close />
-                                                </IconButton>
+                                                currentUser.role === UserRole.ADMIN && (
+                                                    <IconButton
+                                                        edge="end"
+                                                        aria-label="unpin"
+                                                        onClick={() =>
+                                                            handlePinStatus(message.id, false)
+                                                        }
+                                                    >
+                                                        <Close />
+                                                    </IconButton>
+                                                )
                                             }
                                         >
                                             <ListItemText
                                                 primary={message.content}
-                                                secondary={message.user.firstName}
+                                                secondary={generateUserName(
+                                                    message.user.firstName,
+                                                    message.user.lastName
+                                                )}
+                                                primaryTypographyProps={{
+                                                    style: {
+                                                        paddingRight:
+                                                            currentUser.role === UserRole.ADMIN
+                                                                ? '50px'
+                                                                : 0
+                                                    }
+                                                }}
                                             />
                                         </ListItem>
                                         {index < pinnedMessages.length - 1 && <Divider />}
-                                    </>
+                                    </div>
                                 ))
                             ) : (
                                 <Typography variant="body2">No pinned messages</Typography>
@@ -207,7 +224,7 @@ export default function ChannelView({
                                         message={message}
                                         currentUser={currentUser}
                                         handleChangeDeletionStatus={handleChangeDeletionStatus}
-                                        handleChangePinStatus={handleChangePinStatus}
+                                        handlePinStatus={handlePinStatus}
                                     />
                                 </ListItem>
                             ))}

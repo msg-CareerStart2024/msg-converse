@@ -9,17 +9,14 @@ type UnifiedMessageProps = MessageComponentProps & {
         id: string,
         messageData: Omit<Message, 'id' | 'content' | 'createdAt' | 'user'>
     ) => void;
-    handleChangePinStatus: (
-        id: string,
-        messageData: Omit<Message, 'id' | 'content' | 'createdAt' | 'user'>
-    ) => void;
+    handlePinStatus: (messageId: string, pinStatus: boolean) => void;
 };
 
 export default function MessageContainer({
     message,
     currentUser,
     handleChangeDeletionStatus,
-    handleChangePinStatus
+    handlePinStatus
 }: UnifiedMessageProps) {
     const firstNameInitial: string = message.user.firstName[0].toUpperCase();
     const isSent: boolean = message.user.id === currentUser.id;
@@ -49,10 +46,7 @@ export default function MessageContainer({
         setPinDialogOpen(false);
     };
     const handlePinDialogConfirmation = () => {
-        handleChangePinStatus(message.id, {
-            isPinned,
-            isDeleted
-        });
+        handlePinStatus(message.id, !message.isPinned);
         handleClosePinDialog();
     };
 

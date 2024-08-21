@@ -85,4 +85,19 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
         } as Message);
         this.server.to(channelId).emit(SocketEvent.NEW_MESSAGE, newMessage);
     }
+
+    @SubscribeMessage(SocketEvent.PIN_FROM_CLIENT)
+    async handlePinMessage(
+        client: Socket,
+        {
+            channelId,
+            messageId,
+            pinStatus
+        }: { channelId: string; messageId: string; pinStatus: boolean }
+    ): Promise<void> {
+        if (client.user.role === 'ADMIN') {
+            const message = await this.messageService.updatePin(messageId, pinStatus);
+            this.server.to(channelId).emit(SocketEvent.PIN_FROM_SERVER, message);
+        }
+    }
 }

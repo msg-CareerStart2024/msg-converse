@@ -14,3 +14,9 @@ export type SendMessageEventPayload = {
     channelId: string;
     content: string;
 };
+
+export type PinMessageEventPayload = {
+    channelId: string;
+    messageId: string;
+    pinStatus: boolean;
+};

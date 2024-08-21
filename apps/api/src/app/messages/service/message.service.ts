@@ -58,6 +58,18 @@ export class MessageService {
         return this.messageRepository.update(existingMessage);
     }
 
+    async updatePin(id: string, pinStatus: boolean): Promise<Message> {
+        const existingMessage = await this.messageRepository.getById(id);
+
+        if (!existingMessage) {
+            throw new NotFoundException('The message was not found');
+        }
+
+        existingMessage.isPinned = pinStatus;
+
+        return this.messageRepository.update(existingMessage);
+    }
+
     async removeByChannelId(channelId: string, manager?: EntityManager): Promise<void> {
         await this.messageRepository.removeByChannelId(channelId, manager);
     }
