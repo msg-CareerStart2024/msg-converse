@@ -43,8 +43,15 @@ export default function TopicsView({
                 />
             </Grid>
             <Grid item xs={12} sm={6}>
-                <IconButton color="secondary" onClick={handleAddTopic}>
-                    <AddCircle sx={{ fontSize: 60, marginLeft: -6, marginTop: -1 }} />
+                <IconButton
+                    color="secondary"
+                    onClick={handleAddTopic}
+                    sx={{
+                        marginLeft: -6,
+                        marginTop: -1
+                    }}
+                >
+                    <AddCircle sx={{ fontSize: 60 }} />
                 </IconButton>
             </Grid>
             <Grid item xs={12} sm={6} sx={{ marginTop: -4 }}>
