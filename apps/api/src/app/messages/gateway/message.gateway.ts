@@ -21,11 +21,19 @@ declare module 'socket.io' {
     }
 }
 
+type TypingUser = {
+    id: string;
+    firstName: string;
+};
+
+type TypingUsersMap = Map<string, Set<TypingUser>>;
+
 @WebSocketGateway()
 export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
     @WebSocketServer()
     server: Server;
     private logger: Logger = new Logger('MessagesGateway');
+    private typingUsers: TypingUsersMap = new Map();
 
     constructor(
         private userService: UserService,
@@ -63,6 +71,13 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 
     handleDisconnect(client: Socket): void {
         this.logger.log(`Client disconnected: ${client.id}`);
+        this.typingUsers.forEach((users, channelId) => {
+            const userToRemove = Array.from(users).find(user => user.id === client.user.id);
+            if (userToRemove) {
+                this.removeTypingUser(channelId, userToRemove);
+                this.emitTypingUsers(channelId);
+            }
+        });
     }
 
     @SubscribeMessage(SocketEvent.JOIN_CHANNEL_CHAT)
@@ -73,6 +88,9 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
     @SubscribeMessage(SocketEvent.LEAVE_CHANNEL_CHAT)
     handleDisconnectFromChannel(client: Socket, channel: string): void {
         client.leave(channel);
+        const typingUser: TypingUser = { id: client.user.id, firstName: client.user.firstName };
+        this.removeTypingUser(channel, typingUser);
+        this.emitTypingUsers(channel);
     }
 
     @SubscribeMessage(SocketEvent.SEND_MESSAGE)
@@ -84,5 +102,48 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
             content
         } as Message);
         this.server.to(channelId).emit(SocketEvent.NEW_MESSAGE, newMessage);
+        const typingUser: TypingUser = { id: client.user.id, firstName: client.user.firstName };
+        this.removeTypingUser(channelId, typingUser);
+        this.emitTypingUsers(channelId);
+    }
+
+    @SubscribeMessage(SocketEvent.START_TYPING)
+    handleTyping(client: Socket, channelId: string): void {
+        const typingUser: TypingUser = { id: client.user.id, firstName: client.user.firstName };
+        this.addTypingUser(channelId, typingUser);
+        this.emitTypingUsers(channelId);
+    }
+
+    @SubscribeMessage(SocketEvent.STOP_TYPING)
+    handleStopTyping(client: Socket, channelId: string): void {
+        const typingUser: TypingUser = { id: client.user.id, firstName: client.user.firstName };
+        this.removeTypingUser(channelId, typingUser);
+        this.emitTypingUsers(channelId);
+    }
+
+    private addTypingUser(channelId: string, typingUser: TypingUser): void {
+        if (!this.typingUsers.has(channelId)) {
+            this.typingUsers.set(channelId, new Set());
+        }
+        this.typingUsers.get(channelId).add(typingUser);
+    }
+
+    private removeTypingUser(channelId: string, typingUser: TypingUser): void {
+        if (this.typingUsers.has(channelId)) {
+            const users = this.typingUsers.get(channelId);
+            users.forEach(user => {
+                if (user.id === typingUser.id) {
+                    users.delete(user);
+                }
+            });
+            if (users.size === 0) {
+                this.typingUsers.delete(channelId);
+            }
+        }
+    }
+
+    private emitTypingUsers(channelId: string): void {
+        const typingUsers = Array.from(this.typingUsers.get(channelId) || []);
+        this.server.to(channelId).emit(SocketEvent.TYPING_USERS, typingUsers);
     }
 }
