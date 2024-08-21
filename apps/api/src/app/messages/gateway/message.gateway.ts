@@ -104,7 +104,7 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
         this.emitTypingUsers(channelId);
     }
 
-    @SubscribeMessage(SocketEvent.UPDATE_DELETED_STATUS)
+    @SubscribeMessage(SocketEvent.UPDATE_DELETED_STATUS_CLIENT)
     async handleUpdateDeletedStatus({
         channelId,
         messageId,

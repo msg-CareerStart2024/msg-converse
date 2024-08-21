@@ -59,21 +59,18 @@ export default function ChannelPage() {
         mode: 'onChange'
     });
 
-    const sendMessage: SubmitHandler<ChannelChatValues> = useCallback(async () => {
+    const sendMessage: SubmitHandler<ChannelChatValues> = () => {
         const message = getValues('message');
         if (message.trim()) {
             sendChannelMessage(message);
             reset();
         }
-    }, [getValues, sendChannelMessage, reset]);
+    };
 
-    const handleChangeDeletionStatus = useCallback(
-        async (id: string, isDeleted: boolean) => {
-            const newDeletedStatus = !isDeleted;
-            updateMessageDeletedStatus(id, newDeletedStatus);
-        },
-        [updateMessageDeletedStatus]
-    );
+    const handleChangeDeletionStatus = (id: string, isDeleted: boolean) => {
+        const newDeletedStatus = !isDeleted;
+        updateMessageDeletedStatus(id, newDeletedStatus);
+    };
 
     return (
         <ChannelView

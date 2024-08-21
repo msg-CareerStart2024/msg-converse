@@ -45,7 +45,7 @@ export const socketApi = createApi({
             queryFn: payload => emitSocketEvent(SocketEvent.SEND_MESSAGE, payload)
         }),
         updateDeletedStatus: builder.mutation<void, UpdateDeletedStatusPayload>({
-            queryFn: payload => emitSocketEvent(SocketEvent.UPDATE_DELETED_STATUS, payload)
+            queryFn: payload => emitSocketEvent(SocketEvent.UPDATE_DELETED_STATUS_CLIENT, payload)
         }),
         startTyping: builder.mutation<void, string>({
             queryFn: channelId => emitSocketEvent(SocketEvent.START_TYPING, channelId)
