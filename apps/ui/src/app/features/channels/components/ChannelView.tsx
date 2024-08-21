@@ -21,6 +21,7 @@ import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { SerializedError } from '@reduxjs/toolkit';
 import MessageContainer from './MessageContainer';
 import ChannelTypingIndicator from './ChannelTypingIndicator';
+import { TypingUser } from '../hooks/useChannelSocket';
 
 type ChannelProps = {
     channelMessages: Message[] | undefined;
@@ -36,7 +37,7 @@ type ChannelProps = {
         id: string,
         messageData: Omit<Message, 'id' | 'content' | 'createdAt' | 'user'>
     ) => void;
-    typingUsers: string[];
+    typingUsers: TypingUser[];
 };
 
 export default function ChannelView({

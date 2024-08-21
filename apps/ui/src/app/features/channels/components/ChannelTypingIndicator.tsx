@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Box, Typography } from '@mui/material';
 
 interface ChannelTypingIndicatorProps {
-    typingUsers: string[];
+    typingUsers: { id: string; firstName: string }[];
 }
 
 const ChannelTypingIndicator: React.FC<ChannelTypingIndicatorProps> = ({ typingUsers }) => {
@@ -30,8 +30,8 @@ const ChannelTypingIndicator: React.FC<ChannelTypingIndicatorProps> = ({ typingU
                 }}
             >
                 {typingUsers.length === 1
-                    ? `${typingUsers[0]} is typing...`
-                    : `${typingUsers.join(', ')} are typing...`}
+                    ? `${typingUsers[0].firstName} is typing...`
+                    : `${typingUsers.map(user => user.firstName).join(', ')} are typing...`}
             </Typography>
         </Box>
     );

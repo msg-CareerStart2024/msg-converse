@@ -16,6 +16,11 @@ import {
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../store/store';
 
+export type TypingUser = {
+    id: string;
+    firstName: string;
+};
+
 export const useChannelSocket = (channelId: string) => {
     const { activeSocket, initializeChannelConnection, terminateChannelConnection } =
         useChatSocket();
@@ -26,7 +31,7 @@ export const useChannelSocket = (channelId: string) => {
     const [startTyping] = useStartTypingMutation();
     const [stopTyping] = useStopTypingMutation();
 
-    const [typingUsers, setTypingUsers] = useState<string[]>([]);
+    const [typingUsers, setTypingUsers] = useState<TypingUser[]>([]);
     const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     const currentUser = useSelector((state: RootState) => state.auth.user);
@@ -51,8 +56,8 @@ export const useChannelSocket = (channelId: string) => {
             addMessage({ channelId, message });
         };
 
-        const handleTypingUsers = (users: string[]) => {
-            setTypingUsers(users.filter(user => user !== currentUser?.firstName));
+        const handleTypingUsers = (users: TypingUser[]) => {
+            setTypingUsers(users.filter(user => user.id !== currentUser?.id));
         };
 
         joinChannelChat(channelId);
@@ -64,7 +69,7 @@ export const useChannelSocket = (channelId: string) => {
             activeSocket.off(SocketEvent.NEW_MESSAGE, handleNewMessage);
             activeSocket.off(SocketEvent.TYPING_USERS, handleTypingUsers);
         };
-    }, [activeSocket, joinChannelChat, leaveChannelChat, channelId, addMessage]);
+    }, [activeSocket, joinChannelChat, leaveChannelChat, channelId, addMessage, currentUser]);
 
     const handleTyping = useCallback(() => {
         if (typingTimeoutRef.current) {
