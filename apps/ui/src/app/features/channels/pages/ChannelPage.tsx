@@ -14,6 +14,9 @@ export default function ChannelPage() {
     const [writtenMessage, setWrittenMessage] = useState<string>('');
     const [isOffline, setIsOffline] = useState<boolean>(!navigator.onLine);
 
+    const [popoverAnchor, setPopoverAnchor] = useState<null | HTMLElement>(null);
+    const popoverOpen = Boolean(popoverAnchor);
+
     const { channelMessages, sendChannelMessage, refetchMessages } = useChannelSocket(
         channelId as string
     );
@@ -90,6 +93,9 @@ export default function ChannelPage() {
             currentUser={currentUser}
             writtenMessage={writtenMessage}
             isOffline={isOffline}
+            popoverOpen={popoverOpen}
+            popoverAnchor={popoverAnchor}
+            setPopoverAnchor={setPopoverAnchor}
             handleMessageChange={handleMessageChange}
             sendMessage={sendMessage}
             handleChangeDeletionStatus={handleChangeDeletionStatus}

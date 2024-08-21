@@ -18,14 +18,14 @@ import {
     TextField,
     Typography
 } from '@mui/material';
-import { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
+import { FormEvent, useCallback, useEffect, useRef } from 'react';
 import { Message } from '../../../types/messages/Message.types';
 import { Channel } from '../../../types/channel/channel.types';
 import { User } from '../../../types/login/User.types';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { SerializedError } from '@reduxjs/toolkit';
 import MessageContainer from './MessageContainer';
-import { PushPin } from '@mui/icons-material';
+import { Close, PushPin } from '@mui/icons-material';
 
 type ChannelProps = {
     channelMessages: Message[] | undefined;
@@ -35,6 +35,9 @@ type ChannelProps = {
     currentUser: User;
     writtenMessage: string;
     isOffline: boolean;
+    popoverOpen: boolean;
+    popoverAnchor: HTMLElement | null;
+    setPopoverAnchor: React.Dispatch<React.SetStateAction<HTMLElement | null>>;
     handleMessageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
     sendMessage: (event?: FormEvent<HTMLFormElement>) => void;
     handleChangeDeletionStatus: (
@@ -55,11 +58,15 @@ export default function ChannelView({
     currentUser,
     writtenMessage,
     isOffline,
+    popoverOpen,
+    popoverAnchor,
+    setPopoverAnchor,
     handleMessageChange,
     sendMessage,
     handleChangeDeletionStatus,
     handleChangePinStatus
 }: ChannelProps) {
+    const pinnedMessages = channelMessages?.filter(channelMessage => channelMessage.isPinned) || [];
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     const scrollToBottom = useCallback(() => {
@@ -73,12 +80,6 @@ export default function ChannelView({
     useEffect(() => {
         scrollToBottom();
     }, [channelMessages?.length, scrollToBottom]);
-
-    // Popover
-    const [popoverAnchor, setPopoverAnchor] = useState<null | HTMLElement>(null);
-    const popoverOpen = Boolean(popoverAnchor);
-    const id = popoverOpen ? 'pinned-messages-popover' : undefined;
-    // Popover end
 
     if (isLoadingChannel) {
         return (
@@ -100,7 +101,7 @@ export default function ChannelView({
                 </Typography>
 
                 <Popover
-                    id={id}
+                    id={popoverOpen ? 'pinned-messages-popover' : undefined}
                     open={popoverOpen}
                     anchorEl={popoverAnchor}
                     onClose={() => setPopoverAnchor(null)}
@@ -118,22 +119,33 @@ export default function ChannelView({
                             padding: '16px',
                             maxHeight: '300px',
                             overflowY: 'auto',
-                            maxWidth: '200px',
-                            minWidth: '200px',
+                            width: '400px',
                             wordWrap: 'break-word',
                             whiteSpace: 'normal',
                             overflowWrap: 'anywhere'
                         }}
                     >
-                        <Typography variant="h6">Pinned Messages</Typography>
+                        <Typography variant="h5">Pinned Messages</Typography>
+                        <Divider />
                         <List>
-                            {channelMessages.length > 0 ? (
-                                channelMessages.map((message, index) => (
+                            {pinnedMessages.length > 0 ? (
+                                pinnedMessages.map((message, index) => (
                                     <>
-                                        <ListItem key={'PIN' + message.id}>
-                                            <ListItemText primary={message.content} />
+                                        <ListItem
+                                            key={'PIN' + message.id}
+                                            disablePadding
+                                            secondaryAction={
+                                                <IconButton edge="end" aria-label="unpin">
+                                                    <Close />
+                                                </IconButton>
+                                            }
+                                        >
+                                            <ListItemText
+                                                primary={message.content}
+                                                secondary={message.user.firstName}
+                                            />
                                         </ListItem>
-                                        {index < channelMessages.length - 1 && <Divider />}
+                                        {index < pinnedMessages.length - 1 && <Divider />}
                                     </>
                                 ))
                             ) : (
@@ -147,7 +159,7 @@ export default function ChannelView({
                     color="secondary"
                     sx={{ height: 'fit-content' }}
                     onClick={event => setPopoverAnchor(popoverAnchor ? null : event.currentTarget)}
-                    aria-describedby={id}
+                    aria-describedby={popoverOpen ? 'pinned-messages-popover' : undefined}
                     aria-label="Pinned messages"
                 >
                     <PushPin />
