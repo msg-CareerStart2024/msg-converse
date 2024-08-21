@@ -8,7 +8,6 @@ import {
 } from 'react-hook-form';
 
 import { getColor } from '../../../lib/avatar-colors';
-import { Channel } from '../../../types/channel/channel.types';
 import { CHANNEL_FORM_ACTION_TYPE } from '../../../types/channel/ChannelFormActionType.enums';
 import { Topic } from '../../../types/channel/Topic.types';
 import { User } from '../../../types/login/User.types';
