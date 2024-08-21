@@ -2,24 +2,30 @@ import SendIcon from '@mui/icons-material/Send';
 import {
     Alert,
     Box,
+    Button,
     CircularProgress,
     Container,
+    Divider,
     FormControl,
     Grid,
     IconButton,
     List,
     ListItem,
+    ListItemText,
     Paper,
+    Popover,
+    Stack,
     TextField,
     Typography
 } from '@mui/material';
-import { FormEvent, useCallback, useEffect, useRef } from 'react';
+import { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { Message } from '../../../types/messages/Message.types';
 import { Channel } from '../../../types/channel/channel.types';
 import { User } from '../../../types/login/User.types';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { SerializedError } from '@reduxjs/toolkit';
 import MessageContainer from './MessageContainer';
+import { PushPin } from '@mui/icons-material';
 
 type ChannelProps = {
     channelMessages: Message[] | undefined;
@@ -35,6 +41,10 @@ type ChannelProps = {
         id: string,
         messageData: Omit<Message, 'id' | 'content' | 'createdAt' | 'user'>
     ) => void;
+    handleChangePinStatus: (
+        id: string,
+        messageData: Omit<Message, 'id' | 'content' | 'createdAt' | 'user'>
+    ) => void;
 };
 
 export default function ChannelView({
@@ -47,7 +57,8 @@ export default function ChannelView({
     isOffline,
     handleMessageChange,
     sendMessage,
-    handleChangeDeletionStatus
+    handleChangeDeletionStatus,
+    handleChangePinStatus
 }: ChannelProps) {
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -63,6 +74,12 @@ export default function ChannelView({
         scrollToBottom();
     }, [channelMessages?.length, scrollToBottom]);
 
+    // Popover
+    const [popoverAnchor, setPopoverAnchor] = useState<null | HTMLElement>(null);
+    const popoverOpen = Boolean(popoverAnchor);
+    const id = popoverOpen ? 'pinned-messages-popover' : undefined;
+    // Popover end
+
     if (isLoadingChannel) {
         return (
             <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
@@ -77,9 +94,65 @@ export default function ChannelView({
 
     return (
         <Container>
-            <Typography variant="h6" marginBottom={5}>
-                {channel?.name}
-            </Typography>
+            <Stack flexDirection="row" justifyContent="space-between">
+                <Typography variant="h6" marginBottom={5}>
+                    {channel?.name}
+                </Typography>
+
+                <Popover
+                    id={id}
+                    open={popoverOpen}
+                    anchorEl={popoverAnchor}
+                    onClose={() => setPopoverAnchor(null)}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'right'
+                    }}
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right'
+                    }}
+                >
+                    <div
+                        style={{
+                            padding: '16px',
+                            maxHeight: '300px',
+                            overflowY: 'auto',
+                            maxWidth: '200px',
+                            minWidth: '200px',
+                            wordWrap: 'break-word',
+                            whiteSpace: 'normal',
+                            overflowWrap: 'anywhere'
+                        }}
+                    >
+                        <Typography variant="h6">Pinned Messages</Typography>
+                        <List>
+                            {channelMessages.length > 0 ? (
+                                channelMessages.map((message, index) => (
+                                    <>
+                                        <ListItem key={'PIN' + message.id}>
+                                            <ListItemText primary={message.content} />
+                                        </ListItem>
+                                        {index < channelMessages.length - 1 && <Divider />}
+                                    </>
+                                ))
+                            ) : (
+                                <Typography variant="body2">No pinned messages</Typography>
+                            )}
+                        </List>
+                    </div>
+                </Popover>
+                <Button
+                    variant="contained"
+                    color="secondary"
+                    sx={{ height: 'fit-content' }}
+                    onClick={event => setPopoverAnchor(popoverAnchor ? null : event.currentTarget)}
+                    aria-describedby={id}
+                    aria-label="Pinned messages"
+                >
+                    <PushPin />
+                </Button>
+            </Stack>
 
             <Paper sx={{ height: '80vh', display: 'flex', flexDirection: 'column' }}>
                 <Box
@@ -122,6 +195,7 @@ export default function ChannelView({
                                         message={message}
                                         currentUser={currentUser}
                                         handleChangeDeletionStatus={handleChangeDeletionStatus}
+                                        handleChangePinStatus={handleChangePinStatus}
                                     />
                                 </ListItem>
                             ))}

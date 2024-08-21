@@ -9,35 +9,51 @@ type UnifiedMessageProps = MessageComponentProps & {
         id: string,
         messageData: Omit<Message, 'id' | 'content' | 'createdAt' | 'user'>
     ) => void;
+    handleChangePinStatus: (
+        id: string,
+        messageData: Omit<Message, 'id' | 'content' | 'createdAt' | 'user'>
+    ) => void;
 };
 
 export default function MessageContainer({
     message,
     currentUser,
-    handleChangeDeletionStatus
+    handleChangeDeletionStatus,
+    handleChangePinStatus
 }: UnifiedMessageProps) {
     const firstNameInitial: string = message.user.firstName[0].toUpperCase();
     const isSent: boolean = message.user.id === currentUser.id;
     const isDeleted: boolean = message.isDeleted;
     const isPinned: boolean = message.isPinned;
+
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
-
-    console.log(message.content, message.isPinned);
-
     const handleOpenDialog = () => {
         setDialogOpen(true);
     };
-
     const handleCloseDialog = () => {
         setDialogOpen(false);
     };
-
-    const handleDialogConfirmation = async () => {
-        await handleChangeDeletionStatus(message.id, {
-            isPinned: message.isPinned,
+    const handleDialogConfirmation = () => {
+        handleChangeDeletionStatus(message.id, {
+            isPinned,
             isDeleted
         });
         handleCloseDialog();
+    };
+
+    const [pinDialogOpen, setPinDialogOpen] = useState<boolean>(false);
+    const handleOpenPinDialog = () => {
+        setPinDialogOpen(true);
+    };
+    const handleClosePinDialog = () => {
+        setPinDialogOpen(false);
+    };
+    const handlePinDialogConfirmation = () => {
+        handleChangePinStatus(message.id, {
+            isPinned,
+            isDeleted
+        });
+        handleClosePinDialog();
     };
 
     return (
@@ -52,6 +68,10 @@ export default function MessageContainer({
             handleOpenDialog={handleOpenDialog}
             handleCloseDialog={handleCloseDialog}
             handleDialogConfirmation={handleDialogConfirmation}
+            pinDialogOpen={pinDialogOpen}
+            handleOpenPinDialog={handleOpenPinDialog}
+            handleClosePinDialog={handleClosePinDialog}
+            handlePinDialogConfirmation={handlePinDialogConfirmation}
         />
     );
 }

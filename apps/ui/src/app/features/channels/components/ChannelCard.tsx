@@ -75,7 +75,20 @@ const ChannelCard = ({ channel }: ChannelCardProps) => {
                                 {channel.name[0]}
                             </Avatar>
                             <Box>
-                                <Typography variant="h5" component="div">
+                                <Typography
+                                    variant="h5"
+                                    component="div"
+                                    sx={{
+                                        display: '-webkit-box',
+                                        textOverflow: 'ellipsis',
+                                        wordWrap: 'break-word',
+                                        whiteSpace: 'normal',
+                                        overflow: 'hidden',
+                                        overflowWrap: 'anywhere',
+                                        WebkitLineClamp: 2,
+                                        WebkitBoxOrient: 'vertical'
+                                    }}
+                                >
                                     {channel.name}
                                 </Typography>
                                 <Typography sx={{ fontSize: 14 }} gutterBottom>

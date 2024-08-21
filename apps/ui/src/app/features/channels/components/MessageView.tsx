@@ -35,6 +35,10 @@ type MessageProps = {
     handleOpenDialog: () => void;
     handleCloseDialog: () => void;
     handleDialogConfirmation: () => void;
+    pinDialogOpen: boolean;
+    handleOpenPinDialog: () => void;
+    handleClosePinDialog: () => void;
+    handlePinDialogConfirmation: () => void;
 };
 
 export default function MessageView({
@@ -47,7 +51,11 @@ export default function MessageView({
     dialogOpen,
     handleOpenDialog,
     handleCloseDialog,
-    handleDialogConfirmation
+    handleDialogConfirmation,
+    pinDialogOpen,
+    handleOpenPinDialog,
+    handleClosePinDialog,
+    handlePinDialogConfirmation
 }: MessageProps) {
     const theme = useTheme();
     const isCurrentUserAdmin = currentUser.role === UserRole.ADMIN;
@@ -132,18 +140,21 @@ export default function MessageView({
                                             {isDeleted ? <RestoreIcon /> : <DeleteIcon />}
                                         </IconButton>
                                     </MenuItem>
-                                    <MenuItem
-                                        sx={{
-                                            '&:hover': {
-                                                background: 'none'
-                                            },
-                                            maxHeight: '25px'
-                                        }}
-                                    >
-                                        <IconButton>
-                                            {isPinned ? <PushPinOutlined /> : <PushPin />}
-                                        </IconButton>
-                                    </MenuItem>
+                                    {!isDeleted && (
+                                        <MenuItem
+                                            onClick={handleOpenPinDialog}
+                                            sx={{
+                                                '&:hover': {
+                                                    background: 'none'
+                                                },
+                                                maxHeight: '25px'
+                                            }}
+                                        >
+                                            <IconButton>
+                                                {isPinned ? <PushPinOutlined /> : <PushPin />}
+                                            </IconButton>
+                                        </MenuItem>
+                                    )}
                                 </>
                             )}
                         </Box>
@@ -174,6 +185,32 @@ export default function MessageView({
                         color="secondary"
                     >
                         Confirm
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog
+                open={pinDialogOpen}
+                onClose={handleClosePinDialog}
+                aria-labelledby="alert-pin-dialog-title"
+                aria-describedby="alert-pin-dialog-description"
+            >
+                <DialogTitle id="alert-pin-dialog-title">
+                    {`Are you sure you want to ${isPinned ? 'unpin' : 'pin'} this message?`}
+                </DialogTitle>
+                <DialogContent id="alert-dialog-description">
+                    Please confirm your action
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClosePinDialog} variant="contained" color="secondary">
+                        Cancel
+                    </Button>
+                    <Button
+                        onClick={handlePinDialogConfirmation}
+                        variant="contained"
+                        color="secondary"
+                    >
+                        {isPinned ? 'UNPIN' : 'PIN'}
                     </Button>
                 </DialogActions>
             </Dialog>

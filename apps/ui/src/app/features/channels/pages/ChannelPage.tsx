@@ -66,6 +66,16 @@ export default function ChannelPage() {
         async (id: string, messageData: Omit<Message, 'id' | 'content' | 'createdAt' | 'user'>) => {
             const { isDeleted } = messageData;
             messageData.isDeleted = !isDeleted;
+            messageData.isPinned = false;
+            await updateMessage({ id, messageData });
+        },
+        [updateMessage]
+    );
+
+    const handleChangePinStatus = useCallback(
+        async (id: string, messageData: Omit<Message, 'id' | 'content' | 'createdAt' | 'user'>) => {
+            const { isPinned } = messageData;
+            messageData.isPinned = !isPinned;
             await updateMessage({ id, messageData });
         },
         [updateMessage]
@@ -83,6 +93,7 @@ export default function ChannelPage() {
             handleMessageChange={handleMessageChange}
             sendMessage={sendMessage}
             handleChangeDeletionStatus={handleChangeDeletionStatus}
+            handleChangePinStatus={handleChangePinStatus}
         />
     );
 }
