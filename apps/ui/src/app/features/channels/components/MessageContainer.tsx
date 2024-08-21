@@ -19,7 +19,10 @@ export default function MessageContainer({
     const firstNameInitial: string = message.user.firstName[0].toUpperCase();
     const isSent: boolean = message.user.id === currentUser.id;
     const isDeleted: boolean = message.isDeleted;
+    const isPinned: boolean = message.isPinned;
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+
+    console.log(message.content, message.isPinned);
 
     const handleOpenDialog = () => {
         setDialogOpen(true);
@@ -44,6 +47,7 @@ export default function MessageContainer({
             firstNameInitial={firstNameInitial}
             isSent={isSent}
             isDeleted={isDeleted}
+            isPinned={isPinned}
             dialogOpen={dialogOpen}
             handleOpenDialog={handleOpenDialog}
             handleCloseDialog={handleCloseDialog}

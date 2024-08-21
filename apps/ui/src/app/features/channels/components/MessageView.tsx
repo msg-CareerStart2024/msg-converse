@@ -22,6 +22,7 @@ import { useTheme } from '@mui/material';
 import { Message } from '../../../types/messages/Message.types';
 import { User } from '../../../types/login/User.types';
 import { generateUserName } from '../../../utils/utils';
+import { PushPin, PushPinOutlined } from '@mui/icons-material';
 
 type MessageProps = {
     message: Message;
@@ -29,6 +30,7 @@ type MessageProps = {
     firstNameInitial: string;
     isSent: boolean;
     isDeleted: boolean;
+    isPinned: boolean;
     dialogOpen: boolean;
     handleOpenDialog: () => void;
     handleCloseDialog: () => void;
@@ -41,6 +43,7 @@ export default function MessageView({
     firstNameInitial,
     isSent,
     isDeleted,
+    isPinned,
     dialogOpen,
     handleOpenDialog,
     handleCloseDialog,
@@ -114,8 +117,8 @@ export default function MessageView({
                         transformOrigin={{ vertical: 'top', horizontal: 'center' }}
                     >
                         <Box sx={{ display: 'flex' }}>
-                            {isCurrentUserAdmin &&
-                                (!isDeleted ? (
+                            {isCurrentUserAdmin && (
+                                <>
                                     <MenuItem
                                         onClick={handleOpenDialog}
                                         sx={{
@@ -126,12 +129,10 @@ export default function MessageView({
                                         }}
                                     >
                                         <IconButton>
-                                            <DeleteIcon />
+                                            {isDeleted ? <RestoreIcon /> : <DeleteIcon />}
                                         </IconButton>
                                     </MenuItem>
-                                ) : (
                                     <MenuItem
-                                        onClick={handleOpenDialog}
                                         sx={{
                                             '&:hover': {
                                                 background: 'none'
@@ -140,10 +141,11 @@ export default function MessageView({
                                         }}
                                     >
                                         <IconButton>
-                                            <RestoreIcon />
+                                            {isPinned ? <PushPinOutlined /> : <PushPin />}
                                         </IconButton>
                                     </MenuItem>
-                                ))}
+                                </>
+                            )}
                         </Box>
                     </HoverMenu>
                 </Box>
