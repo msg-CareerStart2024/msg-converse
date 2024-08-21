@@ -88,6 +88,7 @@ export default function ChannelPage() {
             sendMessage={sendMessage}
             handleChangeDeletionStatus={handleChangeDeletionStatus}
             typingUsers={typingUsers}
+            handleTyping={handleTyping}
         />
     );
 }

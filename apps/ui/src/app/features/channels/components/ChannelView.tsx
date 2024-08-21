@@ -42,6 +42,7 @@ type ChannelProps = {
         messageData: Omit<Message, 'id' | 'content' | 'createdAt' | 'user'>
     ) => void;
     typingUsers: TypingUser[];
+    handleTyping: () => void;
 };
 
 export default function ChannelView({
@@ -57,7 +58,8 @@ export default function ChannelView({
     register,
     sendMessage,
     handleChangeDeletionStatus,
-    typingUsers
+    typingUsers,
+    handleTyping
 }: ChannelProps) {
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -160,6 +162,7 @@ export default function ChannelView({
                                             {...register('message')}
                                             error={!!errors.message}
                                             disabled={isOffline}
+                                            onChange={handleTyping}
                                         />
                                     </Grid>
                                     <Grid
