@@ -142,28 +142,38 @@ export default function ChannelView({
                 )}
                 <Box component="form" onSubmit={handleSubmit(sendMessage)} padding={3}>
                     <Grid container spacing={2} alignItems="center">
-                        <Grid item xs={11}>
-                            <FormControl fullWidth>
-                                <TextField
-                                    label="Type your message"
-                                    variant="outlined"
-                                    {...register('message')}
-                                    error={!!errors.message}
-                                    disabled={isOffline}
-                                />
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={1}>
-                            <IconButton
-                                type="submit"
-                                aria-label="send"
-                                color="primary"
-                                onClick={handleSubmit(sendMessage)}
-                                disabled={isOffline || !isValid}
-                            >
-                                <SendIcon />
-                            </IconButton>
-                        </Grid>
+                        <FormControl fullWidth>
+                            <Grid container spacing={2}>
+                                <Grid item xs={11}>
+                                    <TextField
+                                        fullWidth
+                                        label="Type your message"
+                                        variant="outlined"
+                                        {...register('message')}
+                                        error={!!errors.message}
+                                        disabled={isOffline}
+                                    />
+                                </Grid>
+                                <Grid
+                                    item
+                                    xs={1}
+                                    sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center'
+                                    }}
+                                >
+                                    <IconButton
+                                        type="submit"
+                                        aria-label="send"
+                                        color="primary"
+                                        disabled={isOffline || !isValid}
+                                    >
+                                        <SendIcon />
+                                    </IconButton>
+                                </Grid>
+                            </Grid>
+                        </FormControl>
                     </Grid>
                 </Box>
             </Paper>
