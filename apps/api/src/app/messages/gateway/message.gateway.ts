@@ -14,7 +14,12 @@ import { JwtService } from '@nestjs/jwt';
 import { User } from '../../users/domain/user.domain';
 import { MessageService } from '../service/message.service';
 import { Message } from '../domain/message.domain';
-import { NewMessagePayload, TypingUser } from '../type/message-gateway.types';
+import {
+    NewMessagePayload,
+    TypingUser,
+    UpdateDeletedStatusPayload
+} from '../type/message-gateway.types';
+import { Role } from '../../users/enums/role.enum';
 
 declare module 'socket.io' {
     interface Socket {
@@ -98,6 +103,20 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
         this.server.to(channelId).emit(SocketEvent.NEW_MESSAGE, newMessage);
         this.removeTypingUser(channelId, client.user);
         this.emitTypingUsers(channelId);
+    }
+
+    @SubscribeMessage(SocketEvent.UPDATE_DELETED_STATUS_CLIENT)
+    async handleUpdateDeletedStatus(
+        client: Socket,
+        { channelId, messageId, deletedStatus }: UpdateDeletedStatusPayload
+    ): Promise<void> {
+        if (client.user.role === Role.ADMIN) {
+            const updatedMessage = await this.messageService.updateDeletedStatus(
+                messageId,
+                deletedStatus
+            );
+            this.server.to(channelId).emit(SocketEvent.UPDATE_DELETED_STATUS, updatedMessage);
+        }
     }
 
     @SubscribeMessage(SocketEvent.START_TYPING)

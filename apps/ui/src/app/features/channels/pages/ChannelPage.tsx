@@ -2,10 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { useGetChannelByIdQuery } from '../../../api/channels-api/channels-api';
-import { useUpdateMessageMutation } from '../../../api/messages-api/messages-api';
 import { RootState } from '../../../store/store';
 import { User } from '../../../types/login/User.types';
-import { Message } from '../../../types/messages/Message.types';
 import ChannelView from '../components/ChannelView';
 import { useChannelSocket } from '../hooks/useChannelSocket';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -16,9 +14,14 @@ export default function ChannelPage() {
     const { id: channelId } = useParams<string>();
     const [isOffline, setIsOffline] = useState<boolean>(!navigator.onLine);
 
-    const { channelMessages, sendChannelMessage, refetchMessages, handleTyping, typingUsers } =
-        useChannelSocket(channelId as string);
-    const [updateMessage] = useUpdateMessageMutation();
+    const {
+        channelMessages,
+        sendChannelMessage,
+        updateMessageDeletedStatus,
+        refetchMessages,
+        handleTyping,
+        typingUsers
+    } = useChannelSocket(channelId as string);
 
     const {
         data: channel,
@@ -56,22 +59,18 @@ export default function ChannelPage() {
         mode: 'onChange'
     });
 
-    const sendMessage: SubmitHandler<ChannelChatValues> = useCallback(async () => {
+    const sendMessage: SubmitHandler<ChannelChatValues> = () => {
         const message = getValues('message');
         if (message.trim()) {
             sendChannelMessage(message);
             reset();
         }
-    }, [getValues, sendChannelMessage, reset]);
+    };
 
-    const handleChangeDeletionStatus = useCallback(
-        async (id: string, messageData: Omit<Message, 'id' | 'content' | 'createdAt' | 'user'>) => {
-            const { isDeleted } = messageData;
-            messageData.isDeleted = !isDeleted;
-            await updateMessage({ id, messageData });
-        },
-        [updateMessage]
-    );
+    const handleChangeDeletionStatus = (id: string, isDeleted: boolean) => {
+        const newDeletedStatus = !isDeleted;
+        updateMessageDeletedStatus(id, newDeletedStatus);
+    };
 
     return (
         <ChannelView

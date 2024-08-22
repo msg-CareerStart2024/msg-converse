@@ -9,5 +9,7 @@ export enum SocketEvent {
     SEND_MESSAGE = 'send_message',
     START_TYPING = 'start_typing',
     STOP_TYPING = 'stop_typing',
-    TYPING_USERS = 'typing_users'
+    TYPING_USERS = 'typing_users',
+    UPDATE_DELETED_STATUS = 'update_deleted_status',
+    UPDATE_DELETED_STATUS_CLIENT = 'update_deleted_status_client'
 }
