@@ -15,7 +15,7 @@ import { UserRole } from '../../../types/login/UserRole.enum';
 import { ChannelFormValues } from '../schemas/ChannelFormValues.schema';
 import ActionButtonView from './ActionButtonView';
 import TopicsView from './TopicsView';
-import { Channel } from '../../../types/channel/channel.types';
+import { ChannelDTO } from '../../../types/channel/channel.types';
 
 type ChannelFormProps = {
     handleSubmit: UseFormHandleSubmit<ChannelFormValues>;
@@ -42,7 +42,7 @@ type ChannelFormProps = {
     currentUser: User;
     handleAddTopic: () => void;
     handleDeleteTopic: (name: string) => void;
-    data?: Channel;
+    data?: ChannelDTO;
     isChanged: boolean;
 };
 
