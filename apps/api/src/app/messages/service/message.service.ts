@@ -56,16 +56,23 @@ export class MessageService {
 
         return this.messageRepository.update(existingMessage);
     }
-    async interact(id: string, userId: string): Promise<Message> {
-        const message = await this.messageRepository.getById(id);
+    async interact(
+        messageId: string,
+        userId: string
+    ): Promise<{ message: Message; action: string }> {
+        const message = await this.messageRepository.getById(messageId);
         const user = await this.userService.getById(userId);
+        let action = undefined;
 
         if (message.likes?.some(like => like.id === user.id)) {
             message.likes = message.likes.filter(like => like.id !== user.id);
+            action = 'dislike';
         } else {
             message.likes.push(user);
+            action = 'like';
         }
-        return this.messageRepository.update(message);
+        this.messageRepository.update(message);
+        return { message, action };
     }
     async updateDeletedStatus(id: string, newDeletedStatus: boolean): Promise<Message> {
         const existingMessage = await this.messageRepository.getById(id);

@@ -13,17 +13,17 @@ import {
     TextField,
     Typography
 } from '@mui/material';
+import { SerializedError } from '@reduxjs/toolkit';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { useCallback, useEffect, useRef } from 'react';
-import { Message } from '../../../types/messages/Message.types';
+import { FieldErrors, SubmitHandler, UseFormHandleSubmit, UseFormRegister } from 'react-hook-form';
 import { Channel } from '../../../types/channel/channel.types';
 import { User } from '../../../types/login/User.types';
-import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
-import { SerializedError } from '@reduxjs/toolkit';
-import MessageContainer from './MessageContainer';
-import ChannelTypingIndicator from './ChannelTypingIndicator';
+import { Message } from '../../../types/messages/Message.types';
 import { TypingUser } from '../../../types/socket/messages-socket.payload';
 import { ChannelChatValues } from '../schemas/ChatInputValues.schema';
-import { FieldErrors, SubmitHandler, UseFormHandleSubmit, UseFormRegister } from 'react-hook-form';
+import ChannelTypingIndicator from './ChannelTypingIndicator';
+import MessageContainer from './MessageContainer';
 
 type ChannelProps = {
     channelMessages: Message[] | undefined;
@@ -40,6 +40,7 @@ type ChannelProps = {
     handleChangeDeletionStatus: (id: string, isDeleted: boolean) => void;
     typingUsers: TypingUser[];
     handleTyping: () => void;
+    handleToggleLikeMessage: (messageId: string) => void;
 };
 
 export default function ChannelView({
@@ -56,7 +57,8 @@ export default function ChannelView({
     sendMessage,
     handleChangeDeletionStatus,
     typingUsers,
-    handleTyping
+    handleTyping,
+    handleToggleLikeMessage
 }: ChannelProps) {
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -131,6 +133,7 @@ export default function ChannelView({
                                         message={message}
                                         currentUser={currentUser}
                                         handleChangeDeletionStatus={handleChangeDeletionStatus}
+                                        handleToggleLikeMessage={handleToggleLikeMessage}
                                     />
                                 </ListItem>
                             ))}

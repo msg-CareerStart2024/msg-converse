@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux';
 import {
     useAddMessageMutation,
     useGetMessagesByChannelIdQuery,
-    useSwapMessageMutation
+    useSwapMessageMutation,
+    useUpdateLikeMessageMutation
 } from '../../../api/messages-api/messages-api';
 import {
     useJoinChannelChatMutation,
@@ -11,6 +12,7 @@ import {
     useSendMessageMutation,
     useStartTypingMutation,
     useStopTypingMutation,
+    useToggleLikeMessageMutation,
     useUpdateDeletedStatusMutation
 } from '../../../api/socket-api/socket-api';
 import { useChatSocket } from '../../../contexts/ChannelSocketContext';
@@ -30,6 +32,8 @@ export const useChannelSocket = (channelId: string) => {
     const [addMessage] = useAddMessageMutation();
     const [startTyping] = useStartTypingMutation();
     const [stopTyping] = useStopTypingMutation();
+    const [updateLikeMessage] = useUpdateLikeMessageMutation();
+    const [toggleLikeMessage] = useToggleLikeMessageMutation();
 
     const [typingUsers, setTypingUsers] = useState<TypingUser[]>([]);
     const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -64,16 +68,33 @@ export const useChannelSocket = (channelId: string) => {
             setTypingUsers(users.filter(user => user.id !== currentUser?.id));
         };
 
+        const handleUpdateLikeMessage = ({
+            message,
+            action
+        }: {
+            message: Message;
+            action: string;
+        }) => {
+            updateLikeMessage({
+                channelId,
+                updatedMessage: message,
+                user: currentUser,
+                action
+            });
+        };
+
         joinChannelChat(channelId);
         activeSocket.on(SocketEvent.NEW_MESSAGE, handleNewMessage);
         activeSocket.on(SocketEvent.UPDATE_DELETED_STATUS, handleUpdateDeletedStatus);
         activeSocket.on(SocketEvent.TYPING_USERS, handleTypingUsers);
+        activeSocket.on(SocketEvent.TOGGLE_LIKE_MESSAGE_SERVER, handleUpdateLikeMessage);
 
         return () => {
             leaveChannelChat(channelIdRef.current);
             activeSocket.off(SocketEvent.NEW_MESSAGE, handleNewMessage);
             activeSocket.off(SocketEvent.UPDATE_DELETED_STATUS, handleUpdateDeletedStatus);
             activeSocket.off(SocketEvent.TYPING_USERS, handleTypingUsers);
+            activeSocket.off(SocketEvent.TOGGLE_LIKE_MESSAGE_SERVER, handleUpdateLikeMessage);
         };
     }, [
         activeSocket,
@@ -82,7 +103,8 @@ export const useChannelSocket = (channelId: string) => {
         channelId,
         addMessage,
         swapMessage,
-        currentUser
+        currentUser,
+        updateLikeMessage
     ]);
 
     const handleTyping = useCallback(() => {
@@ -120,12 +142,19 @@ export const useChannelSocket = (channelId: string) => {
         [activeSocket, updateDeletedStatus]
     );
 
+    const handleToggleLikeMessage = (messageId: string) => {
+        if (activeSocket) {
+            toggleLikeMessage({ channelId, messageId });
+        }
+    };
+
     return {
         channelMessages,
         sendChannelMessage,
         updateMessageDeletedStatus,
         handleTyping,
         typingUsers,
+        handleToggleLikeMessage,
         refetchMessages: refetch
     };
 };

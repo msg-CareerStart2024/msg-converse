@@ -45,8 +45,8 @@ export const socketApi = createApi({
         sendMessage: builder.mutation<void, SendMessageEventPayload>({
             queryFn: payload => emitSocketEvent(SocketEvent.SEND_MESSAGE, payload)
         }),
-        toggleLikeMessage: builder.mutation<void, string>({
-            queryFn: messageId => emitSocketEvent(SocketEvent.TOGGLE_LIKE_MESSAGE, messageId)
+        toggleLikeMessage: builder.mutation<void, { channelId: string; messageId: string }>({
+            queryFn: payload => emitSocketEvent(SocketEvent.TOGGLE_LIKE_MESSAGE_CLIENT, payload)
         }),
         updateDeletedStatus: builder.mutation<void, UpdateDeletedStatusPayload>({
             queryFn: payload => emitSocketEvent(SocketEvent.UPDATE_DELETED_STATUS_CLIENT, payload)

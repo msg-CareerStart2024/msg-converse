@@ -1,17 +1,19 @@
-import { MessageComponentProps } from '../../../types/messages/Message.types';
-import { User } from '../../../types/login/User.types';
 import { useState } from 'react';
+import { User } from '../../../types/login/User.types';
+import { MessageComponentProps } from '../../../types/messages/Message.types';
 import MessageView from './MessageView';
 
 type UnifiedMessageProps = MessageComponentProps & {
     currentUser: User;
     handleChangeDeletionStatus: (id: string, isDeleted: boolean) => void;
+    handleToggleLikeMessage: (messageId: string) => void;
 };
 
 export default function MessageContainer({
     message,
     currentUser,
-    handleChangeDeletionStatus
+    handleChangeDeletionStatus,
+    handleToggleLikeMessage
 }: UnifiedMessageProps) {
     const firstNameInitial: string = message.user.firstName[0].toUpperCase();
     const isSent: boolean = message.user.id === currentUser.id;
@@ -42,6 +44,7 @@ export default function MessageContainer({
             handleOpenDialog={handleOpenDialog}
             handleCloseDialog={handleCloseDialog}
             handleDialogConfirmation={handleDialogConfirmation}
+            handleToggleLikeMessage={handleToggleLikeMessage}
         />
     );
 }

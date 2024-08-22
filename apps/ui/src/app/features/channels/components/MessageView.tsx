@@ -1,3 +1,5 @@
+import DeleteIcon from '@mui/icons-material/Delete';
+import RestoreIcon from '@mui/icons-material/Restore';
 import {
     Avatar,
     Box,
@@ -10,17 +12,15 @@ import {
     ListItemText,
     MenuItem,
     Tooltip,
-    Typography
+    Typography,
+    useTheme
 } from '@mui/material';
-import { getColor } from '../../../lib/avatar-colors';
-import { UserRole } from '../../../types/login/UserRole.enum';
 import HoverMenu from 'material-ui-popup-state/HoverMenu';
 import { bindHover, bindMenu, usePopupState } from 'material-ui-popup-state/hooks';
-import DeleteIcon from '@mui/icons-material/Delete';
-import RestoreIcon from '@mui/icons-material/Restore';
-import { useTheme } from '@mui/material';
-import { Message } from '../../../types/messages/Message.types';
+import { getColor } from '../../../lib/avatar-colors';
 import { User } from '../../../types/login/User.types';
+import { UserRole } from '../../../types/login/UserRole.enum';
+import { Message } from '../../../types/messages/Message.types';
 import { generateUserName } from '../../../utils/utils';
 
 type MessageProps = {
@@ -33,6 +33,7 @@ type MessageProps = {
     handleOpenDialog: () => void;
     handleCloseDialog: () => void;
     handleDialogConfirmation: () => void;
+    handleToggleLikeMessage: (message: string) => void;
 };
 
 export default function MessageView({
@@ -44,7 +45,8 @@ export default function MessageView({
     dialogOpen,
     handleOpenDialog,
     handleCloseDialog,
-    handleDialogConfirmation
+    handleDialogConfirmation,
+    handleToggleLikeMessage
 }: MessageProps) {
     const theme = useTheme();
     const isCurrentUserAdmin = currentUser.role === UserRole.ADMIN;
@@ -71,6 +73,7 @@ export default function MessageView({
         popupId: 'messageMenu'
     });
 
+    console.log(message.content, message.likes.length)
     return (
         <>
             <Box
@@ -146,6 +149,10 @@ export default function MessageView({
                                         </IconButton>
                                     </MenuItem>
                                 ))}
+                            <Button onClick={() => handleToggleLikeMessage(message.id)}>
+                                Laik
+                                <Typography color="white">{message.likes?.length || 0}</Typography>
+                            </Button>
                         </Box>
                     </HoverMenu>
                 </Box>

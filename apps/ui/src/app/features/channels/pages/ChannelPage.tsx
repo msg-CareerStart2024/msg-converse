@@ -20,7 +20,8 @@ export default function ChannelPage() {
         updateMessageDeletedStatus,
         refetchMessages,
         handleTyping,
-        typingUsers
+        typingUsers,
+        handleToggleLikeMessage
     } = useChannelSocket(channelId as string);
 
     const {
@@ -88,6 +89,7 @@ export default function ChannelPage() {
             handleChangeDeletionStatus={handleChangeDeletionStatus}
             typingUsers={typingUsers}
             handleTyping={handleTyping}
+            handleToggleLikeMessage={handleToggleLikeMessage}
         />
     );
 }

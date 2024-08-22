@@ -7,6 +7,7 @@ export interface Message {
     isDeleted: boolean;
     createdAt: Date;
     user: User;
+    likes: User[];
 }
 export interface MessageComponentProps {
     message: Message;

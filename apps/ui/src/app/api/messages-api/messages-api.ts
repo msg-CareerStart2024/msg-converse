@@ -1,7 +1,8 @@
-import { API_CACHE_TAGS } from '../../config/api-tags';
-import { API_URLS } from '../../config/api-config';
-import { Message } from '../../types/messages/Message.types';
 import { createApi } from '@reduxjs/toolkit/query/react';
+import { API_URLS } from '../../config/api-config';
+import { API_CACHE_TAGS } from '../../config/api-tags';
+import { User } from '../../types/login/User.types';
+import { Message } from '../../types/messages/Message.types';
 import getFetchBaseQuery from '../fetch-base-query';
 
 export const messagesApi = createApi({
@@ -56,6 +57,37 @@ export const messagesApi = createApi({
                 }
             }
         }),
+        updateLikeMessage: builder.mutation<
+            Message,
+            { channelId: string; updatedMessage: Message; user?: User; action: string }
+        >({
+            queryFn: ({ updatedMessage }) => ({ data: updatedMessage }),
+            async onQueryStarted(
+                { channelId, updatedMessage, user, action },
+                { dispatch, queryFulfilled }
+            ) {
+                console.log('updatedMessageLikes1:', updatedMessage.likes);
+                const patchResult = dispatch(
+                    messagesApi.util.updateQueryData('getMessagesByChannelId', channelId, draft => {
+                        const index = draft.findIndex(msg => msg.id === updatedMessage.id);
+                        if (index !== -1 && user) {
+                            action === 'dislike'
+                                ? (draft[index].likes = draft[index].likes.filter(
+                                      like => like.id !== user.id
+                                  ))
+                                : draft[index].likes.push(user);
+                        }
+                    })
+                );
+                try {
+                    await queryFulfilled;
+                } catch {
+                    console.log('undo');
+                    patchResult.undo();
+                }
+                console.log('updatedMessageLikes2:', updatedMessage.likes);
+            }
+        }),
 
         createMessage: builder.mutation<
             Message,
@@ -100,5 +132,6 @@ export const {
     useUpdateMessageMutation,
     useRemoveMessageMutation,
     useAddMessageMutation,
-    useSwapMessageMutation
+    useSwapMessageMutation,
+    useUpdateLikeMessageMutation
 } = messagesApi;

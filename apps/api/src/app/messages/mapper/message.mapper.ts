@@ -56,7 +56,7 @@ export class MessageMapper {
             createdAt: undefined,
             user: undefined,
             channel: undefined,
-            likes: undefined
+            likes: []
         };
     }
 }
