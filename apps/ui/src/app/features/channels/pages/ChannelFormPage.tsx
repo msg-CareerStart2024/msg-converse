@@ -41,10 +41,18 @@ export default function ChannelFormPage() {
         return topicNames1.every((name, index) => name === topicNames2[index]);
     }, []);
 
+    const isNoTopicAlert = (action: string): boolean => {
+        if (topics.length === 0) {
+            toast.error(`Please add at least one topic before ${action} the channel.`);
+            return true;
+        }
+
+        return false;
+    };
+
     const [createChannel] = useCreateChannelMutation();
     function onCreate() {
-        if (topics.length === 0) {
-            toast.error('Please add at least one topic before creating the channel.');
+        if (isNoTopicAlert('creating')) {
             return;
         }
 
@@ -83,6 +91,10 @@ export default function ChannelFormPage() {
 
     const [updateChannel] = useUpdateChannelMutation();
     function onUpdate() {
+        if (isNoTopicAlert('updating')) {
+            return;
+        }
+
         const channelData = {
             name: capitalizeFirstLetter(getValues('name')).trim(),
             description: getValues('description'),

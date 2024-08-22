@@ -162,7 +162,7 @@ export default function ChannelView({
                                             {...register('message')}
                                             error={!!errors.message}
                                             disabled={isOffline}
-                                            onChange={handleTyping}
+                                            onInput={handleTyping}
                                         />
                                     </Grid>
                                     <Grid
