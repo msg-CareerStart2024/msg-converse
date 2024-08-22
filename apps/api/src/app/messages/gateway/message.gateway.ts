@@ -19,6 +19,7 @@ import {
     TypingUser,
     UpdateDeletedStatusPayload
 } from '../type/message-gateway.types';
+import { Role } from '../../users/enums/role.enum';
 
 declare module 'socket.io' {
     interface Socket {
@@ -105,16 +106,17 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
     }
 
     @SubscribeMessage(SocketEvent.UPDATE_DELETED_STATUS_CLIENT)
-    async handleUpdateDeletedStatus({
-        channelId,
-        messageId,
-        deletedStatus
-    }: UpdateDeletedStatusPayload): Promise<void> {
-        const updatedMessage = await this.messageService.updateDeletedStatus(
-            messageId,
-            deletedStatus
-        );
-        this.server.to(channelId).emit(SocketEvent.UPDATE_DELETED_STATUS, updatedMessage);
+    async handleUpdateDeletedStatus(
+        client: Socket,
+        { channelId, messageId, deletedStatus }: UpdateDeletedStatusPayload
+    ): Promise<void> {
+        if (client.user.role === Role.ADMIN) {
+            const updatedMessage = await this.messageService.updateDeletedStatus(
+                messageId,
+                deletedStatus
+            );
+            this.server.to(channelId).emit(SocketEvent.UPDATE_DELETED_STATUS, updatedMessage);
+        }
     }
 
     @SubscribeMessage(SocketEvent.START_TYPING)
