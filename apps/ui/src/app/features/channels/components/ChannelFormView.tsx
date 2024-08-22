@@ -24,7 +24,6 @@ type ChannelFormProps = {
     isSubmitting: boolean;
     isValid: boolean;
     isEditForm: boolean;
-    isDirty: boolean;
     getValues: UseFormGetValues<{
         name: string;
         topics: string;
@@ -44,6 +43,7 @@ type ChannelFormProps = {
     handleAddTopic: () => void;
     handleDeleteTopic: (name: string) => void;
     data?: ChannelDTO;
+    isChanged: boolean;
 };
 
 export default function ChannelFormView({
@@ -52,7 +52,6 @@ export default function ChannelFormView({
     errors,
     isSubmitting,
     isValid,
-    isDirty,
     isEditForm,
     getValues,
     setValue,
@@ -64,7 +63,8 @@ export default function ChannelFormView({
     currentUser,
     handleAddTopic,
     handleDeleteTopic,
-    data
+    data,
+    isChanged
 }: ChannelFormProps) {
     const channelName = data?.name;
     const channelInitial = getValues('name')?.charAt(0).toUpperCase();
@@ -101,6 +101,7 @@ export default function ChannelFormView({
                                     disabled={
                                         isSubmitting ||
                                         !isValid ||
+                                        !isChanged ||
                                         currentUser.role !== UserRole.ADMIN
                                     }
                                 />

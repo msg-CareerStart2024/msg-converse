@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -17,15 +17,29 @@ import { capitalizeFirstLetter } from '../../../utils/utils';
 import ChannelFormView from '../components/ChannelFormView';
 import { ChannelFormSchema, ChannelFormValues } from '../schemas/ChannelFormValues.schema';
 import toast from 'react-hot-toast';
+import { ChannelDTO } from '../../../types/channel/channel.types';
 
 export default function ChannelFormPage() {
     const { id } = useParams<{ id?: string }>();
     const [getChannelById, { data }] = useLazyGetChannelByIdQuery();
     const [topics, setTopics] = useState<Topic[]>([]);
-
+    const [initialValues, setInitialValues] = useState<ChannelDTO | null>(null);
     const currentUser = useSelector((state: RootState) => state.auth.user) as User;
+    const isChangedRef = useRef(false);
+    const [isChanged, setIsChanged] = useState(false);
 
-    const [createChannel] = useCreateChannelMutation();
+    interface SimpleTopic {
+        name: string;
+    }
+
+    const areTopicsEqual = useCallback((topics1: Topic[], topics2: SimpleTopic[]): boolean => {
+        const topicNames1 = topics1.map(t => t.name).sort();
+        const topicNames2 = topics2.map(t => t.name).sort();
+
+        if (topicNames1.length !== topicNames2.length) return false;
+
+        return topicNames1.every((name, index) => name === topicNames2[index]);
+    }, []);
 
     const isNoTopicAlert = (action: string): boolean => {
         if (topics.length === 0) {
@@ -36,6 +50,7 @@ export default function ChannelFormPage() {
         return false;
     };
 
+    const [createChannel] = useCreateChannelMutation();
     function onCreate() {
         if (isNoTopicAlert('creating')) {
             return;
@@ -75,7 +90,6 @@ export default function ChannelFormPage() {
     }
 
     const [updateChannel] = useUpdateChannelMutation();
-
     function onUpdate() {
         if (isNoTopicAlert('updating')) {
             return;
@@ -118,23 +132,44 @@ export default function ChannelFormPage() {
         register,
         setValue,
         getValues,
-        formState: { errors, isValid, isDirty }
+        watch,
+        formState: { errors, isValid }
     } = useForm<ChannelFormValues>({
         resolver: zodResolver(ChannelFormSchema),
-        mode: 'onChange'
+        mode: 'onChange',
+        defaultValues: {
+            name: data?.name,
+            description: data?.description,
+            topics: data?.topics.map(t => t.name).join(', ')
+        }
     });
 
     useEffect(() => {
         if (data) {
+            setInitialValues({
+                name: data.name,
+                description: data.description,
+                topics: data.topics
+            });
             setValue('name', data.name);
             setValue('description', data.description);
             setTopics(data.topics);
         }
     }, [data, setValue]);
 
-    if (id && !data) {
-        return <Typography>Loading...</Typography>;
-    }
+    const nameValue = watch('name');
+    const descriptionValue = watch('description');
+
+    useEffect(() => {
+        if (initialValues) {
+            const topicsChanged = !areTopicsEqual(topics, initialValues.topics);
+            isChangedRef.current =
+                initialValues.name !== nameValue ||
+                initialValues.description !== descriptionValue ||
+                topicsChanged;
+            setIsChanged(isChangedRef.current);
+        }
+    }, [nameValue, descriptionValue, initialValues, areTopicsEqual, topics]);
 
     const handleAddTopic = () => {
         const newTopicName = getValues('topics').toUpperCase().trim();
@@ -160,6 +195,10 @@ export default function ChannelFormPage() {
         setTopics(updatedTopics);
     };
 
+    if (id && !data) {
+        return <Typography>Loading...</Typography>;
+    }
+
     return (
         <ChannelFormView
             register={register}
@@ -167,7 +206,6 @@ export default function ChannelFormPage() {
             errors={errors}
             isSubmitting={false}
             isValid={isValid}
-            isDirty={isDirty}
             isEditForm={!!id}
             getValues={getValues}
             setValue={setValue}
@@ -180,6 +218,7 @@ export default function ChannelFormPage() {
             currentUser={currentUser}
             handleAddTopic={handleAddTopic}
             handleDeleteTopic={handleDeleteTopic}
+            isChanged={isChanged}
         />
     );
 }

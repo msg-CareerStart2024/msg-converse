@@ -5,7 +5,8 @@ import {
     usePinMessageMutation,
     useSendMessageMutation,
     useStartTypingMutation,
-    useStopTypingMutation
+    useStopTypingMutation,
+    useUpdateDeletedStatusMutation
 } from '../../../api/socket-api/socket-api';
 import { Message } from '../../../types/messages/Message.types';
 import { SocketEvent } from '../../../types/socket/SocketEvent.enum';
@@ -25,6 +26,7 @@ export const useChannelSocket = (channelId: string) => {
     const [joinChannelChat] = useJoinChannelChatMutation();
     const [leaveChannelChat] = useLeaveChannelChatMutation();
     const [sendMessage] = useSendMessageMutation();
+    const [updateDeletedStatus] = useUpdateDeletedStatusMutation();
     const [addMessage] = useAddMessageMutation();
     const [pinMessage] = usePinMessageMutation();
     const [swapMessage] = useSwapMessageMutation();
@@ -60,6 +62,10 @@ export const useChannelSocket = (channelId: string) => {
             swapMessage({ channelId, updatedMessage: message });
         };
 
+        const handleUpdateDeletedStatus = (message: Message) => {
+            swapMessage({ channelId, updatedMessage: message });
+        };
+
         const handleTypingUsers = (users: TypingUser[]) => {
             setTypingUsers(users.filter(user => user.id !== currentUser?.id));
         };
@@ -67,11 +73,13 @@ export const useChannelSocket = (channelId: string) => {
         joinChannelChat(channelId);
         activeSocket.on(SocketEvent.NEW_MESSAGE, handleNewMessage);
         activeSocket.on(SocketEvent.PIN_FROM_SERVER, handlePinMessage);
+        activeSocket.on(SocketEvent.UPDATE_DELETED_STATUS, handleUpdateDeletedStatus);
         activeSocket.on(SocketEvent.TYPING_USERS, handleTypingUsers);
 
         return () => {
             leaveChannelChat(channelIdRef.current);
             activeSocket.off(SocketEvent.NEW_MESSAGE, handleNewMessage);
+            activeSocket.off(SocketEvent.UPDATE_DELETED_STATUS, handleUpdateDeletedStatus);
             activeSocket.off(SocketEvent.TYPING_USERS, handleTypingUsers);
         };
     }, [
@@ -115,9 +123,23 @@ export const useChannelSocket = (channelId: string) => {
         [activeSocket, pinMessage]
     );
 
+    const updateMessageDeletedStatus = useCallback(
+        (messageId: string, newDeletedStatus: boolean) => {
+            if (activeSocket) {
+                updateDeletedStatus({
+                    channelId: channelIdRef.current,
+                    messageId,
+                    deletedStatus: newDeletedStatus
+                });
+            }
+        },
+        [activeSocket, updateDeletedStatus]
+    );
+
     return {
         channelMessages,
         sendChannelMessage,
+        updateMessageDeletedStatus,
         handleTyping,
         typingUsers,
         refetchMessages: refetch,

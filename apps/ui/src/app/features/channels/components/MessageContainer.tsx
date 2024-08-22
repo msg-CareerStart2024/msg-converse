@@ -1,15 +1,12 @@
-import { Message, MessageComponentProps } from '../../../types/messages/Message.types';
+import { MessageComponentProps } from '../../../types/messages/Message.types';
 import { User } from '../../../types/login/User.types';
 import { useState } from 'react';
 import MessageView from './MessageView';
 
 type UnifiedMessageProps = MessageComponentProps & {
     currentUser: User;
-    handleChangeDeletionStatus: (
-        id: string,
-        messageData: Omit<Message, 'id' | 'content' | 'createdAt' | 'user'>
-    ) => void;
     handlePinStatus: (messageId: string, pinStatus: boolean) => void;
+    handleChangeDeletionStatus: (id: string, isDeleted: boolean) => void;
 };
 
 export default function MessageContainer({
@@ -31,10 +28,7 @@ export default function MessageContainer({
         setDialogOpen(false);
     };
     const handleDialogConfirmation = () => {
-        handleChangeDeletionStatus(message.id, {
-            isPinned,
-            isDeleted
-        });
+        handleChangeDeletionStatus(message.id, isDeleted);
         handleCloseDialog();
     };
 

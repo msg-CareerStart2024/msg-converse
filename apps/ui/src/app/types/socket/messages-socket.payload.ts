@@ -21,6 +21,12 @@ export type PinMessageEventPayload = {
     pinStatus: boolean;
 };
 
+export type UpdateDeletedStatusPayload = {
+    channelId: string;
+    messageId: string;
+    deletedStatus: boolean;
+};
+
 export type TypingUser = {
     id: string;
     firstName: string;
