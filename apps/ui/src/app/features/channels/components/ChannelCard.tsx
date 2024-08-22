@@ -90,7 +90,7 @@ const ChannelCard = ({ channel }: ChannelCardProps) => {
                         )}
                     </Stack>
                     <Stack direction="row" spacing={1} mb={2}>
-                        {channel.topics.map(topic => (
+                        {channel.topics.slice(0, 3).map(topic => (
                             <Chip
                                 key={topic.id}
                                 label={topic.name}
@@ -117,9 +117,11 @@ const ChannelCard = ({ channel }: ChannelCardProps) => {
                     ) : (
                         <Button
                             size="small"
-                            sx={{ color: 'secondary.main', fontWeight: '600' }}
+                            sx={{ fontWeight: '600' }}
+                            color="primary"
                             onClick={handleLeaveChannel}
                             disabled={isLoadingLeave}
+                            variant="contained"
                         >
                             Leave
                         </Button>

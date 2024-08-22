@@ -109,45 +109,48 @@ export default function MessageView({
                         }
                     />
 
-                    <HoverMenu
-                        {...bindMenu(popupState)}
-                        sx={{ display: 'flex', flexDirection: 'row' }}
-                        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-                        transformOrigin={{ vertical: 'top', horizontal: 'center' }}
-                    >
-                        <Box sx={{ display: 'flex' }}>
-                            {isCurrentUserAdmin &&
-                                (!isDeleted ? (
-                                    <MenuItem
-                                        onClick={handleOpenDialog}
-                                        sx={{
-                                            '&:hover': {
-                                                background: 'none'
-                                            },
-                                            maxHeight: '25px'
-                                        }}
-                                    >
-                                        <IconButton>
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    </MenuItem>
-                                ) : (
-                                    <MenuItem
-                                        onClick={handleOpenDialog}
-                                        sx={{
-                                            '&:hover': {
-                                                background: 'none'
-                                            },
-                                            maxHeight: '25px'
-                                        }}
-                                    >
-                                        <IconButton>
-                                            <RestoreIcon />
-                                        </IconButton>
-                                    </MenuItem>
-                                ))}
-                        </Box>
-                    </HoverMenu>
+                    {/* Remove this in second release */}
+                    {isCurrentUserAdmin && (
+                        <HoverMenu
+                            {...bindMenu(popupState)}
+                            sx={{ display: 'flex', flexDirection: 'row' }}
+                            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                            transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+                        >
+                            <Box sx={{ display: 'flex' }}>
+                                {isCurrentUserAdmin &&
+                                    (!isDeleted ? (
+                                        <MenuItem
+                                            onClick={handleOpenDialog}
+                                            sx={{
+                                                '&:hover': {
+                                                    background: 'none'
+                                                },
+                                                maxHeight: '25px'
+                                            }}
+                                        >
+                                            <IconButton>
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </MenuItem>
+                                    ) : (
+                                        <MenuItem
+                                            onClick={handleOpenDialog}
+                                            sx={{
+                                                '&:hover': {
+                                                    background: 'none'
+                                                },
+                                                maxHeight: '25px'
+                                            }}
+                                        >
+                                            <IconButton>
+                                                <RestoreIcon />
+                                            </IconButton>
+                                        </MenuItem>
+                                    ))}
+                            </Box>
+                        </HoverMenu>
+                    )}
                 </Box>
             </Box>
             <Dialog
