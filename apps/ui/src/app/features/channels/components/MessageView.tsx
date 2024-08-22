@@ -120,31 +120,18 @@ export default function MessageView({
                         }
                     />
 
-                    <HoverMenu
-                        {...bindMenu(popupState)}
-                        sx={{ display: 'flex', flexDirection: 'row' }}
-                        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-                        transformOrigin={{ vertical: 'top', horizontal: 'center' }}
-                    >
-                        <Box sx={{ display: 'flex' }}>
-                            {isCurrentUserAdmin && (
-                                <>
-                                    <MenuItem
-                                        onClick={handleOpenDialog}
-                                        sx={{
-                                            '&:hover': {
-                                                background: 'none'
-                                            },
-                                            maxHeight: '25px'
-                                        }}
-                                    >
-                                        <IconButton>
-                                            {isDeleted ? <RestoreIcon /> : <DeleteIcon />}
-                                        </IconButton>
-                                    </MenuItem>
-                                    {!isDeleted && (
+                    {isCurrentUserAdmin && (
+                        <HoverMenu
+                            {...bindMenu(popupState)}
+                            sx={{ display: 'flex', flexDirection: 'row' }}
+                            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                            transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+                        >
+                            <Box sx={{ display: 'flex' }}>
+                                {isCurrentUserAdmin && (
+                                    <>
                                         <MenuItem
-                                            onClick={handleOpenPinDialog}
+                                            onClick={handleOpenDialog}
                                             sx={{
                                                 '&:hover': {
                                                     background: 'none'
@@ -153,14 +140,29 @@ export default function MessageView({
                                             }}
                                         >
                                             <IconButton>
-                                                {isPinned ? <PushPinOutlined /> : <PushPin />}
+                                                {isDeleted ? <RestoreIcon /> : <DeleteIcon />}
                                             </IconButton>
                                         </MenuItem>
-                                    )}
-                                </>
-                            )}
-                        </Box>
-                    </HoverMenu>
+                                        {!isDeleted && (
+                                            <MenuItem
+                                                onClick={handleOpenPinDialog}
+                                                sx={{
+                                                    '&:hover': {
+                                                        background: 'none'
+                                                    },
+                                                    maxHeight: '25px'
+                                                }}
+                                            >
+                                                <IconButton>
+                                                    {isPinned ? <PushPinOutlined /> : <PushPin />}
+                                                </IconButton>
+                                            </MenuItem>
+                                        )}
+                                    </>
+                                )}
+                            </Box>
+                        </HoverMenu>
+                    )}
                 </Box>
             </Box>
             <Dialog

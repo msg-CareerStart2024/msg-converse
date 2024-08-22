@@ -76,7 +76,9 @@ export default function ChannelFormView({
                 padding: 0.1
             }}
         >
-            <Box sx={{ fontSize: '20px' }}>{isEditForm ? channelName : 'Create Channel'}</Box>
+            <Box sx={{ fontSize: '20px' }}>
+                {isEditForm ? `Edit ${channelName}` : 'Create Channel'}
+            </Box>
             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                 <form>
                     <Box
