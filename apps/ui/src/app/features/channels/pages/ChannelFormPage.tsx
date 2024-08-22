@@ -28,6 +28,19 @@ export default function ChannelFormPage() {
     const isChangedRef = useRef(false);
     const [isChanged, setIsChanged] = useState(false);
 
+    interface SimpleTopic {
+        name: string;
+    }
+
+    const areTopicsEqual = useCallback((topics1: Topic[], topics2: SimpleTopic[]): boolean => {
+        const topicNames1 = topics1.map(t => t.name).sort();
+        const topicNames2 = topics2.map(t => t.name).sort();
+
+        if (topicNames1.length !== topicNames2.length) return false;
+
+        return topicNames1.every((name, index) => name === topicNames2[index]);
+    }, []);
+
     const [createChannel] = useCreateChannelMutation();
     function onCreate() {
         if (topics.length === 0) {
@@ -135,19 +148,6 @@ export default function ChannelFormPage() {
     const nameValue = watch('name');
     const descriptionValue = watch('description');
 
-    interface SimpleTopic {
-        name: string;
-    }
-
-    const areTopicsEqual = useCallback((topics1: Topic[], topics2: SimpleTopic[]): boolean => {
-        const names1 = topics1.map(t => t.name).sort();
-        const names2 = topics2.map(t => t.name).sort();
-
-        if (names1.length !== names2.length) return false;
-
-        return names1.every((name, index) => name === names2[index]);
-    }, []);
-
     useEffect(() => {
         if (initialValues) {
             const topicsChanged = !areTopicsEqual(topics, initialValues.topics);
@@ -155,14 +155,9 @@ export default function ChannelFormPage() {
                 initialValues.name !== nameValue ||
                 initialValues.description !== descriptionValue ||
                 topicsChanged;
-            console.log('Is form changed from initial?', isChangedRef.current);
             setIsChanged(isChangedRef.current);
         }
     }, [nameValue, descriptionValue, initialValues, areTopicsEqual, topics]);
-
-    if (id && !data) {
-        return <Typography>Loading...</Typography>;
-    }
 
     const handleAddTopic = () => {
         const newTopicName = getValues('topics').toUpperCase().trim();
@@ -187,6 +182,10 @@ export default function ChannelFormPage() {
         const updatedTopics = topics.filter(topic => topic.name !== name);
         setTopics(updatedTopics);
     };
+
+    if (id && !data) {
+        return <Typography>Loading...</Typography>;
+    }
 
     return (
         <ChannelFormView
