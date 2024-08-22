@@ -56,24 +56,28 @@ export class MessageService {
 
         return this.messageRepository.update(existingMessage);
     }
-    async interact(
+
+    async updateInteractions(
         messageId: string,
         userId: string
     ): Promise<{ message: Message; action: string }> {
         const message = await this.messageRepository.getById(messageId);
-        const user = await this.userService.getById(userId);
+        const userWhoLiked = await this.userService.getById(userId);
         let action = undefined;
 
-        if (message.likes?.some(like => like.id === user.id)) {
-            message.likes = message.likes.filter(like => like.id !== user.id);
+        if (message.usersWhoLiked?.some(user => user.id === userWhoLiked.id)) {
+            message.usersWhoLiked = message.usersWhoLiked.filter(
+                user => user.id !== userWhoLiked.id
+            );
             action = 'dislike';
         } else {
-            message.likes.push(user);
+            message.usersWhoLiked.push(userWhoLiked);
             action = 'like';
         }
-        this.messageRepository.update(message);
-        return { message, action };
+        const updatedMessage = await this.messageRepository.update(message);
+        return { message: updatedMessage, action };
     }
+
     async updateDeletedStatus(id: string, newDeletedStatus: boolean): Promise<Message> {
         const existingMessage = await this.messageRepository.getById(id);
 

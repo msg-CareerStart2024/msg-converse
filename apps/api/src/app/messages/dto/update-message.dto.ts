@@ -12,5 +12,5 @@ export class UpdateMessageDTO {
     isDeleted: boolean;
 
     @ApiProperty({ description: 'Likes' })
-    likes: UserDTO[];
+    usersWhoLiked: UserDTO[];
 }

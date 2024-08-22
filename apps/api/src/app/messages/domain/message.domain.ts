@@ -36,11 +36,11 @@ export class Message {
     @JoinColumn({ name: 'channel_id' })
     channel: Channel;
 
-    @ManyToMany(() => User, user => user.likes, { cascade: ['insert'], eager: true })
+    @ManyToMany(() => User, user => user.messagesLiked, { cascade: ['insert'], eager: true })
     @JoinTable({
         name: 'likes',
         joinColumn: { name: 'message_id', referencedColumnName: 'id' },
         inverseJoinColumn: { name: 'user_id', referencedColumnName: 'id' }
     })
-    likes: User[];
+    usersWhoLiked: User[];
 }

@@ -73,7 +73,7 @@ export default function MessageView({
         popupId: 'messageMenu'
     });
 
-    console.log(message.content, message.likes.length);
+    console.log(message.content, message.usersWhoLiked.length);
     return (
         <>
             <Box
@@ -151,7 +151,9 @@ export default function MessageView({
                                 ))}
                             <Button onClick={() => handleToggleLikeMessage(message.id)}>
                                 Laik
-                                <Typography color="white">{message.likes?.length || 0}</Typography>
+                                <Typography color="white">
+                                    {message.usersWhoLiked?.length || 0}
+                                </Typography>
                             </Button>
                         </Box>
                     </HoverMenu>

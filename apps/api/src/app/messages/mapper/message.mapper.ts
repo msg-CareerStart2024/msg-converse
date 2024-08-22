@@ -14,12 +14,20 @@ export class MessageMapper {
             isDeleted: isDeleted,
             createdAt: entity.createdAt,
             user: UserMapper.toDTO(entity.user),
-            likes: entity.likes.map(like => UserMapper.toDTO(like))
+            usersWhoLiked: entity.usersWhoLiked.map(like => UserMapper.toDTO(like))
         };
     }
 
     static fromDto(messageDto: MessageDTO): Message {
-        const { id, content, isPinned, isDeleted, createdAt, user, likes } = messageDto;
+        const {
+            id,
+            content,
+            isPinned,
+            isDeleted,
+            createdAt,
+            user,
+            usersWhoLiked: likes
+        } = messageDto;
         return {
             id,
             content,
@@ -28,7 +36,7 @@ export class MessageMapper {
             channel: undefined,
             createdAt,
             user: UserMapper.fromDto(user),
-            likes: likes.map(like => UserMapper.fromDto(like))
+            usersWhoLiked: likes.map(like => UserMapper.fromDto(like))
         };
     }
 
@@ -42,7 +50,7 @@ export class MessageMapper {
             createdAt: undefined,
             user: undefined,
             channel: undefined,
-            likes: []
+            usersWhoLiked: []
         };
     }
 
@@ -56,7 +64,7 @@ export class MessageMapper {
             createdAt: undefined,
             user: undefined,
             channel: undefined,
-            likes: []
+            usersWhoLiked: []
         };
     }
 }

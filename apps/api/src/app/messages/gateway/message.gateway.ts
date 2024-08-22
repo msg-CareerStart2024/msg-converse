@@ -19,7 +19,8 @@ import { MessageService } from '../service/message.service';
 import {
     NewMessagePayload,
     TypingUser,
-    UpdateDeletedStatusPayload
+    UpdateDeletedStatusPayload,
+    UpdateLikedMessagesPayload
 } from '../type/message-gateway.types';
 
 declare module 'socket.io' {
@@ -119,6 +120,18 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
         }
     }
 
+    @SubscribeMessage(SocketEvent.TOGGLE_LIKE_MESSAGE_CLIENT)
+    async handleLikeMessage(
+        client: Socket,
+        { channelId, messageId }: UpdateLikedMessagesPayload
+    ): Promise<void> {
+        const { message, action } = await this.messageService.updateInteractions(
+            messageId,
+            client.user.id
+        );
+        this.server.to(channelId).emit(SocketEvent.TOGGLE_LIKE_MESSAGE_SERVER, { message, action });
+    }
+
     @SubscribeMessage(SocketEvent.START_TYPING)
     handleTyping(client: Socket, channelId: string): void {
         this.addTypingUser(channelId, client.user);
@@ -129,15 +142,6 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
     handleStopTyping(client: Socket, channelId: string): void {
         this.removeTypingUser(channelId, client.user);
         this.emitTypingUsers(channelId);
-    }
-
-    @SubscribeMessage(SocketEvent.TOGGLE_LIKE_MESSAGE_CLIENT)
-    async handleLikeMessage(
-        client: Socket,
-        { channelId, messageId }: { channelId: string; messageId: string }
-    ): Promise<void> {
-        const { message, action } = await this.messageService.interact(messageId, client.user.id);
-        this.server.to(channelId).emit(SocketEvent.TOGGLE_LIKE_MESSAGE_SERVER, { message, action });
     }
 
     private addTypingUser(channelId: string, user: User): void {

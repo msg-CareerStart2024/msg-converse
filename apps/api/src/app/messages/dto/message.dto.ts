@@ -21,5 +21,5 @@ export class MessageDTO {
     user: UserDTO;
 
     @ApiProperty({ description: 'Likes' })
-    likes: UserDTO[];
+    usersWhoLiked: UserDTO[];
 }

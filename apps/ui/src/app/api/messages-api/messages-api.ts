@@ -57,35 +57,35 @@ export const messagesApi = createApi({
                 }
             }
         }),
+
         updateLikeMessage: builder.mutation<
             Message,
-            { channelId: string; updatedMessage: Message; user?: User; action: string }
+            { channelId: string; message: Message; userWhoLiked: User; action: string }
         >({
-            queryFn: ({ updatedMessage }) => ({ data: updatedMessage }),
+            queryFn: ({ message }) => ({ data: message }),
             async onQueryStarted(
-                { channelId, updatedMessage, user, action },
+                { channelId, message, userWhoLiked, action },
                 { dispatch, queryFulfilled }
             ) {
-                console.log('updatedMessageLikes1:', updatedMessage.likes);
                 const patchResult = dispatch(
                     messagesApi.util.updateQueryData('getMessagesByChannelId', channelId, draft => {
-                        const index = draft.findIndex(msg => msg.id === updatedMessage.id);
-                        if (index !== -1 && user) {
-                            action === 'dislike'
-                                ? (draft[index].likes = draft[index].likes.filter(
-                                      like => like.id !== user.id
-                                  ))
-                                : draft[index].likes.push(user);
+                        const index = draft.findIndex(msg => msg.id === message.id);
+                        if (index !== -1) {
+                            if (action === 'dislike') {
+                                draft[index].usersWhoLiked = draft[index].usersWhoLiked.filter(
+                                    user => user.id !== userWhoLiked.id
+                                );
+                            } else {
+                                draft[index].usersWhoLiked.push(userWhoLiked);
+                            }
                         }
                     })
                 );
                 try {
                     await queryFulfilled;
                 } catch {
-                    console.log('undo');
                     patchResult.undo();
                 }
-                console.log('updatedMessageLikes2:', updatedMessage.likes);
             }
         }),
 

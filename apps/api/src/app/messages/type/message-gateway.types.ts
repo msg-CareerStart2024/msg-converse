@@ -13,3 +13,8 @@ export type UpdateDeletedStatusPayload = {
     messageId: string;
     deletedStatus: boolean;
 };
+
+export type UpdateLikedMessagesPayload = {
+    channelId: string;
+    messageId: string;
+};

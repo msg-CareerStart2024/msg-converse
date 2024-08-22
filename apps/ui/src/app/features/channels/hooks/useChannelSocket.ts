@@ -20,6 +20,7 @@ import { RootState } from '../../../store/store';
 import { Message } from '../../../types/messages/Message.types';
 import { TypingUser } from '../../../types/socket/messages-socket.payload';
 import { SocketEvent } from '../../../types/socket/SocketEvent.enum';
+import { User } from '../../../types/login/User.types';
 
 export const useChannelSocket = (channelId: string) => {
     const { activeSocket, initializeChannelConnection, terminateChannelConnection } =
@@ -77,8 +78,8 @@ export const useChannelSocket = (channelId: string) => {
         }) => {
             updateLikeMessage({
                 channelId,
-                updatedMessage: message,
-                user: currentUser,
+                message,
+                userWhoLiked: currentUser as User,
                 action
             });
         };
@@ -144,7 +145,7 @@ export const useChannelSocket = (channelId: string) => {
 
     const handleToggleLikeMessage = (messageId: string) => {
         if (activeSocket) {
-            toggleLikeMessage({ channelId, messageId });
+            toggleLikeMessage({ channelId: channelIdRef.current, messageId });
         }
     };
 
