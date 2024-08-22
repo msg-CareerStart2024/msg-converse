@@ -7,5 +7,10 @@ export enum SocketEvent {
     PREVIOUS_MESSAGES = 'previous_messages',
     NEW_MESSAGE = 'new_message',
     SEND_MESSAGE = 'send_message',
-    TOGGLE_LIKE_MESSAGE = 'toggle_like_message'
+    TOGGLE_LIKE_MESSAGE = 'toggle_like_message',
+    START_TYPING = 'start_typing',
+    STOP_TYPING = 'stop_typing',
+    TYPING_USERS = 'typing_users',
+    UPDATE_DELETED_STATUS = 'update_deleted_status',
+    UPDATE_DELETED_STATUS_CLIENT = 'update_deleted_status_client'
 }

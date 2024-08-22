@@ -9,11 +9,18 @@ import {
     WebSocketServer
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+
 import { User } from '../../users/domain/user.domain';
+import { Role } from '../../users/enums/role.enum';
 import { UserService } from '../../users/service/user.service';
 import { Message } from '../domain/message.domain';
 import { SocketEvent } from '../enum/socket-event.enum';
 import { MessageService } from '../service/message.service';
+import {
+    NewMessagePayload,
+    TypingUser,
+    UpdateDeletedStatusPayload
+} from '../type/message-gateway.types';
 
 declare module 'socket.io' {
     interface Socket {
@@ -21,12 +28,7 @@ declare module 'socket.io' {
     }
 }
 
-type TypingUser = {
-    id: string;
-    firstName: string;
-};
-
-type TypingUsersMap = Map<string, Set<TypingUser>>;
+type TypingUsersMap = Map<string, Map<string, TypingUser>>;
 
 @WebSocketGateway()
 export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
@@ -71,9 +73,8 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
     handleDisconnect(client: Socket): void {
         this.logger.log(`Client disconnected: ${client.id}`);
         this.typingUsers.forEach((users, channelId) => {
-            const userToRemove = Array.from(users).find(user => user.id === client.user.id);
-            if (userToRemove) {
-                this.removeTypingUser(channelId, userToRemove);
+            if (users.has(client.user.id)) {
+                this.removeTypingUser(channelId, client.user);
                 this.emitTypingUsers(channelId);
             }
         });
@@ -87,36 +88,46 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
     @SubscribeMessage(SocketEvent.LEAVE_CHANNEL_CHAT)
     handleDisconnectFromChannel(client: Socket, channel: string): void {
         client.leave(channel);
-        const typingUser: TypingUser = { id: client.user.id, firstName: client.user.firstName };
-        this.removeTypingUser(channel, typingUser);
+        this.removeTypingUser(channel, client.user);
         this.emitTypingUsers(channel);
     }
 
     @SubscribeMessage(SocketEvent.SEND_MESSAGE)
     async handleNewMessage(
         client: Socket,
-        { channelId, content }: { channelId: string; content: string }
+        { channelId, content }: NewMessagePayload
     ): Promise<void> {
         const newMessage = await this.messageService.create(client.user.id, channelId, {
             content
         } as Message);
         this.server.to(channelId).emit(SocketEvent.NEW_MESSAGE, newMessage);
-        const typingUser: TypingUser = { id: client.user.id, firstName: client.user.firstName };
-        this.removeTypingUser(channelId, typingUser);
+        this.removeTypingUser(channelId, client.user);
         this.emitTypingUsers(channelId);
+    }
+
+    @SubscribeMessage(SocketEvent.UPDATE_DELETED_STATUS_CLIENT)
+    async handleUpdateDeletedStatus(
+        client: Socket,
+        { channelId, messageId, deletedStatus }: UpdateDeletedStatusPayload
+    ): Promise<void> {
+        if (client.user.role === Role.ADMIN) {
+            const updatedMessage = await this.messageService.updateDeletedStatus(
+                messageId,
+                deletedStatus
+            );
+            this.server.to(channelId).emit(SocketEvent.UPDATE_DELETED_STATUS, updatedMessage);
+        }
     }
 
     @SubscribeMessage(SocketEvent.START_TYPING)
     handleTyping(client: Socket, channelId: string): void {
-        const typingUser: TypingUser = { id: client.user.id, firstName: client.user.firstName };
-        this.addTypingUser(channelId, typingUser);
+        this.addTypingUser(channelId, client.user);
         this.emitTypingUsers(channelId);
     }
 
     @SubscribeMessage(SocketEvent.STOP_TYPING)
     handleStopTyping(client: Socket, channelId: string): void {
-        const typingUser: TypingUser = { id: client.user.id, firstName: client.user.firstName };
-        this.removeTypingUser(channelId, typingUser);
+        this.removeTypingUser(channelId, client.user);
         this.emitTypingUsers(channelId);
     }
 
@@ -126,21 +137,17 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
         this.server.to(channelId).emit(SocketEvent.TOGGLE_LIKE_MESSAGE, messageId);
     }
 
-    private addTypingUser(channelId: string, typingUser: TypingUser): void {
+    private addTypingUser(channelId: string, user: User): void {
         if (!this.typingUsers.has(channelId)) {
-            this.typingUsers.set(channelId, new Set());
+            this.typingUsers.set(channelId, new Map());
         }
-        this.typingUsers.get(channelId).add(typingUser);
+        this.typingUsers.get(channelId).set(user.id, { id: user.id, firstName: user.firstName });
     }
 
-    private removeTypingUser(channelId: string, typingUser: TypingUser): void {
+    private removeTypingUser(channelId: string, user: User): void {
         if (this.typingUsers.has(channelId)) {
             const users = this.typingUsers.get(channelId);
-            users.forEach(user => {
-                if (user.id === typingUser.id) {
-                    users.delete(user);
-                }
-            });
+            users.delete(user.id);
             if (users.size === 0) {
                 this.typingUsers.delete(channelId);
             }
@@ -148,7 +155,7 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
     }
 
     private emitTypingUsers(channelId: string): void {
-        const typingUsers = Array.from(this.typingUsers.get(channelId) || []);
+        const typingUsers = Array.from(this.typingUsers.get(channelId)?.values() || []);
         this.server.to(channelId).emit(SocketEvent.TYPING_USERS, typingUsers);
     }
 }

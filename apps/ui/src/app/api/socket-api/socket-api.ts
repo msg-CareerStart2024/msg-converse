@@ -1,7 +1,11 @@
 import { FetchBaseQueryError, createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import { Socket } from 'socket.io-client';
-import { SendMessageEventPayload } from '../../types/socket/messages-socket.payload';
+import {
+    SendMessageEventPayload,
+    UpdateDeletedStatusPayload
+} from '../../types/socket/messages-socket.payload';
+
 import { SocketErrorMessage } from '../../types/socket/SocketErrorMessage.enum';
 import { SocketErrorType } from '../../types/socket/SocketErrorType.enum';
 import { SocketEvent } from '../../types/socket/SocketEvent.enum';
@@ -43,6 +47,15 @@ export const socketApi = createApi({
         }),
         toggleLikeMessage: builder.mutation<void, string>({
             queryFn: messageId => emitSocketEvent(SocketEvent.TOGGLE_LIKE_MESSAGE, messageId)
+        }),
+        updateDeletedStatus: builder.mutation<void, UpdateDeletedStatusPayload>({
+            queryFn: payload => emitSocketEvent(SocketEvent.UPDATE_DELETED_STATUS_CLIENT, payload)
+        }),
+        startTyping: builder.mutation<void, string>({
+            queryFn: channelId => emitSocketEvent(SocketEvent.START_TYPING, channelId)
+        }),
+        stopTyping: builder.mutation<void, string>({
+            queryFn: channelId => emitSocketEvent(SocketEvent.STOP_TYPING, channelId)
         })
     })
 });
@@ -51,5 +64,8 @@ export const {
     useJoinChannelChatMutation,
     useLeaveChannelChatMutation,
     useSendMessageMutation,
-    useToggleLikeMessageMutation
+    useToggleLikeMessageMutation,
+    useUpdateDeletedStatusMutation,
+    useStartTypingMutation,
+    useStopTypingMutation
 } = socketApi;

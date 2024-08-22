@@ -1,15 +1,22 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
     useAddMessageMutation,
-    useGetMessagesByChannelIdQuery
+    useGetMessagesByChannelIdQuery,
+    useSwapMessageMutation
 } from '../../../api/messages-api/messages-api';
 import {
     useJoinChannelChatMutation,
     useLeaveChannelChatMutation,
-    useSendMessageMutation
+    useSendMessageMutation,
+    useStartTypingMutation,
+    useStopTypingMutation,
+    useUpdateDeletedStatusMutation
 } from '../../../api/socket-api/socket-api';
 import { useChatSocket } from '../../../contexts/ChannelSocketContext';
+import { RootState } from '../../../store/store';
 import { Message } from '../../../types/messages/Message.types';
+import { TypingUser } from '../../../types/socket/messages-socket.payload';
 import { SocketEvent } from '../../../types/socket/SocketEvent.enum';
 
 export const useChannelSocket = (channelId: string) => {
@@ -18,7 +25,16 @@ export const useChannelSocket = (channelId: string) => {
     const [joinChannelChat] = useJoinChannelChatMutation();
     const [leaveChannelChat] = useLeaveChannelChatMutation();
     const [sendMessage] = useSendMessageMutation();
+    const [updateDeletedStatus] = useUpdateDeletedStatusMutation();
+    const [swapMessage] = useSwapMessageMutation();
     const [addMessage] = useAddMessageMutation();
+    const [startTyping] = useStartTypingMutation();
+    const [stopTyping] = useStopTypingMutation();
+
+    const [typingUsers, setTypingUsers] = useState<TypingUser[]>([]);
+    const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+    const currentUser = useSelector((state: RootState) => state.auth.user);
 
     const { data: channelMessages, refetch } = useGetMessagesByChannelIdQuery(channelId);
 
@@ -40,20 +56,76 @@ export const useChannelSocket = (channelId: string) => {
             addMessage({ channelId, message });
         };
 
+        const handleUpdateDeletedStatus = (message: Message) => {
+            swapMessage({ channelId, updatedMessage: message });
+        };
+
+        const handleTypingUsers = (users: TypingUser[]) => {
+            setTypingUsers(users.filter(user => user.id !== currentUser?.id));
+        };
+
         joinChannelChat(channelId);
         activeSocket.on(SocketEvent.NEW_MESSAGE, handleNewMessage);
+        activeSocket.on(SocketEvent.UPDATE_DELETED_STATUS, handleUpdateDeletedStatus);
+        activeSocket.on(SocketEvent.TYPING_USERS, handleTypingUsers);
 
         return () => {
             leaveChannelChat(channelIdRef.current);
             activeSocket.off(SocketEvent.NEW_MESSAGE, handleNewMessage);
+            activeSocket.off(SocketEvent.UPDATE_DELETED_STATUS, handleUpdateDeletedStatus);
+            activeSocket.off(SocketEvent.TYPING_USERS, handleTypingUsers);
         };
-    }, [activeSocket, joinChannelChat, leaveChannelChat, channelId, addMessage]);
+    }, [
+        activeSocket,
+        joinChannelChat,
+        leaveChannelChat,
+        channelId,
+        addMessage,
+        swapMessage,
+        currentUser
+    ]);
 
-    const sendChannelMessage = (messageContent: string) => {
-        if (activeSocket) {
-            sendMessage({ channelId: channelIdRef.current, content: messageContent });
+    const handleTyping = useCallback(() => {
+        if (typingTimeoutRef.current) {
+            clearTimeout(typingTimeoutRef.current);
         }
-    };
 
-    return { channelMessages, sendChannelMessage, refetchMessages: refetch };
+        startTyping(channelId);
+
+        typingTimeoutRef.current = setTimeout(() => {
+            stopTyping(channelId);
+        }, 2000);
+    }, [channelId, startTyping, stopTyping]);
+
+    const sendChannelMessage = useCallback(
+        (messageContent: string) => {
+            if (activeSocket) {
+                sendMessage({ channelId: channelIdRef.current, content: messageContent });
+                stopTyping(channelIdRef.current);
+            }
+        },
+        [activeSocket, sendMessage, stopTyping]
+    );
+
+    const updateMessageDeletedStatus = useCallback(
+        (messageId: string, newDeletedStatus: boolean) => {
+            if (activeSocket) {
+                updateDeletedStatus({
+                    channelId: channelIdRef.current,
+                    messageId,
+                    deletedStatus: newDeletedStatus
+                });
+            }
+        },
+        [activeSocket, updateDeletedStatus]
+    );
+
+    return {
+        channelMessages,
+        sendChannelMessage,
+        updateMessageDeletedStatus,
+        handleTyping,
+        typingUsers,
+        refetchMessages: refetch
+    };
 };

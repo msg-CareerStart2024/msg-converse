@@ -8,7 +8,6 @@ import {
 } from 'react-hook-form';
 
 import { getColor } from '../../../lib/avatar-colors';
-import { Channel } from '../../../types/channel/channel.types';
 import { CHANNEL_FORM_ACTION_TYPE } from '../../../types/channel/ChannelFormActionType.enums';
 import { Topic } from '../../../types/channel/Topic.types';
 import { User } from '../../../types/login/User.types';
@@ -16,6 +15,7 @@ import { UserRole } from '../../../types/login/UserRole.enum';
 import { ChannelFormValues } from '../schemas/ChannelFormValues.schema';
 import ActionButtonView from './ActionButtonView';
 import TopicsView from './TopicsView';
+import { ChannelDTO } from '../../../types/channel/channel.types';
 
 type ChannelFormProps = {
     handleSubmit: UseFormHandleSubmit<ChannelFormValues>;
@@ -42,7 +42,8 @@ type ChannelFormProps = {
     currentUser: User;
     handleAddTopic: () => void;
     handleDeleteTopic: (name: string) => void;
-    data?: Channel;
+    data?: ChannelDTO;
+    isChanged: boolean;
 };
 
 export default function ChannelFormView({
@@ -62,7 +63,8 @@ export default function ChannelFormView({
     currentUser,
     handleAddTopic,
     handleDeleteTopic,
-    data
+    data,
+    isChanged
 }: ChannelFormProps) {
     const channelName = data?.name;
     const channelInitial = getValues('name')?.charAt(0).toUpperCase();
@@ -99,6 +101,7 @@ export default function ChannelFormView({
                                     disabled={
                                         isSubmitting ||
                                         !isValid ||
+                                        !isChanged ||
                                         currentUser.role !== UserRole.ADMIN
                                     }
                                 />

@@ -14,3 +14,14 @@ export type SendMessageEventPayload = {
     channelId: string;
     content: string;
 };
+
+export type UpdateDeletedStatusPayload = {
+    channelId: string;
+    messageId: string;
+    deletedStatus: boolean;
+};
+
+export type TypingUser = {
+    id: string;
+    firstName: string;
+};

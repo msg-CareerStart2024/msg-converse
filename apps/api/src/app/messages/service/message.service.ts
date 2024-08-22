@@ -51,13 +51,11 @@ export class MessageService {
             throw new NotFoundException('The message was not found');
         }
 
-        existingMessage.content = messageData.content;
         existingMessage.isPinned = messageData.isPinned;
         existingMessage.isDeleted = messageData.isDeleted;
 
         return this.messageRepository.update(existingMessage);
     }
-
     async interact(id: string, userId: string): Promise<Message> {
         const message = await this.messageRepository.getById(id);
         const user = await this.userService.getById(userId);
@@ -68,6 +66,18 @@ export class MessageService {
             message.likes.push(user);
         }
         return this.messageRepository.update(message);
+    }
+    async updateDeletedStatus(id: string, newDeletedStatus: boolean): Promise<Message> {
+        const existingMessage = await this.messageRepository.getById(id);
+
+        if (!existingMessage) {
+            throw new NotFoundException('The message was not found');
+        }
+
+        existingMessage.isDeleted = newDeletedStatus;
+        existingMessage.isPinned = false;
+
+        return this.messageRepository.update(existingMessage);
     }
 
     async removeByChannelId(channelId: string, manager?: EntityManager): Promise<void> {
