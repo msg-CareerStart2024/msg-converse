@@ -8,6 +8,12 @@ export type NewMessagePayload = {
     content: string;
 };
 
+export type UpdatePinStatusPayload = {
+    channelId: string;
+    messageId: string;
+    pinStatus: boolean;
+};
+
 export type UpdateDeletedStatusPayload = {
     channelId: string;
     messageId: string;

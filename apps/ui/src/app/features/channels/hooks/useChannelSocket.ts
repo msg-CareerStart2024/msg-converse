@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import {
     useJoinChannelChatMutation,
     useLeaveChannelChatMutation,
+    usePinMessageMutation,
     useSendMessageMutation,
     useStartTypingMutation,
     useStopTypingMutation,
@@ -26,8 +27,9 @@ export const useChannelSocket = (channelId: string) => {
     const [leaveChannelChat] = useLeaveChannelChatMutation();
     const [sendMessage] = useSendMessageMutation();
     const [updateDeletedStatus] = useUpdateDeletedStatusMutation();
-    const [swapMessage] = useSwapMessageMutation();
     const [addMessage] = useAddMessageMutation();
+    const [pinMessage] = usePinMessageMutation();
+    const [swapMessage] = useSwapMessageMutation();
     const [startTyping] = useStartTypingMutation();
     const [stopTyping] = useStopTypingMutation();
 
@@ -56,6 +58,10 @@ export const useChannelSocket = (channelId: string) => {
             addMessage({ channelId, message });
         };
 
+        const handlePinMessage = (message: Message) => {
+            swapMessage({ channelId, updatedMessage: message });
+        };
+
         const handleUpdateDeletedStatus = (message: Message) => {
             swapMessage({ channelId, updatedMessage: message });
         };
@@ -66,6 +72,7 @@ export const useChannelSocket = (channelId: string) => {
 
         joinChannelChat(channelId);
         activeSocket.on(SocketEvent.NEW_MESSAGE, handleNewMessage);
+        activeSocket.on(SocketEvent.PIN_FROM_SERVER, handlePinMessage);
         activeSocket.on(SocketEvent.UPDATE_DELETED_STATUS, handleUpdateDeletedStatus);
         activeSocket.on(SocketEvent.TYPING_USERS, handleTypingUsers);
 
@@ -81,8 +88,8 @@ export const useChannelSocket = (channelId: string) => {
         leaveChannelChat,
         channelId,
         addMessage,
-        swapMessage,
-        currentUser
+        currentUser,
+        swapMessage
     ]);
 
     const handleTyping = useCallback(() => {
@@ -107,6 +114,15 @@ export const useChannelSocket = (channelId: string) => {
         [activeSocket, sendMessage, stopTyping]
     );
 
+    const pinChannelMessage = useCallback(
+        (channelId: string, messageId: string, pinStatus: boolean) => {
+            if (activeSocket) {
+                pinMessage({ channelId, messageId, pinStatus });
+            }
+        },
+        [activeSocket, pinMessage]
+    );
+
     const updateMessageDeletedStatus = useCallback(
         (messageId: string, newDeletedStatus: boolean) => {
             if (activeSocket) {
@@ -126,6 +142,7 @@ export const useChannelSocket = (channelId: string) => {
         updateMessageDeletedStatus,
         handleTyping,
         typingUsers,
-        refetchMessages: refetch
+        refetchMessages: refetch,
+        pinChannelMessage
     };
 };

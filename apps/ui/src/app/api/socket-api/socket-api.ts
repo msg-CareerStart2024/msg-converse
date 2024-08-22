@@ -1,6 +1,7 @@
 import { FetchBaseQueryError, createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import {
+    PinMessageEventPayload,
     SendMessageEventPayload,
     UpdateDeletedStatusPayload
 } from '../../types/socket/messages-socket.payload';
@@ -44,6 +45,9 @@ export const socketApi = createApi({
         sendMessage: builder.mutation<void, SendMessageEventPayload>({
             queryFn: payload => emitSocketEvent(SocketEvent.SEND_MESSAGE, payload)
         }),
+        pinMessage: builder.mutation<void, PinMessageEventPayload>({
+            queryFn: payload => emitSocketEvent(SocketEvent.PIN_FROM_CLIENT, payload)
+        }),
         updateDeletedStatus: builder.mutation<void, UpdateDeletedStatusPayload>({
             queryFn: payload => emitSocketEvent(SocketEvent.UPDATE_DELETED_STATUS_CLIENT, payload)
         }),
@@ -60,6 +64,7 @@ export const {
     useJoinChannelChatMutation,
     useLeaveChannelChatMutation,
     useSendMessageMutation,
+    usePinMessageMutation,
     useUpdateDeletedStatusMutation,
     useStartTypingMutation,
     useStopTypingMutation

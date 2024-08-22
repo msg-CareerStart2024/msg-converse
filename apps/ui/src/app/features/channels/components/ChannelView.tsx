@@ -10,6 +10,7 @@ import {
     List,
     ListItem,
     Paper,
+    Stack,
     TextField,
     Typography
 } from '@mui/material';
@@ -24,6 +25,7 @@ import ChannelTypingIndicator from './ChannelTypingIndicator';
 import { TypingUser } from '../../../types/socket/messages-socket.payload';
 import { ChannelChatValues } from '../schemas/ChatInputValues.schema';
 import { FieldErrors, SubmitHandler, UseFormHandleSubmit, UseFormRegister } from 'react-hook-form';
+import PinnedMessagesView from './PinnedMessagesView';
 
 type ChannelProps = {
     channelMessages: Message[] | undefined;
@@ -32,11 +34,15 @@ type ChannelProps = {
     errorChannel: FetchBaseQueryError | SerializedError | undefined;
     currentUser: User;
     isOffline: boolean;
+    popoverOpen: boolean;
+    popoverAnchor: HTMLElement | null;
+    setPopoverAnchor: React.Dispatch<React.SetStateAction<HTMLElement | null>>;
     errors: FieldErrors<ChannelChatValues>;
     isValid: boolean;
     handleSubmit: UseFormHandleSubmit<ChannelChatValues>;
     register: UseFormRegister<ChannelChatValues>;
     sendMessage: SubmitHandler<ChannelChatValues>;
+    handlePinStatus: (messageId: string, pinStatus: boolean) => void;
     handleChangeDeletionStatus: (id: string, isDeleted: boolean) => void;
     typingUsers: TypingUser[];
     handleTyping: () => void;
@@ -49,15 +55,20 @@ export default function ChannelView({
     errorChannel,
     currentUser,
     isOffline,
+    popoverOpen,
+    popoverAnchor,
+    setPopoverAnchor,
+    sendMessage,
+    handleChangeDeletionStatus,
+    handlePinStatus,
     errors,
     isValid,
     handleSubmit,
     register,
-    sendMessage,
-    handleChangeDeletionStatus,
     typingUsers,
     handleTyping
 }: ChannelProps) {
+    const pinnedMessages = channelMessages?.filter(channelMessage => channelMessage.isPinned) || [];
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     const scrollToBottom = useCallback(() => {
@@ -86,9 +97,20 @@ export default function ChannelView({
 
     return (
         <Container>
-            <Typography variant="h6" marginBottom={5}>
-                {channel?.name}
-            </Typography>
+            <Stack flexDirection="row" justifyContent="space-between">
+                <Typography variant="h6" marginBottom={5}>
+                    {channel?.name}
+                </Typography>
+
+                <PinnedMessagesView
+                    currentUser={currentUser}
+                    handlePinStatus={handlePinStatus}
+                    pinnedMessages={pinnedMessages}
+                    popoverAnchor={popoverAnchor}
+                    popoverOpen={popoverOpen}
+                    setPopoverAnchor={setPopoverAnchor}
+                />
+            </Stack>
 
             <Paper sx={{ height: '80vh', display: 'flex', flexDirection: 'column' }}>
                 <Box
@@ -131,6 +153,7 @@ export default function ChannelView({
                                         message={message}
                                         currentUser={currentUser}
                                         handleChangeDeletionStatus={handleChangeDeletionStatus}
+                                        handlePinStatus={handlePinStatus}
                                     />
                                 </ListItem>
                             ))}
