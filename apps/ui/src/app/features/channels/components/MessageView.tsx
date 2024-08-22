@@ -1,5 +1,7 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import RestoreIcon from '@mui/icons-material/Restore';
+import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
+import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import {
     Avatar,
     Box,
@@ -17,7 +19,6 @@ import {
 } from '@mui/material';
 import HoverMenu from 'material-ui-popup-state/HoverMenu';
 import { bindHover, bindMenu, usePopupState } from 'material-ui-popup-state/hooks';
-import { useEffect, useState } from 'react';
 import { getColor } from '../../../lib/avatar-colors';
 import { User } from '../../../types/login/User.types';
 import { UserRole } from '../../../types/login/UserRole.enum';
@@ -74,12 +75,6 @@ export default function MessageView({
         popupId: 'messageMenu'
     });
 
-    const [localMessage, setLocalMessage] = useState(message);
-    useEffect(() => {
-        setLocalMessage(message); // Keep local state in sync with props
-    }, [message]);
-
-    // console.log(message.content, message.likes)
     return (
         <>
             <Box
@@ -95,10 +90,7 @@ export default function MessageView({
                 <Tooltip
                     title={
                         <Typography sx={{ fontSize: '1.25rem' }}>
-                            {generateUserName(
-                                localMessage.user.firstName,
-                                localMessage.user.lastName
-                            )}
+                            {generateUserName(message.user.firstName, message.user.lastName)}
                         </Typography>
                     }
                     placement={isSent ? 'right-start' : 'left-start'}
@@ -112,7 +104,7 @@ export default function MessageView({
                     <ListItemText
                         primary={
                             !isDeleted
-                                ? localMessage.content
+                                ? message.content
                                 : currentUser.role === UserRole.ADMIN
                                   ? 'This message was removed by a Moderator'
                                   : currentUser.role === UserRole.USER
@@ -121,51 +113,65 @@ export default function MessageView({
                         }
                     />
 
-                    <HoverMenu
-                        {...bindMenu(popupState)}
-                        sx={{ display: 'flex', flexDirection: 'row' }}
-                        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-                        transformOrigin={{ vertical: 'top', horizontal: 'center' }}
-                    >
-                        <Box sx={{ display: 'flex' }}>
-                            {isCurrentUserAdmin &&
-                                (!isDeleted ? (
-                                    <MenuItem
-                                        onClick={handleOpenDialog}
-                                        sx={{
-                                            '&:hover': {
-                                                background: 'none'
-                                            },
-                                            maxHeight: '25px'
-                                        }}
+                    {(isCurrentUserAdmin || !isDeleted) && (
+                        <HoverMenu
+                            {...bindMenu(popupState)}
+                            sx={{ display: 'flex', flexDirection: 'row' }}
+                            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                            transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+                        >
+                            <Box sx={{ display: 'flex', alignItems: 'center', paddingX: 1 }}>
+                                {!isDeleted && (
+                                    <IconButton
+                                        onClick={() => handleToggleLikeMessage(message.id)}
+                                        sx={{ gap: 1, alignItems: 'center' }}
                                     >
-                                        <IconButton>
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    </MenuItem>
-                                ) : (
-                                    <MenuItem
-                                        onClick={handleOpenDialog}
-                                        sx={{
-                                            '&:hover': {
-                                                background: 'none'
-                                            },
-                                            maxHeight: '25px'
-                                        }}
-                                    >
-                                        <IconButton>
-                                            <RestoreIcon />
-                                        </IconButton>
-                                    </MenuItem>
-                                ))}
-                            <Button onClick={() => handleToggleLikeMessage(localMessage.id)}>
-                                Laik
-                                <Typography color="white">
-                                    {localMessage.likes?.length || 0}
-                                </Typography>
-                            </Button>
-                        </Box>
-                    </HoverMenu>
+                                        <Typography color="text.primary" fontWeight={600}>
+                                            {message.likedByUsers?.length || 0}
+                                        </Typography>
+                                        {message.likedByUsers?.some(
+                                            like => like.id === currentUser.id
+                                        ) ? (
+                                            <ThumbUpAltIcon />
+                                        ) : (
+                                            <ThumbUpOffAltIcon />
+                                        )}
+                                    </IconButton>
+                                )}
+                                {isCurrentUserAdmin &&
+                                    (!isDeleted ? (
+                                        <MenuItem
+                                            onClick={handleOpenDialog}
+                                            sx={{
+                                                '&:hover': {
+                                                    background: 'none'
+                                                },
+                                                maxHeight: '25px',
+                                                padding: 0
+                                            }}
+                                        >
+                                            <IconButton>
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </MenuItem>
+                                    ) : (
+                                        <MenuItem
+                                            onClick={handleOpenDialog}
+                                            sx={{
+                                                '&:hover': {
+                                                    background: 'none'
+                                                },
+                                                maxHeight: '25px'
+                                            }}
+                                        >
+                                            <IconButton>
+                                                <RestoreIcon />
+                                            </IconButton>
+                                        </MenuItem>
+                                    ))}
+                            </Box>
+                        </HoverMenu>
+                    )}
                 </Box>
             </Box>
             <Dialog
@@ -175,7 +181,7 @@ export default function MessageView({
                 aria-describedby="alert-dialog-description"
             >
                 <DialogTitle id="alert-dialog-title">
-                    {!localMessage.isDeleted
+                    {!message.isDeleted
                         ? 'Are you sure you want to delete this message?'
                         : 'Are you sure you want to restore this message?'}
                 </DialogTitle>

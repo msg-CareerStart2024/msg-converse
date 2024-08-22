@@ -136,13 +136,13 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
         client: Socket,
         { channelId, messageId }: { channelId: string; messageId: string }
     ): Promise<void> {
-        const { message, action } = await this.messageService.interact(messageId, client.user.id);
-        console.log('//////////////');
-        console.log('message', message.content);
-        console.log('action', action);
-        console.log('likes', message.likes.length);
-        console.log('user', client.user.firstName);
-        this.server.to(channelId).emit(SocketEvent.TOGGLE_LIKE_MESSAGE_SERVER, { message, action });
+        const { user, message, action } = await this.messageService.interact(
+            messageId,
+            client.user.id
+        );
+        this.server
+            .to(channelId)
+            .emit(SocketEvent.TOGGLE_LIKE_MESSAGE_SERVER, { user, message, action });
     }
 
     private addTypingUser(channelId: string, user: User): void {

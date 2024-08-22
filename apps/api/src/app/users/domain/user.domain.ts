@@ -22,6 +22,6 @@ export class User {
     @Column({ type: 'enum', enum: Role, default: Role.USER })
     role: Role;
 
-    @ManyToMany(() => Message, message => message.likes)
-    likes: Message[];
+    @ManyToMany(() => Message, message => message.likedByUsers)
+    likedMessages: Message[];
 }

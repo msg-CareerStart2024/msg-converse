@@ -11,6 +11,6 @@ export class UpdateMessageDTO {
     @IsBoolean()
     isDeleted: boolean;
 
-    @ApiProperty({ description: 'Likes' })
-    likes: UserDTO[];
+    @ApiProperty({ description: 'Users that liked the message' })
+    likedByUsers: UserDTO[];
 }

@@ -2,6 +2,7 @@ import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/commo
 
 import { EntityManager } from 'typeorm';
 import { ChannelService } from '../../channels/services/channels/channel.service';
+import { User } from '../../users/domain/user.domain';
 import { UserService } from '../../users/service/user.service';
 import { Message } from '../domain/message.domain';
 import { MessageRepository } from '../repository/message.repository';
@@ -59,23 +60,20 @@ export class MessageService {
     async interact(
         messageId: string,
         userId: string
-    ): Promise<{ message: Message; action: string }> {
+    ): Promise<{ user: User; message: Message; action: string }> {
         const message = await this.messageRepository.getById(messageId);
         const user = await this.userService.getById(userId);
         let action = undefined;
 
-        if (message.likes.some(like => like.id === user.id)) {
-            console.log('REMOVE');
-            message.likes = message.likes.filter(like => like.id !== user.id);
+        if (message.likedByUsers.some(like => like.id === user.id)) {
+            message.likedByUsers = message.likedByUsers.filter(like => like.id !== user.id);
             action = 'dislike';
-            console.log('REMOVE', message.likes);
         } else {
-            message.likes.push(user);
+            message.likedByUsers.push(user);
             action = 'like';
-            console.log('ADD', message.likes);
         }
         const updatedMessage = await this.messageRepository.update(message);
-        return { message: updatedMessage, action };
+        return { user, message: updatedMessage, action };
     }
     async updateDeletedStatus(id: string, newDeletedStatus: boolean): Promise<Message> {
         const existingMessage = await this.messageRepository.getById(id);

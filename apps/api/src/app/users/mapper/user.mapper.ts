@@ -16,7 +16,7 @@ export class UserMapper {
             lastName,
             password,
             role,
-            likes: []
+            likedMessages: []
         };
     }
     static fromDto(userDto: UserDTO): User {
@@ -28,7 +28,7 @@ export class UserMapper {
             lastName,
             password: undefined,
             role,
-            likes: undefined
+            likedMessages: undefined
         };
     }
 }

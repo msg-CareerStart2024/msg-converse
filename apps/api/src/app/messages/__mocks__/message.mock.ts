@@ -12,7 +12,7 @@ export const mockMessageCreateDto: CreateMessageDTO = {
 export const mockMessageUpdateDto: UpdateMessageDTO = {
     isPinned: true,
     isDeleted: false,
-    likes: []
+    likedByUsers: []
 };
 
 export const mockMessages: Message[] = [
@@ -29,7 +29,7 @@ export const mockMessages: Message[] = [
             lastName: 'last',
             password: 'password',
             role: Role.ADMIN,
-            likes: []
+            likedMessages: []
         },
         channel: {
             id: '785f32ec-8d20-4e35-8d77-d5503966df48',
@@ -40,7 +40,7 @@ export const mockMessages: Message[] = [
             topics: [] as Topic[],
             messages: [] as Message[]
         },
-        likes: []
+        likedByUsers: []
     },
     {
         id: 'baefa6b0-d2bd-4efe-bebe-b68c86533e92',
@@ -55,7 +55,7 @@ export const mockMessages: Message[] = [
             lastName: 'last',
             password: 'password',
             role: Role.ADMIN,
-            likes: []
+            likedMessages: []
         },
         channel: {
             id: '785f32ec-8d20-4e35-8d77-d5503966df48',
@@ -66,6 +66,6 @@ export const mockMessages: Message[] = [
             topics: [] as Topic[],
             messages: [] as Message[]
         },
-        likes: []
+        likedByUsers: []
     }
 ];

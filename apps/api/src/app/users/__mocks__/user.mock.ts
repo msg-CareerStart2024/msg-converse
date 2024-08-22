@@ -15,7 +15,7 @@ export const mockHashedPassword = '$2a$10$ybI3Jp37Omjr9A1gSbo4ru4W9ApfY9Su4RStqF
 export const mockUser: Omit<User, 'id'> = {
     ...mockUserDto,
     password: mockHashedPassword,
-    likes: []
+    likedMessages: []
 };
 
 export const mockUsers: User[] = [
@@ -26,7 +26,7 @@ export const mockUsers: User[] = [
         lastName: 'Name',
         password: 'password',
         role: Role.ADMIN,
-        likes: []
+        likedMessages: []
     },
     {
         id: '97803cd1-c6ca-49f6-be11-5650b251c8a1',
@@ -35,6 +35,6 @@ export const mockUsers: User[] = [
         lastName: 'User',
         password: 'password',
         role: Role.USER,
-        likes: []
+        likedMessages: []
     }
 ];
