@@ -69,7 +69,15 @@ export default function ChannelFormPage() {
                 navigate('/');
             })
             .catch(error => {
-                toast.error('Failed to create the channel.');
+                if (
+                    error.data &&
+                    error.data.errorType &&
+                    error.data.errorType === 'UNIQUE_CONSTRAINT_VIOLATION'
+                ) {
+                    toast.error('A channel with this name already exists!');
+                } else {
+                    toast.error('Failed to create the channel!');
+                }
             });
     }
 
