@@ -1,12 +1,12 @@
 import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { Socket, io } from 'socket.io-client';
 
-import { ChannelSocketContextType } from '../types/socket/ChannelSocketContextType.interface';
-import { RootState } from '../store/store';
-import { SocketEvent } from '../types/socket/SocketEvent.enum';
-import { WS_BASE_URL } from '../config/api-config';
-import { registerSocketInstance } from '../api/socket-api/socket-api';
 import { useSelector } from 'react-redux';
+import { registerSocketInstance } from '../api/socket-api/socket-api';
+import { WS_BASE_URL } from '../config/api-config';
+import { RootState } from '../store/store';
+import { ChannelSocketContextType } from '../types/socket/ChannelSocketContextType.interface';
+import { SocketEvent } from '../types/socket/SocketEvent.enum';
 
 const ChannelSocketContext = createContext<ChannelSocketContextType>({
     activeSocket: null,
@@ -38,7 +38,6 @@ export const ChannelSocketProvider: React.FC<ChannelSocketProviderProps> = ({ ch
             });
 
             const handleConnect = () => {
-                console.info('Socket connected successfully');
                 setActiveSocket(newChannelSocket);
                 registerSocketInstance(() => newChannelSocket);
             };
@@ -47,20 +46,14 @@ export const ChannelSocketProvider: React.FC<ChannelSocketProviderProps> = ({ ch
                 console.error('Socket connection error:', error);
             };
 
-            const handleDisconnect = (reason: string) => {
-                console.info('Socket disconnected:', reason);
-            };
-
             newChannelSocket.on(SocketEvent.CONNECT, handleConnect);
             newChannelSocket.on(SocketEvent.CONNECTION_ERROR, handleConnectionError);
-            newChannelSocket.on(SocketEvent.DISCONNECT, handleDisconnect);
 
             socketRef.current = newChannelSocket;
 
             return () => {
                 newChannelSocket.off(SocketEvent.CONNECT, handleConnect);
                 newChannelSocket.off(SocketEvent.CONNECTION_ERROR, handleConnectionError);
-                newChannelSocket.off(SocketEvent.DISCONNECT, handleDisconnect);
             };
         },
         [accessToken]

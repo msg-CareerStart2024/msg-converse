@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Message } from '../../messages/domain/message.domain';
 import { Role } from '../enums/role.enum';
 
 @Entity()
@@ -20,4 +21,7 @@ export class User {
 
     @Column({ type: 'enum', enum: Role, default: Role.USER })
     role: Role;
+
+    @ManyToMany(() => Message, message => message.likes)
+    likes: Message[];
 }

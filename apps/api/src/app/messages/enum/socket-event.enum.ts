@@ -6,5 +6,6 @@ export enum SocketEvent {
     SEND_MESSAGE = 'send_message',
     START_TYPING = 'start_typing',
     STOP_TYPING = 'stop_typing',
-    TYPING_USERS = 'typing_users'
+    TYPING_USERS = 'typing_users',
+    TOGGLE_LIKE_MESSAGE = 'toggle_like_message'
 }

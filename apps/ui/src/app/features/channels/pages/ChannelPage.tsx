@@ -1,4 +1,6 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useCallback, useEffect, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { useGetChannelByIdQuery } from '../../../api/channels-api/channels-api';
@@ -8,9 +10,7 @@ import { User } from '../../../types/login/User.types';
 import { Message } from '../../../types/messages/Message.types';
 import ChannelView from '../components/ChannelView';
 import { useChannelSocket } from '../hooks/useChannelSocket';
-import { SubmitHandler, useForm } from 'react-hook-form';
 import { ChannelChatSchema, ChannelChatValues } from '../schemas/ChatInputValues.schema';
-import { zodResolver } from '@hookform/resolvers/zod';
 
 export default function ChannelPage() {
     const { id: channelId } = useParams<string>();

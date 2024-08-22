@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
@@ -9,14 +10,13 @@ import {
     useDeleteChannelMutation,
     useLazyGetChannelByIdQuery,
     useUpdateChannelMutation
-} from '../../../api/channels-api';
+} from '../../../api/channels-api/channels-api';
 import { RootState } from '../../../store/store';
 import { Topic } from '../../../types/channel/Topic.types';
 import { User } from '../../../types/login/User.types';
 import { capitalizeFirstLetter } from '../../../utils/utils';
 import ChannelFormView from '../components/ChannelFormView';
 import { ChannelFormSchema, ChannelFormValues } from '../schemas/ChannelFormValues.schema';
-import toast from 'react-hot-toast';
 
 export default function ChannelFormPage() {
     const { id } = useParams<{ id?: string }>();

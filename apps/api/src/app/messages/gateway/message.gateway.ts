@@ -1,4 +1,5 @@
 import { Logger } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import {
     OnGatewayConnection,
     OnGatewayDisconnect,
@@ -8,12 +9,11 @@ import {
     WebSocketServer
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { SocketEvent } from '../enum/socket-event.enum';
-import { UserService } from '../../users/service/user.service';
-import { JwtService } from '@nestjs/jwt';
 import { User } from '../../users/domain/user.domain';
-import { MessageService } from '../service/message.service';
+import { UserService } from '../../users/service/user.service';
 import { Message } from '../domain/message.domain';
+import { SocketEvent } from '../enum/socket-event.enum';
+import { MessageService } from '../service/message.service';
 
 declare module 'socket.io' {
     interface Socket {
@@ -54,7 +54,6 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
             client.disconnect();
             return;
         }
-
         try {
             const data = await this.jwtService.verifyAsync(token);
             client.user = await this.userService.getById(data.sub);
@@ -119,6 +118,12 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
         const typingUser: TypingUser = { id: client.user.id, firstName: client.user.firstName };
         this.removeTypingUser(channelId, typingUser);
         this.emitTypingUsers(channelId);
+    }
+
+    @SubscribeMessage(SocketEvent.TOGGLE_LIKE_MESSAGE)
+    async handleLikeMessage(client: Socket, channelId: string, messageId: string): Promise<void> {
+        this.messageService.interact(messageId, client.user.id);
+        this.server.to(channelId).emit(SocketEvent.TOGGLE_LIKE_MESSAGE, messageId);
     }
 
     private addTypingUser(channelId: string, typingUser: TypingUser): void {

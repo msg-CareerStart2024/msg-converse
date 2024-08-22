@@ -6,5 +6,6 @@ export enum SocketEvent {
     CONNECTION_ERROR = 'connection_error',
     PREVIOUS_MESSAGES = 'previous_messages',
     NEW_MESSAGE = 'new_message',
-    SEND_MESSAGE = 'send_message'
+    SEND_MESSAGE = 'send_message',
+    TOGGLE_LIKE_MESSAGE = 'toggle_like_message'
 }

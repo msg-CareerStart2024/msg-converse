@@ -1,7 +1,7 @@
 import { FetchBaseQueryError, createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-import { SendMessageEventPayload } from '../../types/socket/messages-socket.payload';
 import { Socket } from 'socket.io-client';
+import { SendMessageEventPayload } from '../../types/socket/messages-socket.payload';
 import { SocketErrorMessage } from '../../types/socket/SocketErrorMessage.enum';
 import { SocketErrorType } from '../../types/socket/SocketErrorType.enum';
 import { SocketEvent } from '../../types/socket/SocketEvent.enum';
@@ -40,9 +40,16 @@ export const socketApi = createApi({
         }),
         sendMessage: builder.mutation<void, SendMessageEventPayload>({
             queryFn: payload => emitSocketEvent(SocketEvent.SEND_MESSAGE, payload)
+        }),
+        toggleLikeMessage: builder.mutation<void, string>({
+            queryFn: messageId => emitSocketEvent(SocketEvent.TOGGLE_LIKE_MESSAGE, messageId)
         })
     })
 });
 
-export const { useJoinChannelChatMutation, useLeaveChannelChatMutation, useSendMessageMutation } =
-    socketApi;
+export const {
+    useJoinChannelChatMutation,
+    useLeaveChannelChatMutation,
+    useSendMessageMutation,
+    useToggleLikeMessageMutation
+} = socketApi;
