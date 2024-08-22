@@ -17,7 +17,8 @@ import { Message } from '../domain/message.domain';
 import {
     NewMessagePayload,
     TypingUser,
-    UpdateDeletedStatusPayload
+    UpdateDeletedStatusPayload,
+    UpdatePinStatusPayload
 } from '../type/message-gateway.types';
 import { Role } from '../../users/enums/role.enum';
 
@@ -156,13 +157,9 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
     @SubscribeMessage(SocketEvent.PIN_FROM_CLIENT)
     async handlePinMessage(
         client: Socket,
-        {
-            channelId,
-            messageId,
-            pinStatus
-        }: { channelId: string; messageId: string; pinStatus: boolean }
+        { channelId, messageId, pinStatus }: UpdatePinStatusPayload
     ): Promise<void> {
-        if (client.user.role === 'ADMIN') {
+        if (client.user.role === Role.ADMIN) {
             const message = await this.messageService.updatePin(messageId, pinStatus);
             this.server.to(channelId).emit(SocketEvent.PIN_FROM_SERVER, message);
         }
