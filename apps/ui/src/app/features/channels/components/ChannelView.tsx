@@ -70,6 +70,7 @@ export default function ChannelView({
 }: ChannelProps) {
     const pinnedMessages = channelMessages?.filter(channelMessage => channelMessage.isPinned) || [];
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const messageRefs = useRef<{ [key: string]: HTMLLIElement | null }>({});
 
     const scrollToBottom = useCallback(() => {
         setTimeout(() => {
@@ -78,6 +79,13 @@ export default function ChannelView({
             }
         }, 100);
     }, []);
+
+    const scrollToMessage = (messageId: string) => {
+        const messageRef = messageRefs.current[messageId];
+        if (messageRef) {
+            messageRef.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
 
     useEffect(() => {
         scrollToBottom();
@@ -109,6 +117,7 @@ export default function ChannelView({
                     popoverAnchor={popoverAnchor}
                     popoverOpen={popoverOpen}
                     setPopoverAnchor={setPopoverAnchor}
+                    scrollToMessage={scrollToMessage}
                 />
             </Stack>
 
@@ -148,6 +157,7 @@ export default function ChannelView({
                                                 ? 'flex-end'
                                                 : 'flex-start'
                                     }}
+                                    ref={el => (messageRefs.current[message.id] = el)}
                                 >
                                     <MessageContainer
                                         message={message}

@@ -21,6 +21,7 @@ type PinnedMessagesViewProps = {
     currentUser: User;
     setPopoverAnchor: React.Dispatch<React.SetStateAction<HTMLElement | null>>;
     handlePinStatus: (messageId: string, pinStatus: boolean) => void;
+    scrollToMessage: (messageId: string) => void; // Add this prop
 };
 
 export default function PinnedMessagesView({
@@ -29,8 +30,14 @@ export default function PinnedMessagesView({
     pinnedMessages,
     currentUser,
     setPopoverAnchor,
-    handlePinStatus
+    handlePinStatus,
+    scrollToMessage
 }: PinnedMessagesViewProps) {
+    const handlePinnedMessageClick = (messageId: string) => {
+        scrollToMessage(messageId);
+        setPopoverAnchor(null);
+    };
+
     return (
         <>
             <Popover
@@ -71,14 +78,16 @@ export default function PinnedMessagesView({
                                                 <IconButton
                                                     edge="end"
                                                     aria-label="unpin"
-                                                    onClick={() =>
-                                                        handlePinStatus(message.id, false)
-                                                    }
+                                                    onClick={event => {
+                                                        event.stopPropagation();
+                                                        handlePinStatus(message.id, false);
+                                                    }}
                                                 >
                                                     <Close />
                                                 </IconButton>
                                             )
                                         }
+                                        onClick={() => handlePinnedMessageClick(message.id)}
                                     >
                                         <ListItemText
                                             primary={message.content}
