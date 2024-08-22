@@ -73,7 +73,7 @@ export default function MessageView({
         popupId: 'messageMenu'
     });
 
-    console.log(message.content, message.likes.length)
+    console.log(message.content, message.likes.length);
     return (
         <>
             <Box
