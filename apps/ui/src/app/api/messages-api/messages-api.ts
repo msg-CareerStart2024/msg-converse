@@ -66,11 +66,14 @@ export const messagesApi = createApi({
                 { channelId, updatedMessage, user, action },
                 { dispatch, queryFulfilled }
             ) {
-                console.log('updatedMessageLikes1:', updatedMessage.likes);
+                console.log(channelId, updatedMessage, user, action);
                 const patchResult = dispatch(
                     messagesApi.util.updateQueryData('getMessagesByChannelId', channelId, draft => {
                         const index = draft.findIndex(msg => msg.id === updatedMessage.id);
                         if (index !== -1 && user) {
+                            if (!draft[index].likes) {
+                                draft[index].likes = [];
+                            }
                             action === 'dislike'
                                 ? (draft[index].likes = draft[index].likes.filter(
                                       like => like.id !== user.id
@@ -81,11 +84,11 @@ export const messagesApi = createApi({
                 );
                 try {
                     await queryFulfilled;
+                    console.log("'updated message", updatedMessage);
                 } catch {
                     console.log('undo');
                     patchResult.undo();
                 }
-                console.log('updatedMessageLikes2:', updatedMessage.likes);
             }
         }),
 

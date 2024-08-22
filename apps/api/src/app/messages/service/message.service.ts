@@ -64,15 +64,18 @@ export class MessageService {
         const user = await this.userService.getById(userId);
         let action = undefined;
 
-        if (message.likes?.some(like => like.id === user.id)) {
+        if (message.likes.some(like => like.id === user.id)) {
+            console.log('REMOVE');
             message.likes = message.likes.filter(like => like.id !== user.id);
             action = 'dislike';
+            console.log('REMOVE', message.likes);
         } else {
             message.likes.push(user);
             action = 'like';
+            console.log('ADD', message.likes);
         }
-        this.messageRepository.update(message);
-        return { message, action };
+        const updatedMessage = await this.messageRepository.update(message);
+        return { message: updatedMessage, action };
     }
     async updateDeletedStatus(id: string, newDeletedStatus: boolean): Promise<Message> {
         const existingMessage = await this.messageRepository.getById(id);

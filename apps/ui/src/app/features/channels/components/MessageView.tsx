@@ -17,6 +17,7 @@ import {
 } from '@mui/material';
 import HoverMenu from 'material-ui-popup-state/HoverMenu';
 import { bindHover, bindMenu, usePopupState } from 'material-ui-popup-state/hooks';
+import { useEffect, useState } from 'react';
 import { getColor } from '../../../lib/avatar-colors';
 import { User } from '../../../types/login/User.types';
 import { UserRole } from '../../../types/login/UserRole.enum';
@@ -73,7 +74,12 @@ export default function MessageView({
         popupId: 'messageMenu'
     });
 
-    console.log(message.content, message.likes.length);
+    const [localMessage, setLocalMessage] = useState(message);
+    useEffect(() => {
+        setLocalMessage(message); // Keep local state in sync with props
+    }, [message]);
+
+    // console.log(message.content, message.likes)
     return (
         <>
             <Box
@@ -89,7 +95,10 @@ export default function MessageView({
                 <Tooltip
                     title={
                         <Typography sx={{ fontSize: '1.25rem' }}>
-                            {generateUserName(message.user.firstName, message.user.lastName)}
+                            {generateUserName(
+                                localMessage.user.firstName,
+                                localMessage.user.lastName
+                            )}
                         </Typography>
                     }
                     placement={isSent ? 'right-start' : 'left-start'}
@@ -103,7 +112,7 @@ export default function MessageView({
                     <ListItemText
                         primary={
                             !isDeleted
-                                ? message.content
+                                ? localMessage.content
                                 : currentUser.role === UserRole.ADMIN
                                   ? 'This message was removed by a Moderator'
                                   : currentUser.role === UserRole.USER
@@ -149,9 +158,11 @@ export default function MessageView({
                                         </IconButton>
                                     </MenuItem>
                                 ))}
-                            <Button onClick={() => handleToggleLikeMessage(message.id)}>
+                            <Button onClick={() => handleToggleLikeMessage(localMessage.id)}>
                                 Laik
-                                <Typography color="white">{message.likes?.length || 0}</Typography>
+                                <Typography color="white">
+                                    {localMessage.likes?.length || 0}
+                                </Typography>
                             </Button>
                         </Box>
                     </HoverMenu>
@@ -164,7 +175,7 @@ export default function MessageView({
                 aria-describedby="alert-dialog-description"
             >
                 <DialogTitle id="alert-dialog-title">
-                    {!message.isDeleted
+                    {!localMessage.isDeleted
                         ? 'Are you sure you want to delete this message?'
                         : 'Are you sure you want to restore this message?'}
                 </DialogTitle>
