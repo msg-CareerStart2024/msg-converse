@@ -21,7 +21,7 @@ type PinnedMessagesViewProps = {
     currentUser: User;
     setPopoverAnchor: React.Dispatch<React.SetStateAction<HTMLElement | null>>;
     handlePinStatus: (messageId: string, pinStatus: boolean) => void;
-    scrollToMessage: (messageId: string) => void; // Add this prop
+    scrollToMessage: (messageId: string) => void;
 };
 
 export default function PinnedMessagesView({
