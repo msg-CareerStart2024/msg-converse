@@ -65,6 +65,7 @@ export class MessageService {
         }
 
         existingMessage.isDeleted = newDeletedStatus;
+        existingMessage.isPinned = false;
 
         return this.messageRepository.update(existingMessage);
     }

@@ -26,7 +26,7 @@ export default function MessageContainer({
         setDialogOpen(false);
     };
 
-    const handleDialogConfirmation = async () => {
+    const handleDialogConfirmation = () => {
         handleChangeDeletionStatus(message.id, isDeleted);
         handleCloseDialog();
     };
