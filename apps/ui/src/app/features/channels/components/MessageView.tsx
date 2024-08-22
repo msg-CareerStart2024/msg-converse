@@ -22,6 +22,7 @@ import { useTheme } from '@mui/material';
 import { Message } from '../../../types/messages/Message.types';
 import { User } from '../../../types/login/User.types';
 import { generateUserName } from '../../../utils/utils';
+import { PushPin, PushPinOutlined } from '@mui/icons-material';
 
 type MessageProps = {
     message: Message;
@@ -29,10 +30,15 @@ type MessageProps = {
     firstNameInitial: string;
     isSent: boolean;
     isDeleted: boolean;
+    isPinned: boolean;
     dialogOpen: boolean;
     handleOpenDialog: () => void;
     handleCloseDialog: () => void;
     handleDialogConfirmation: () => void;
+    pinDialogOpen: boolean;
+    handleOpenPinDialog: () => void;
+    handleClosePinDialog: () => void;
+    handlePinDialogConfirmation: () => void;
 };
 
 export default function MessageView({
@@ -41,10 +47,15 @@ export default function MessageView({
     firstNameInitial,
     isSent,
     isDeleted,
+    isPinned,
     dialogOpen,
     handleOpenDialog,
     handleCloseDialog,
-    handleDialogConfirmation
+    handleDialogConfirmation,
+    pinDialogOpen,
+    handleOpenPinDialog,
+    handleClosePinDialog,
+    handlePinDialogConfirmation
 }: MessageProps) {
     const theme = useTheme();
     const isCurrentUserAdmin = currentUser.role === UserRole.ADMIN;
@@ -109,45 +120,49 @@ export default function MessageView({
                         }
                     />
 
-                    <HoverMenu
-                        {...bindMenu(popupState)}
-                        sx={{ display: 'flex', flexDirection: 'row' }}
-                        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-                        transformOrigin={{ vertical: 'top', horizontal: 'center' }}
-                    >
-                        <Box sx={{ display: 'flex' }}>
-                            {isCurrentUserAdmin &&
-                                (!isDeleted ? (
-                                    <MenuItem
-                                        onClick={handleOpenDialog}
-                                        sx={{
-                                            '&:hover': {
-                                                background: 'none'
-                                            },
-                                            maxHeight: '25px'
-                                        }}
-                                    >
-                                        <IconButton>
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    </MenuItem>
-                                ) : (
-                                    <MenuItem
-                                        onClick={handleOpenDialog}
-                                        sx={{
-                                            '&:hover': {
-                                                background: 'none'
-                                            },
-                                            maxHeight: '25px'
-                                        }}
-                                    >
-                                        <IconButton>
-                                            <RestoreIcon />
-                                        </IconButton>
-                                    </MenuItem>
-                                ))}
-                        </Box>
-                    </HoverMenu>
+                    {isCurrentUserAdmin && (
+                        <HoverMenu
+                            {...bindMenu(popupState)}
+                            sx={{ display: 'flex', flexDirection: 'row' }}
+                            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                            transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+                        >
+                            <Box sx={{ display: 'flex' }}>
+                                {isCurrentUserAdmin && (
+                                    <>
+                                        <MenuItem
+                                            onClick={handleOpenDialog}
+                                            sx={{
+                                                '&:hover': {
+                                                    background: 'none'
+                                                },
+                                                maxHeight: '25px'
+                                            }}
+                                        >
+                                            <IconButton>
+                                                {isDeleted ? <RestoreIcon /> : <DeleteIcon />}
+                                            </IconButton>
+                                        </MenuItem>
+                                        {!isDeleted && (
+                                            <MenuItem
+                                                onClick={handleOpenPinDialog}
+                                                sx={{
+                                                    '&:hover': {
+                                                        background: 'none'
+                                                    },
+                                                    maxHeight: '25px'
+                                                }}
+                                            >
+                                                <IconButton>
+                                                    {isPinned ? <PushPinOutlined /> : <PushPin />}
+                                                </IconButton>
+                                            </MenuItem>
+                                        )}
+                                    </>
+                                )}
+                            </Box>
+                        </HoverMenu>
+                    )}
                 </Box>
             </Box>
             <Dialog
@@ -174,6 +189,32 @@ export default function MessageView({
                         color="secondary"
                     >
                         Confirm
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog
+                open={pinDialogOpen}
+                onClose={handleClosePinDialog}
+                aria-labelledby="alert-pin-dialog-title"
+                aria-describedby="alert-pin-dialog-description"
+            >
+                <DialogTitle id="alert-pin-dialog-title">
+                    {`Are you sure you want to ${isPinned ? 'unpin' : 'pin'} this message?`}
+                </DialogTitle>
+                <DialogContent id="alert-dialog-description">
+                    Please confirm your action
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClosePinDialog} variant="contained" color="secondary">
+                        Cancel
+                    </Button>
+                    <Button
+                        onClick={handlePinDialogConfirmation}
+                        variant="contained"
+                        color="secondary"
+                    >
+                        {isPinned ? 'UNPIN' : 'PIN'}
                     </Button>
                 </DialogActions>
             </Dialog>

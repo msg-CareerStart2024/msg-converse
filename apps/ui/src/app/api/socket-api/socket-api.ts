@@ -1,6 +1,10 @@
 import { FetchBaseQueryError, createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-import { SendMessageEventPayload } from '../../types/socket/messages-socket.payload';
+import {
+    PinMessageEventPayload,
+    SendMessageEventPayload,
+    UpdateDeletedStatusPayload
+} from '../../types/socket/messages-socket.payload';
 import { Socket } from 'socket.io-client';
 import { SocketErrorMessage } from '../../types/socket/SocketErrorMessage.enum';
 import { SocketErrorType } from '../../types/socket/SocketErrorType.enum';
@@ -41,6 +45,12 @@ export const socketApi = createApi({
         sendMessage: builder.mutation<void, SendMessageEventPayload>({
             queryFn: payload => emitSocketEvent(SocketEvent.SEND_MESSAGE, payload)
         }),
+        pinMessage: builder.mutation<void, PinMessageEventPayload>({
+            queryFn: payload => emitSocketEvent(SocketEvent.PIN_FROM_CLIENT, payload)
+        }),
+        updateDeletedStatus: builder.mutation<void, UpdateDeletedStatusPayload>({
+            queryFn: payload => emitSocketEvent(SocketEvent.UPDATE_DELETED_STATUS_CLIENT, payload)
+        }),
         startTyping: builder.mutation<void, string>({
             queryFn: channelId => emitSocketEvent(SocketEvent.START_TYPING, channelId)
         }),
@@ -54,6 +64,8 @@ export const {
     useJoinChannelChatMutation,
     useLeaveChannelChatMutation,
     useSendMessageMutation,
+    usePinMessageMutation,
+    useUpdateDeletedStatusMutation,
     useStartTypingMutation,
     useStopTypingMutation
 } = socketApi;

@@ -14,7 +14,13 @@ import { JwtService } from '@nestjs/jwt';
 import { User } from '../../users/domain/user.domain';
 import { MessageService } from '../service/message.service';
 import { Message } from '../domain/message.domain';
-import { NewMessagePayload, TypingUser } from '../type/message-gateway.types';
+import {
+    NewMessagePayload,
+    TypingUser,
+    UpdateDeletedStatusPayload,
+    UpdatePinStatusPayload
+} from '../type/message-gateway.types';
+import { Role } from '../../users/enums/role.enum';
 
 declare module 'socket.io' {
     interface Socket {
@@ -100,6 +106,20 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
         this.emitTypingUsers(channelId);
     }
 
+    @SubscribeMessage(SocketEvent.UPDATE_DELETED_STATUS_CLIENT)
+    async handleUpdateDeletedStatus(
+        client: Socket,
+        { channelId, messageId, deletedStatus }: UpdateDeletedStatusPayload
+    ): Promise<void> {
+        if (client.user.role === Role.ADMIN) {
+            const updatedMessage = await this.messageService.updateDeletedStatus(
+                messageId,
+                deletedStatus
+            );
+            this.server.to(channelId).emit(SocketEvent.UPDATE_DELETED_STATUS, updatedMessage);
+        }
+    }
+
     @SubscribeMessage(SocketEvent.START_TYPING)
     handleTyping(client: Socket, channelId: string): void {
         this.addTypingUser(channelId, client.user);
@@ -132,5 +152,16 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
     private emitTypingUsers(channelId: string): void {
         const typingUsers = Array.from(this.typingUsers.get(channelId)?.values() || []);
         this.server.to(channelId).emit(SocketEvent.TYPING_USERS, typingUsers);
+    }
+
+    @SubscribeMessage(SocketEvent.PIN_FROM_CLIENT)
+    async handlePinMessage(
+        client: Socket,
+        { channelId, messageId, pinStatus }: UpdatePinStatusPayload
+    ): Promise<void> {
+        if (client.user.role === Role.ADMIN) {
+            const message = await this.messageService.updatePin(messageId, pinStatus);
+            this.server.to(channelId).emit(SocketEvent.PIN_FROM_SERVER, message);
+        }
     }
 }
