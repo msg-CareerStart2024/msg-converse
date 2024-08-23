@@ -76,8 +76,8 @@ export default function SignUpFormView({
                                 fullWidth
                                 id="lastName"
                                 label="Last Name"
-                                error={!!errors.firstName}
-                                helperText={errors.firstName?.message}
+                                error={!!errors.lastName}
+                                helperText={errors.lastName?.message}
                                 {...register('lastName')}
                             />
                         </Grid>

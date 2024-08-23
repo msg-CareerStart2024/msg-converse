@@ -14,6 +14,9 @@ export default function ChannelPage() {
     const { id: channelId } = useParams<string>();
     const [isOffline, setIsOffline] = useState<boolean>(!navigator.onLine);
 
+    const [popoverAnchor, setPopoverAnchor] = useState<null | HTMLElement>(null);
+    const popoverOpen = Boolean(popoverAnchor);
+
     const {
         channelMessages,
         sendChannelMessage,
@@ -21,7 +24,8 @@ export default function ChannelPage() {
         refetchMessages,
         handleTyping,
         typingUsers,
-        handleToggleLikeMessage
+        handleToggleLikeMessage,
+        pinChannelMessage
     } = useChannelSocket(channelId as string);
 
     const {
@@ -73,6 +77,10 @@ export default function ChannelPage() {
         updateMessageDeletedStatus(id, newDeletedStatus);
     };
 
+    const handlePinStatus = (messageId: string, pinStatus: boolean) => {
+        if (channelId) pinChannelMessage(channelId, messageId, pinStatus);
+    };
+
     return (
         <ChannelView
             channelMessages={channelMessages}
@@ -81,12 +89,16 @@ export default function ChannelPage() {
             errorChannel={errorChannel}
             currentUser={currentUser}
             isOffline={isOffline}
+            popoverOpen={popoverOpen}
+            popoverAnchor={popoverAnchor}
+            setPopoverAnchor={setPopoverAnchor}
+            sendMessage={sendMessage}
+            handleChangeDeletionStatus={handleChangeDeletionStatus}
+            handlePinStatus={handlePinStatus}
             errors={errors}
             isValid={isValid}
             handleSubmit={handleSubmit}
             register={register}
-            sendMessage={sendMessage}
-            handleChangeDeletionStatus={handleChangeDeletionStatus}
             typingUsers={typingUsers}
             handleTyping={handleTyping}
             handleToggleLikeMessage={handleToggleLikeMessage}

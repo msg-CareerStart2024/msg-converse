@@ -9,6 +9,8 @@ export enum SocketEvent {
     SEND_MESSAGE = 'send_message',
     TOGGLE_LIKE_MESSAGE_CLIENT = 'toggle_like_message_client',
     TOGGLE_LIKE_MESSAGE_SERVER = 'toggle_like_message_server',
+    PIN_FROM_CLIENT = 'pin_from_client',
+    PIN_FROM_SERVER = 'pin_from_server',
     START_TYPING = 'start_typing',
     STOP_TYPING = 'stop_typing',
     TYPING_USERS = 'typing_users',

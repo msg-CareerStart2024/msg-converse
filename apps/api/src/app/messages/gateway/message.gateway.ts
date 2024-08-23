@@ -19,7 +19,8 @@ import { MessageService } from '../service/message.service';
 import {
     NewMessagePayload,
     TypingUser,
-    UpdateDeletedStatusPayload
+    UpdateDeletedStatusPayload,
+    UpdatePinStatusPayload
 } from '../type/message-gateway.types';
 
 declare module 'socket.io' {
@@ -160,5 +161,16 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
     private emitTypingUsers(channelId: string): void {
         const typingUsers = Array.from(this.typingUsers.get(channelId)?.values() || []);
         this.server.to(channelId).emit(SocketEvent.TYPING_USERS, typingUsers);
+    }
+
+    @SubscribeMessage(SocketEvent.PIN_FROM_CLIENT)
+    async handlePinMessage(
+        client: Socket,
+        { channelId, messageId, pinStatus }: UpdatePinStatusPayload
+    ): Promise<void> {
+        if (client.user.role === Role.ADMIN) {
+            const message = await this.messageService.updatePin(messageId, pinStatus);
+            this.server.to(channelId).emit(SocketEvent.PIN_FROM_SERVER, message);
+        }
     }
 }

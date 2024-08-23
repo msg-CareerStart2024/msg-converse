@@ -1,6 +1,8 @@
 import { AutoMode, ChevronLeft, DarkMode, LightMode, Logout } from '@mui/icons-material';
 import {
     Avatar,
+    Badge,
+    BadgeProps,
     Box,
     Dialog,
     DialogTitle,
@@ -15,6 +17,7 @@ import {
     Menu,
     MenuItem,
     Stack,
+    styled,
     Typography
 } from '@mui/material';
 
@@ -26,6 +29,7 @@ import { RootState } from '../../../store/store';
 import { Channel } from '../../../types/channel/channel.types';
 import { generateUserName } from '../../../utils/utils';
 import SidebarItem from './SidebarItem';
+import { UserRole } from '../../../types/login/UserRole.enum';
 
 type SidebarViewProps = {
     menuOpen: boolean;
@@ -41,6 +45,13 @@ type SidebarViewProps = {
     handleDialogClose: () => void;
     dialogOpen: boolean;
 };
+
+const StyledBadge = styled(Badge)<BadgeProps>(() => ({
+    '& .MuiBadge-badge': {
+        right: -35,
+        top: 12
+    }
+}));
 
 export default function SidebarView({
     menuOpen,
@@ -125,7 +136,15 @@ export default function SidebarView({
                             </ListItemIcon>
                             <ListItemText
                                 data-testid="logged-in-user"
-                                primary={generateUserName(user.firstName, user.lastName)}
+                                primary={
+                                    user.role === UserRole.ADMIN ? (
+                                        <StyledBadge color="primary" badgeContent="ADMIN">
+                                            {generateUserName(user.firstName, user.lastName)}
+                                        </StyledBadge>
+                                    ) : (
+                                        generateUserName(user.firstName, user.lastName)
+                                    )
+                                }
                                 secondary={user.email}
                             />
                         </ListItemButton>
