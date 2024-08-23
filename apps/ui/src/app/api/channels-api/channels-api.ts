@@ -4,10 +4,11 @@ import { API_CACHE_TAGS } from '../../config/api-tags';
 import { API_URLS } from '../../config/api-config';
 import { createApi } from '@reduxjs/toolkit/query/react';
 import getFetchBaseQuery from '../fetch-base-query';
+import { Topic } from '../../types/channel/Topic.types';
 
 export const channelsApi = createApi({
     reducerPath: 'channelsApi',
-    tagTypes: [API_CACHE_TAGS.CHANNELS],
+    tagTypes: [API_CACHE_TAGS.CHANNELS, API_CACHE_TAGS.TOPICS],
     baseQuery: getFetchBaseQuery(API_URLS.CHANNELS),
     endpoints: builder => ({
         getChannels: builder.query<Channel[], string>({
@@ -22,6 +23,15 @@ export const channelsApi = createApi({
 
         getChannelById: builder.query<Channel, string>({
             query: id => `${id}`
+        }),
+
+        getTopicsFromAllChannels: builder.query<string[], void>({
+            query: () => 'topics/all',
+            transformResponse: (response: Topic[]) => {
+                return response.map(topic => topic.name);
+            },
+            providesTags: result =>
+                result ? result.map(name => ({ type: 'Topics', id: name })) : []
         }),
 
         joinChannel: builder.mutation<void, string>({
@@ -76,5 +86,6 @@ export const {
     useCreateChannelMutation,
     useDeleteChannelMutation,
     useUpdateChannelMutation,
-    useGetChannelByIdQuery
+    useGetChannelByIdQuery,
+    useGetTopicsFromAllChannelsQuery
 } = channelsApi;

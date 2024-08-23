@@ -1,5 +1,5 @@
 import { AddCircle, Cancel } from '@mui/icons-material';
-import { Box, Chip, Grid, IconButton, TextField } from '@mui/material';
+import { Autocomplete, Box, Chip, Grid, IconButton, TextField } from '@mui/material';
 import { UseFormGetValues, UseFormRegister, UseFormSetValue } from 'react-hook-form';
 import { Topic } from '../../../types/channel/Topic.types';
 import { ChannelFormValues } from '../schemas/ChannelFormValues.schema';
@@ -20,26 +20,36 @@ type TopicsViewProps = {
     setTopics: React.Dispatch<React.SetStateAction<Topic[]>>;
     handleAddTopic: () => void;
     handleDeleteTopic: (name: string) => void;
+    isTotalTopics: string[];
 };
 
 export default function TopicsView({
     register,
     topics,
     handleAddTopic,
-    handleDeleteTopic
+    handleDeleteTopic,
+    isTotalTopics,
+    setValue
 }: TopicsViewProps) {
     return (
         <>
             <Grid item xs={12} sm={6}>
-                <TextField
-                    fullWidth
-                    focused
-                    variant="outlined"
-                    color="secondary"
-                    label="Topics"
-                    {...register('topics')}
-                    onKeyDown={e => e.key === 'Enter' && handleAddTopic()}
-                    sx={{ '& label': { fontWeight: 'bold' } }}
+                <Autocomplete
+                    freeSolo
+                    options={isTotalTopics}
+                    renderInput={params => (
+                        <TextField
+                            {...params}
+                            fullWidth
+                            focused
+                            variant="outlined"
+                            color="secondary"
+                            label="Topics"
+                            {...register('topics')}
+                            onKeyDown={e => e.key === 'Enter' && handleAddTopic()}
+                            sx={{ '& label': { fontWeight: 'bold' } }}
+                        />
+                    )}
                 />
             </Grid>
             <Grid item xs={12} sm={6}>

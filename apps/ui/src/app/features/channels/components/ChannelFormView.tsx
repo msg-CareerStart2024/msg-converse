@@ -44,6 +44,7 @@ type ChannelFormProps = {
     handleDeleteTopic: (name: string) => void;
     data?: ChannelDTO;
     isChanged: boolean;
+    isTotalTopics: string[];
 };
 
 export default function ChannelFormView({
@@ -64,7 +65,8 @@ export default function ChannelFormView({
     handleAddTopic,
     handleDeleteTopic,
     data,
-    isChanged
+    isChanged,
+    isTotalTopics
 }: ChannelFormProps) {
     const channelName = data?.name;
     const channelInitial = getValues('name')?.charAt(0).toUpperCase();
@@ -167,6 +169,7 @@ export default function ChannelFormView({
                                 setValue={setValue}
                                 handleAddTopic={handleAddTopic}
                                 handleDeleteTopic={handleDeleteTopic}
+                                isTotalTopics={isTotalTopics}
                             />
                         </Grid>
                     </Paper>

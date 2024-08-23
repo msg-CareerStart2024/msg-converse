@@ -21,6 +21,10 @@ export class ChannelRepository {
         return this.repository.find();
     }
 
+    async getAllTopics(): Promise<Channel[]> {
+        return this.repository.find({ relations: ['topics'] });
+    }
+
     async getByName(name: string): Promise<Channel | null> {
         return this.repository.findOne({
             where: { name },

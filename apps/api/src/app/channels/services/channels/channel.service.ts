@@ -7,6 +7,7 @@ import { Channel } from '../../domain/channel.entity';
 import { ChannelRepository } from '../../repository/channel.repository';
 import { TopicService } from '../topics/topic.service';
 import { MessageService } from '../../../messages/service/message.service';
+import { Topic } from '../../domain/topic.entity';
 
 @Injectable()
 export class ChannelService {
@@ -115,5 +116,22 @@ export class ChannelService {
     ): Promise<Channel['topics']> {
         const topicNames = topics.map(topic => topic.name);
         return this.topicService.getOrCreateTopics(topicNames, manager);
+    }
+
+    async getAllTopicsFromAllChannels(): Promise<Topic[]> {
+        const channels = await this.channelRepository.getAllTopics();
+        const topicNamesSet = new Set<string>();
+        const uniqueTopics: Topic[] = [];
+
+        channels.forEach(channel => {
+            channel.topics.forEach(topic => {
+                if (!topicNamesSet.has(topic.name)) {
+                    topicNamesSet.add(topic.name);
+                    uniqueTopics.push(topic);
+                }
+            });
+        });
+
+        return uniqueTopics;
     }
 }

@@ -7,6 +7,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import {
     useCreateChannelMutation,
     useDeleteChannelMutation,
+    useGetTopicsFromAllChannelsQuery,
     useLazyGetChannelByIdQuery,
     useUpdateChannelMutation
 } from '../../../api/channels-api/channels-api';
@@ -27,7 +28,17 @@ export default function ChannelFormPage() {
     const currentUser = useSelector((state: RootState) => state.auth.user) as User;
     const isChangedRef = useRef(false);
     const [isChanged, setIsChanged] = useState(false);
+    const [isTotalTopics, setIsTotalTopics] = useState<string[]>([]);
+    // const [inputValue, setInputValue] = useState('');
 
+    const { data: allTopics, refetch: refetchTopics } = useGetTopicsFromAllChannelsQuery();
+
+    useEffect(() => {
+        if (allTopics) {
+            console.log(allTopics);
+            setIsTotalTopics(allTopics);
+        }
+    }, [allTopics]);
     interface SimpleTopic {
         name: string;
     }
@@ -66,6 +77,7 @@ export default function ChannelFormPage() {
             .unwrap()
             .then(newChannel => {
                 toast.success('Channel created successfully.');
+                refetchTopics();
                 navigate('/');
             })
             .catch(error => {
@@ -89,6 +101,7 @@ export default function ChannelFormPage() {
                 .unwrap()
                 .then(() => {
                     toast.success('Channel deleted successfully.');
+                    refetchTopics();
                     navigate('/');
                 })
                 .catch(error => {
@@ -117,6 +130,7 @@ export default function ChannelFormPage() {
                 .unwrap()
                 .then(() => {
                     toast.success('Channel updated successfully.');
+                    refetchTopics();
                     navigate('/');
                 })
                 .catch(error => {
@@ -195,7 +209,9 @@ export default function ChannelFormPage() {
         }
 
         setTopics(updatedTopics);
+        console.log('Before setValue:', getValues('topics'));
         setValue('topics', '');
+        console.log('After setValue:', getValues('topics'));
     };
 
     const handleDeleteTopic = (name: string) => {
@@ -227,6 +243,7 @@ export default function ChannelFormPage() {
             handleAddTopic={handleAddTopic}
             handleDeleteTopic={handleDeleteTopic}
             isChanged={isChanged}
+            isTotalTopics={isTotalTopics}
         />
     );
 }

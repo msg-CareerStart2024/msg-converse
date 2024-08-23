@@ -15,6 +15,8 @@ import { CreateChannelDto } from '../../dto/channels/create-channel.dto';
 import { UpdateChannelDto } from '../../dto/channels/update-channel.dto';
 import { ChannelMapper } from '../../mapper/channel.mapper';
 import { ChannelService } from '../../services/channels/channel.service';
+import { TopicDto } from '../../dto/topics/topic.dto';
+import { TopicMapper } from '../../mapper/topic.mapper';
 
 @ApiTags('Channels')
 @ApiBearerAuth()
@@ -210,5 +212,24 @@ export class ChannelController {
     ): Promise<ChannelDto> {
         const leftChannel = await this.channelService.leaveChannel(channelId, userId);
         return ChannelMapper.toDto(leftChannel);
+    }
+
+    @Get('topics/all')
+    @ApiOperation({
+        summary: 'Get all topics from all channels',
+        description: 'Retrieve a list of all topics available across all channels.'
+    })
+    @ApiResponse({
+        status: 200,
+        description: 'Successfully retrieved all topics from all channels',
+        type: [TopicDto]
+    })
+    @ApiResponse({
+        status: 401,
+        description: 'Unauthorized - Valid authentication credentials are required'
+    })
+    async getAllTopicsFromAllChannels(): Promise<TopicDto[]> {
+        const topics = await this.channelService.getAllTopicsFromAllChannels();
+        return topics.map(topic => TopicMapper.toDto(topic));
     }
 }

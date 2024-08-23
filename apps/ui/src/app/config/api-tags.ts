@@ -3,5 +3,6 @@ export const API_CACHE_TAGS = {
     JOINED_CHANNELS: 'JoinedChannels',
     AUTH: 'Auth',
     USERS: 'Users',
-    MESSAGES: 'Messages'
+    MESSAGES: 'Messages',
+    TOPICS: 'Topics'
 };
