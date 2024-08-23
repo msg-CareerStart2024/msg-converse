@@ -1,7 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { API_URLS } from '../../config/api-config';
 import { API_CACHE_TAGS } from '../../config/api-tags';
-import { User } from '../../types/login/User.types';
 import { Message } from '../../types/messages/Message.types';
 import getFetchBaseQuery from '../fetch-base-query';
 
@@ -59,28 +58,17 @@ export const messagesApi = createApi({
         }),
         updateLikeMessage: builder.mutation<
             Message,
-            { channelId: string; updatedMessage: Message; user?: User; action: string }
+            { channelId: string; updatedMessage: Message }
         >({
             queryFn: ({ updatedMessage }) => ({ data: updatedMessage }),
-            async onQueryStarted(
-                { channelId, updatedMessage, user, action },
-                { dispatch, queryFulfilled }
-            ) {
+            async onQueryStarted({ channelId, updatedMessage }, { dispatch, queryFulfilled }) {
                 const patchResult = dispatch(
                     messagesApi.util.updateQueryData('getMessagesByChannelId', channelId, draft => {
                         const index = draft.findIndex(msg => msg.id === updatedMessage.id);
-                        if (index !== -1 && user) {
-                            if (!draft[index].likedByUsers) {
-                                draft[index].likedByUsers = [];
-                            }
-                            action === 'dislike'
-                                ? (draft[index].likedByUsers = draft[index].likedByUsers.filter(
-                                      like => like.id !== user.id
-                                  ))
-                                : draft[index].likedByUsers.push(user);
-                        }
+                        draft[index] = updatedMessage;
                     })
                 );
+
                 try {
                     await queryFulfilled;
                 } catch {

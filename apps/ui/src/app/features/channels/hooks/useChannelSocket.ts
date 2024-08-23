@@ -17,7 +17,6 @@ import {
 } from '../../../api/socket-api/socket-api';
 import { useChatSocket } from '../../../contexts/ChannelSocketContext';
 import { RootState } from '../../../store/store';
-import { User } from '../../../types/login/User.types';
 import { Message } from '../../../types/messages/Message.types';
 import { TypingUser } from '../../../types/socket/messages-socket.payload';
 import { SocketEvent } from '../../../types/socket/SocketEvent.enum';
@@ -69,20 +68,10 @@ export const useChannelSocket = (channelId: string) => {
             setTypingUsers(users.filter(user => user.id !== currentUser?.id));
         };
 
-        const handleUpdateLikeMessage = ({
-            user,
-            message,
-            action
-        }: {
-            user: User;
-            message: Message;
-            action: string;
-        }) => {
+        const handleUpdateLikeMessage = (message: Message) => {
             updateLikeMessage({
                 channelId,
-                updatedMessage: message,
-                user,
-                action
+                updatedMessage: message
             });
         };
 
