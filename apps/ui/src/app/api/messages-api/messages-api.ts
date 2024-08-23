@@ -1,7 +1,7 @@
-import { API_CACHE_TAGS } from '../../config/api-tags';
-import { API_URLS } from '../../config/api-config';
-import { Message } from '../../types/messages/Message.types';
 import { createApi } from '@reduxjs/toolkit/query/react';
+import { API_URLS } from '../../config/api-config';
+import { API_CACHE_TAGS } from '../../config/api-tags';
+import { Message } from '../../types/messages/Message.types';
 import getFetchBaseQuery from '../fetch-base-query';
 
 export const messagesApi = createApi({
@@ -56,6 +56,26 @@ export const messagesApi = createApi({
                 }
             }
         }),
+        updateLikeMessage: builder.mutation<
+            Message,
+            { channelId: string; updatedMessage: Message }
+        >({
+            queryFn: ({ updatedMessage }) => ({ data: updatedMessage }),
+            async onQueryStarted({ channelId, updatedMessage }, { dispatch, queryFulfilled }) {
+                const patchResult = dispatch(
+                    messagesApi.util.updateQueryData('getMessagesByChannelId', channelId, draft => {
+                        const index = draft.findIndex(msg => msg.id === updatedMessage.id);
+                        draft[index] = updatedMessage;
+                    })
+                );
+
+                try {
+                    await queryFulfilled;
+                } catch {
+                    patchResult.undo();
+                }
+            }
+        }),
 
         createMessage: builder.mutation<
             Message,
@@ -100,5 +120,6 @@ export const {
     useUpdateMessageMutation,
     useRemoveMessageMutation,
     useAddMessageMutation,
-    useSwapMessageMutation
+    useSwapMessageMutation,
+    useUpdateLikeMessageMutation
 } = messagesApi;

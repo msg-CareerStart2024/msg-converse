@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean } from 'class-validator';
+import { UserDTO } from '../../users/dto/user.dto';
 
 export class UpdateMessageDTO {
     @ApiProperty({ description: 'The pinned status of the message' })
@@ -9,4 +10,7 @@ export class UpdateMessageDTO {
     @ApiProperty({ description: 'The deletion status of the message' })
     @IsBoolean()
     isDeleted: boolean;
+
+    @ApiProperty({ description: 'Users that liked the message' })
+    likedByUsers: UserDTO[];
 }

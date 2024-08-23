@@ -1,18 +1,20 @@
-import { MessageComponentProps } from '../../../types/messages/Message.types';
-import { User } from '../../../types/login/User.types';
 import { useState } from 'react';
+import { User } from '../../../types/login/User.types';
+import { MessageComponentProps } from '../../../types/messages/Message.types';
 import MessageView from './MessageView';
 
 type UnifiedMessageProps = MessageComponentProps & {
     currentUser: User;
     handlePinStatus: (messageId: string, pinStatus: boolean) => void;
     handleChangeDeletionStatus: (id: string, isDeleted: boolean) => void;
+    handleToggleLikeMessage: (messageId: string) => void;
 };
 
 export default function MessageContainer({
     message,
     currentUser,
     handleChangeDeletionStatus,
+    handleToggleLikeMessage,
     handlePinStatus
 }: UnifiedMessageProps) {
     const firstNameInitial: string = message.user.firstName[0].toUpperCase();
@@ -56,6 +58,7 @@ export default function MessageContainer({
             handleOpenDialog={handleOpenDialog}
             handleCloseDialog={handleCloseDialog}
             handleDialogConfirmation={handleDialogConfirmation}
+            handleToggleLikeMessage={handleToggleLikeMessage}
             pinDialogOpen={pinDialogOpen}
             handleOpenPinDialog={handleOpenPinDialog}
             handleClosePinDialog={handleClosePinDialog}

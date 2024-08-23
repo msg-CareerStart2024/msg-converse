@@ -19,4 +19,7 @@ export class MessageDTO {
 
     @ApiProperty({ description: 'The user that sent the message' })
     user: UserDTO;
+
+    @ApiProperty({ description: 'Users that liked the message' })
+    likedByUsers: UserDTO[];
 }

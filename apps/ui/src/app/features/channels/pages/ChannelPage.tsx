@@ -1,4 +1,6 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useCallback, useEffect, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { useGetChannelByIdQuery } from '../../../api/channels-api/channels-api';
@@ -6,9 +8,7 @@ import { RootState } from '../../../store/store';
 import { User } from '../../../types/login/User.types';
 import ChannelView from '../components/ChannelView';
 import { useChannelSocket } from '../hooks/useChannelSocket';
-import { SubmitHandler, useForm } from 'react-hook-form';
 import { ChannelChatSchema, ChannelChatValues } from '../schemas/ChatInputValues.schema';
-import { zodResolver } from '@hookform/resolvers/zod';
 
 export default function ChannelPage() {
     const { id: channelId } = useParams<string>();
@@ -24,6 +24,7 @@ export default function ChannelPage() {
         refetchMessages,
         handleTyping,
         typingUsers,
+        handleToggleLikeMessage,
         pinChannelMessage
     } = useChannelSocket(channelId as string);
 
@@ -100,6 +101,7 @@ export default function ChannelPage() {
             register={register}
             typingUsers={typingUsers}
             handleTyping={handleTyping}
+            handleToggleLikeMessage={handleToggleLikeMessage}
         />
     );
 }

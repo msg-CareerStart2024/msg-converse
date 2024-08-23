@@ -1,3 +1,8 @@
+import { PushPin, PushPinOutlined } from '@mui/icons-material';
+import DeleteOutline from '@mui/icons-material/DeleteOutline';
+import RestoreIcon from '@mui/icons-material/Restore';
+import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
+import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import {
     Avatar,
     Box,
@@ -8,21 +13,17 @@ import {
     DialogTitle,
     IconButton,
     ListItemText,
-    MenuItem,
     Tooltip,
-    Typography
+    Typography,
+    useTheme
 } from '@mui/material';
-import { getColor } from '../../../lib/avatar-colors';
-import { UserRole } from '../../../types/login/UserRole.enum';
 import HoverMenu from 'material-ui-popup-state/HoverMenu';
 import { bindHover, bindMenu, usePopupState } from 'material-ui-popup-state/hooks';
-import DeleteIcon from '@mui/icons-material/Delete';
-import RestoreIcon from '@mui/icons-material/Restore';
-import { useTheme } from '@mui/material';
-import { Message } from '../../../types/messages/Message.types';
+import { getColor } from '../../../lib/avatar-colors';
 import { User } from '../../../types/login/User.types';
+import { UserRole } from '../../../types/login/UserRole.enum';
+import { Message } from '../../../types/messages/Message.types';
 import { generateUserName } from '../../../utils/utils';
-import { PushPin, PushPinOutlined } from '@mui/icons-material';
 
 type MessageProps = {
     message: Message;
@@ -35,6 +36,7 @@ type MessageProps = {
     handleOpenDialog: () => void;
     handleCloseDialog: () => void;
     handleDialogConfirmation: () => void;
+    handleToggleLikeMessage: (message: string) => void;
     pinDialogOpen: boolean;
     handleOpenPinDialog: () => void;
     handleClosePinDialog: () => void;
@@ -52,6 +54,7 @@ export default function MessageView({
     handleOpenDialog,
     handleCloseDialog,
     handleDialogConfirmation,
+    handleToggleLikeMessage,
     pinDialogOpen,
     handleOpenPinDialog,
     handleClosePinDialog,
@@ -83,87 +86,82 @@ export default function MessageView({
     });
 
     return (
-        <>
-            <Box
-                sx={{
-                    display: 'flex',
-                    flexDirection: isSent ? 'row-reverse' : 'row',
-                    alignItems: 'center',
-                    wordBreak: 'break-word',
-                    justifyContent: isSent ? 'flex-end' : 'flex-start',
-                    maxWidth: '70%'
-                }}
+        <Box
+            sx={{
+                display: 'flex',
+                flexDirection: isSent ? 'row-reverse' : 'row',
+                alignItems: 'center',
+                wordBreak: 'break-word',
+                justifyContent: isSent ? 'flex-end' : 'flex-start',
+                maxWidth: '70%'
+            }}
+        >
+            <Tooltip
+                title={
+                    <Typography sx={{ fontSize: '1.25rem' }}>
+                        {generateUserName(message.user.firstName, message.user.lastName)}
+                    </Typography>
+                }
+                placement={isSent ? 'right-start' : 'left-start'}
+                arrow
             >
-                <Tooltip
-                    title={
-                        <Typography sx={{ fontSize: '1.25rem' }}>
-                            {generateUserName(message.user.firstName, message.user.lastName)}
-                        </Typography>
+                <Avatar variant="circular" sx={avatarStyle}>
+                    {firstNameInitial}
+                </Avatar>
+            </Tooltip>
+            <Box sx={messageBoxStyle} {...bindHover(popupState)}>
+                <ListItemText
+                    primary={
+                        !isDeleted
+                            ? message.content
+                            : currentUser.role === UserRole.ADMIN
+                              ? 'This message was removed by a Moderator'
+                              : currentUser.role === UserRole.USER
+                                ? 'This message was removed by a Board Administrator'
+                                : ''
                     }
-                    placement={isSent ? 'right-start' : 'left-start'}
-                    arrow
-                >
-                    <Avatar variant="circular" sx={avatarStyle}>
-                        {firstNameInitial}
-                    </Avatar>
-                </Tooltip>
-                <Box sx={messageBoxStyle} {...bindHover(popupState)}>
-                    <ListItemText
-                        primary={
-                            !isDeleted
-                                ? message.content
-                                : currentUser.role === UserRole.ADMIN
-                                  ? 'This message was removed by a Moderator'
-                                  : currentUser.role === UserRole.USER
-                                    ? 'This message was removed by a Board Administrator'
-                                    : ''
-                        }
-                    />
+                />
 
-                    {isCurrentUserAdmin && (
-                        <HoverMenu
-                            {...bindMenu(popupState)}
-                            sx={{ display: 'flex', flexDirection: 'row' }}
-                            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-                            transformOrigin={{ vertical: 'top', horizontal: 'center' }}
-                        >
-                            <Box sx={{ display: 'flex' }}>
-                                {isCurrentUserAdmin && (
-                                    <>
-                                        <MenuItem
-                                            onClick={handleOpenDialog}
-                                            sx={{
-                                                '&:hover': {
-                                                    background: 'none'
-                                                },
-                                                maxHeight: '25px'
-                                            }}
-                                        >
-                                            <IconButton>
-                                                {isDeleted ? <RestoreIcon /> : <DeleteIcon />}
-                                            </IconButton>
-                                        </MenuItem>
-                                        {!isDeleted && (
-                                            <MenuItem
-                                                onClick={handleOpenPinDialog}
-                                                sx={{
-                                                    '&:hover': {
-                                                        background: 'none'
-                                                    },
-                                                    maxHeight: '25px'
-                                                }}
-                                            >
-                                                <IconButton>
-                                                    {isPinned ? <PushPinOutlined /> : <PushPin />}
-                                                </IconButton>
-                                            </MenuItem>
-                                        )}
-                                    </>
-                                )}
-                            </Box>
-                        </HoverMenu>
-                    )}
-                </Box>
+                {(isCurrentUserAdmin || !isDeleted) && (
+                    <HoverMenu
+                        {...bindMenu(popupState)}
+                        sx={{ display: 'flex', flexDirection: 'row' }}
+                        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                        transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+                    >
+                        <Box sx={{ display: 'flex', alignItems: 'center', paddingX: 1, gap: 1 }}>
+                            {!isDeleted && (
+                                <IconButton
+                                    onClick={() => handleToggleLikeMessage(message.id)}
+                                    sx={{ gap: 1, alignItems: 'center' }}
+                                >
+                                    <Typography color="text.primary" fontWeight={600}>
+                                        {message.likedByUsers?.length || 0}
+                                    </Typography>
+                                    {message.likedByUsers?.some(
+                                        like => like.id === currentUser.id
+                                    ) ? (
+                                        <ThumbUpAltIcon />
+                                    ) : (
+                                        <ThumbUpOffAltIcon />
+                                    )}
+                                </IconButton>
+                            )}
+                            {isCurrentUserAdmin && (
+                                <>
+                                    <IconButton onClick={handleOpenDialog}>
+                                        {isDeleted ? <RestoreIcon /> : <DeleteOutline />}
+                                    </IconButton>
+                                    {!isDeleted && (
+                                        <IconButton onClick={handleOpenPinDialog}>
+                                            {!isPinned ? <PushPinOutlined /> : <PushPin />}
+                                        </IconButton>
+                                    )}
+                                </>
+                            )}
+                        </Box>
+                    </HoverMenu>
+                )}
             </Box>
             <Dialog
                 open={dialogOpen}
@@ -218,6 +216,6 @@ export default function MessageView({
                     </Button>
                 </DialogActions>
             </Dialog>
-        </>
+        </Box>
     );
 }

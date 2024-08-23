@@ -15,7 +15,20 @@ export class UserMapper {
             firstName,
             lastName,
             password,
-            role
+            role,
+            likedMessages: []
+        };
+    }
+    static fromDto(userDto: UserDTO): User {
+        const { id, email, firstName, lastName, role } = userDto;
+        return {
+            id,
+            email,
+            firstName,
+            lastName,
+            password: undefined,
+            role,
+            likedMessages: undefined
         };
     }
 }

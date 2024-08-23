@@ -1,18 +1,19 @@
 import { Close, PushPin } from '@mui/icons-material';
 import {
-    Popover,
-    Typography,
+    Box,
+    Button,
     Divider,
+    IconButton,
     List,
     ListItem,
-    IconButton,
     ListItemText,
-    Button
+    Popover,
+    Typography
 } from '@mui/material';
-import { UserRole } from '../../../types/login/UserRole.enum';
-import { generateUserName } from '../../../utils/utils';
-import { Message } from '../../../types/messages/Message.types';
 import { User } from '../../../types/login/User.types';
+import { UserRole } from '../../../types/login/UserRole.enum';
+import { Message } from '../../../types/messages/Message.types';
+import { generateUserName } from '../../../utils/utils';
 
 type PinnedMessagesViewProps = {
     popoverOpen: boolean;
@@ -54,7 +55,7 @@ export default function PinnedMessagesView({
                     horizontal: 'right'
                 }}
             >
-                <div
+                <Box
                     style={{
                         padding: '16px',
                         maxHeight: '300px',
@@ -70,7 +71,7 @@ export default function PinnedMessagesView({
                     <List>
                         {pinnedMessages.length > 0 ? (
                             pinnedMessages.map((message, index) => (
-                                <div key={'PIN' + message.id}>
+                                <Box key={'PIN' + message.id}>
                                     <ListItem
                                         disablePadding
                                         secondaryAction={
@@ -88,6 +89,12 @@ export default function PinnedMessagesView({
                                             )
                                         }
                                         onClick={() => handlePinnedMessageClick(message.id)}
+                                        sx={{
+                                            cursor: 'pointer',
+                                            padding: 1,
+                                            transition: 'all .1s ease-in-out',
+                                            '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.1 )' }
+                                        }}
                                     >
                                         <ListItemText
                                             primary={message.content}
@@ -106,13 +113,13 @@ export default function PinnedMessagesView({
                                         />
                                     </ListItem>
                                     {index < pinnedMessages.length - 1 && <Divider />}
-                                </div>
+                                </Box>
                             ))
                         ) : (
                             <Typography variant="body2">No pinned messages</Typography>
                         )}
                     </List>
-                </div>
+                </Box>
             </Popover>
 
             <Button

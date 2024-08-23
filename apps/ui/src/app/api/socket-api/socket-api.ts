@@ -1,11 +1,12 @@
 import { FetchBaseQueryError, createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
+import { Socket } from 'socket.io-client';
 import {
     PinMessageEventPayload,
     SendMessageEventPayload,
     UpdateDeletedStatusPayload
 } from '../../types/socket/messages-socket.payload';
-import { Socket } from 'socket.io-client';
+
 import { SocketErrorMessage } from '../../types/socket/SocketErrorMessage.enum';
 import { SocketErrorType } from '../../types/socket/SocketErrorType.enum';
 import { SocketEvent } from '../../types/socket/SocketEvent.enum';
@@ -45,6 +46,9 @@ export const socketApi = createApi({
         sendMessage: builder.mutation<void, SendMessageEventPayload>({
             queryFn: payload => emitSocketEvent(SocketEvent.SEND_MESSAGE, payload)
         }),
+        toggleLikeMessage: builder.mutation<void, { channelId: string; messageId: string }>({
+            queryFn: payload => emitSocketEvent(SocketEvent.TOGGLE_LIKE_MESSAGE_CLIENT, payload)
+        }),
         pinMessage: builder.mutation<void, PinMessageEventPayload>({
             queryFn: payload => emitSocketEvent(SocketEvent.PIN_FROM_CLIENT, payload)
         }),
@@ -64,6 +68,7 @@ export const {
     useJoinChannelChatMutation,
     useLeaveChannelChatMutation,
     useSendMessageMutation,
+    useToggleLikeMessageMutation,
     usePinMessageMutation,
     useUpdateDeletedStatusMutation,
     useStartTypingMutation,

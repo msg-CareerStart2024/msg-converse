@@ -3,11 +3,13 @@ import {
     CreateDateColumn,
     Entity,
     JoinColumn,
+    JoinTable,
+    ManyToMany,
     ManyToOne,
     PrimaryGeneratedColumn
 } from 'typeorm';
-import { User } from '../../users/domain/user.domain';
 import { Channel } from '../../channels/domain/channel.entity';
+import { User } from '../../users/domain/user.domain';
 
 @Entity()
 export class Message {
@@ -33,4 +35,12 @@ export class Message {
     @ManyToOne(() => Channel, channel => channel.messages)
     @JoinColumn({ name: 'channel_id' })
     channel: Channel;
+
+    @ManyToMany(() => User, user => user.likedMessages, { cascade: ['insert'], eager: true })
+    @JoinTable({
+        name: 'likes',
+        joinColumn: { name: 'message_id', referencedColumnName: 'id' },
+        inverseJoinColumn: { name: 'user_id', referencedColumnName: 'id' }
+    })
+    likedByUsers: User[];
 }
